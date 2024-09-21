@@ -2,8 +2,8 @@ import { calluser } from '@/aws_db/db';
 
 interface user{
   userid: number;
-  username: String;
-  password: String;
+  username: string;
+  password: string;
 }
 
 async function fetchuser() {
