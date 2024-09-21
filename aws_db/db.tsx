@@ -1,8 +1,8 @@
-import mysql from ‘mysql/promise’;
+import mysql from 'mysql2/promise';
 
-import { ProductsProps } from ‘./definitions’; 
+import { user } from '../definitions'; 
 
-export async function callProducts(query: string, data: ProductsProps[]) {
+export async function calluser(query: string, data: user[]) {
 
 try {
 
@@ -10,7 +10,7 @@ try {
 
     host: process.env.MYSQL_HOST,
 
-    port: process.env.MYSQL_PORT,
+    port: Number(process.env.MYSQL_PORT),
 
     database: process.env.MYSQL_DATABASE,
 
