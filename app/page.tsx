@@ -4,11 +4,15 @@ interface user{
   userid: number;
   username: string;
   password: string;
+  email: string;
+  role: string;
+  BioPassword: string;
+  Status: string;
 }
 
 async function fetchuser() {
   try {
-    const response = await calluser("SELECT * FROM user");
+    const response = await calluser("SELECT * FROM userAccount");
     return JSON.parse(JSON.stringify(response));
   } catch (error) {
     console.error(error);

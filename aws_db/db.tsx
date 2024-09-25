@@ -3,7 +3,6 @@ import mysql from 'mysql2/promise';
 export async function calluser(query: string) {
 
     try {
-
         const db = await mysql.createConnection({
             host: process.env.MYSQL_HOST,
             port: Number(process.env.MYSQL_PORT),
@@ -24,3 +23,4 @@ export async function calluser(query: string) {
     }
 
 }
+
