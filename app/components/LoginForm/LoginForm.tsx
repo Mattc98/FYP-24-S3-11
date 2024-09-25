@@ -1,13 +1,13 @@
 //'use client'; // Client Side Component
 import { calluser } from '@/aws_db/db';
 //import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import styles from './LoginForm.module.css'; // Make sure this file exists
+//import { useRouter } from 'next/navigation'; // not in use not in use i just comment out 1st
+//import styles from './LoginForm.module.css'; // Make sure this file exists // not in use i just comment out 1st
 import LoginFormClient from './LoginFormClient';
 
 
 interface userAccount{
-  UserId: number;
+  UserID: number;
   Username: string;
   Password: string;
 }
@@ -24,7 +24,7 @@ async function fetchuser(): Promise<userAccount[]> {
 
 
 const LoginForm = async () => {
-  const userAccounts = await fetchuser(); // Fetching user data on the server
+  const userAccounts= await fetchuser(); // Fetching user data on the server
 
   return (
     <div>

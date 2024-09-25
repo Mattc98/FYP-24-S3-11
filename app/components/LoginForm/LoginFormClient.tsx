@@ -1,10 +1,10 @@
 'use client'; // This is a client-side component for handling state and form interactions.
-import React, { useState, useEffect } from 'react';
+import React, { useState /*, useEffect*/ } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './LoginForm.module.css';
 
 interface UserAccount {
-  UserId: number;
+  UserID: number;
   Username: string;
   Password: string; // Store hashed passwords instead for security
 }
