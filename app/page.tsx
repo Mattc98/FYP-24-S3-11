@@ -1,6 +1,9 @@
 import { calluser } from '@/aws_db/db';
+import LoginForm from "./components/LoginForm/LoginForm";
+import styles from './Home.module.css';
 
-interface user{
+
+interface userAccount{
   UserID: number;
   Username: string;
   Password: string;
@@ -8,6 +11,7 @@ interface user{
   Role: string;
   BiometricPassword: string;
   Status: string;
+
 }
 
 async function fetchuser() {
@@ -21,14 +25,29 @@ async function fetchuser() {
 }
 
 export default async function Home() {
-  const users:user[] = await fetchuser();
+  const userAccount:userAccount[] = await fetchuser();
 
   return (
+    
+    <main className={styles.main}>
     <div>
-      <h1>This is the home page</h1>
-      <p>Userid: {users[0].UserID}</p>
-      <p>Username: {users[0].Username}</p>
-      <p>password: {users[0].Password}</p>
+      <div className='text-black'>
+        <h1>This is the home page</h1>
+        <p>Userid: {userAccount[0].UserID}</p>
+        <p>Username: {userAccount[0].Username}</p>
+        <p>password: {userAccount[0].Password}</p>
     </div>
+   <div className="fixed top-52 left-52">
+      <img className="object-cover h-[500px] w-[500px]" src="/images/logo.png" alt="Company Logo"  />
+    </div>
+    
+    <div className="fixed top-80 right-20 bg-white p-6 rounded-lg w-full max-w-md">
+      
+      <h1 className="text-5xl font-bold mb-10 text-center text-black fon">User Login</h1>
+    
+      <LoginForm />
+    </div>
+  </div>
+  </main>
   );
 }
