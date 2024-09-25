@@ -1,12 +1,12 @@
 import { calluser } from '@/aws_db/db';
 
 interface user{
-  userid: number;
-  username: string;
-  password: string;
-  email: string;
-  role: string;
-  BioPassword: string;
+  UserID: number;
+  Username: string;
+  Password: string;
+  Email: string;
+  Role: string;
+  BiometricPassword: string;
   Status: string;
 }
 
@@ -26,9 +26,9 @@ export default async function Home() {
   return (
     <div>
       <h1>This is the home page</h1>
-      <p>Userid: {users[0].userid}</p>
-      <p>Username: {users[0].username}</p>
-      <p>password: {users[0].password}</p>
+      <p>Userid: {users[0].UserID}</p>
+      <p>Username: {users[0].Username}</p>
+      <p>password: {users[0].Password}</p>
     </div>
   );
 }
