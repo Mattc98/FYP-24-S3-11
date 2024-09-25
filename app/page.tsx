@@ -3,7 +3,7 @@ import LoginForm from "./components/LoginForm/LoginForm";
 import styles from './Home.module.css';
 
 interface userAccount{
-  UserId: number;
+  UserID: number;
   Username: string;
   Password: string;
 }
@@ -27,7 +27,7 @@ export default async function Home() {
     <div>
       <div className='text-black'>
         <h1>This is the home page</h1>
-        <p>Userid: {userAccount[0].UserId}</p>
+        <p>Userid: {userAccount[0].UserID}</p>
         <p>Username: {userAccount[0].Username}</p>
         <p>password: {userAccount[0].Password}</p>
     </div>
