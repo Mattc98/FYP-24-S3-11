@@ -2,10 +2,16 @@ import { calluser } from '@/aws_db/db';
 import LoginForm from "./components/LoginForm/LoginForm";
 import styles from './Home.module.css';
 
+
 interface userAccount{
   UserID: number;
   Username: string;
   Password: string;
+  Email: string;
+  Role: string;
+  BiometricPassword: string;
+  Status: string;
+
 }
 
 async function fetchuser() {
