@@ -27,29 +27,6 @@ interface rooms {
 
 export default async function UserHomepage()  {
 
-    const roompic = [
-        {
-          name: 'Meeting room',
-          image: '/images/meeting-room.jpg', // Updated path
-          capacity: 6,
-        },
-        {
-          name: 'Conference Room',
-          image: '/images/conference-room.jpg', // Updated path
-          capacity: 17,
-        },
-        {
-          name: 'Large room',
-          image: '/images/large-room.jpg', // Updated path
-          capacity: 8,
-        },
-        {
-          name: 'Big Room',
-          image: '/images/big-room.jpg', // Updated path
-          capacity: 8,
-        },
-      ];
-
       const allrooms:rooms[] = await fetchuser();
 
     return (
