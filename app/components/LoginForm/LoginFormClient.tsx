@@ -1,5 +1,5 @@
 'use client'; // This is a client-side component for handling state and form interactions.
-import React, { useState /*, useEffect*/ } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './LoginForm.module.css';
 
@@ -25,7 +25,7 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
     const user = userAccount.find(user => user.Username === username);
     if (user && user.Password === password) {
       setMessage('Login Successful');
-      router.push('/maindashboard');
+      router.push(`/UserHomepage?username=${username}`);
     } else {
       setMessage('Invalid username or password');
     }
