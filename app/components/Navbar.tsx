@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useSearchParams, useRouter } from 'next/navigation';
+import FeedbackLink from './Feedback/FeedbackLink';
 
 const Navbar = () => {
   const searchParams = useSearchParams();
@@ -65,9 +66,7 @@ const Navbar = () => {
             </Link>
           </li>
           <li>
-            <Link className="text-white hover:text-gray-300 transition duration-200" href="/feedback">
-              Feedback
-            </Link>
+            <FeedbackLink />
           </li>
           <li>
             <Link className="text-white hover:text-gray-300 transition duration-200" href="/favourites">

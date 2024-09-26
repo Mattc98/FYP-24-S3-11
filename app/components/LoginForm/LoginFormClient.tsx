@@ -25,7 +25,7 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
     const user = userAccount.find(user => user.Username === username);
     if (user && user.Password === password) {
       setMessage('Login Successful');
-      router.push(`/UserHomepage?username=${username}`);
+      router.push(`/UserHomepage?username=${encodeURIComponent(username)}&userId=${user.UserID}`);
     } else {
       setMessage('Invalid username or password');
     }
