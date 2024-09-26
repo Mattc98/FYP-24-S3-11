@@ -23,7 +23,6 @@ interface Room {
 }
 
 export default async function UserHomepage() {
-  // Fetch room and user data
   const allRooms: Room[] = await fetchRoom();
 
   return (

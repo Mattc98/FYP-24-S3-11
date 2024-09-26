@@ -7,6 +7,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 const Navbar = () => {
   const searchParams = useSearchParams();
   const username = searchParams.get('username');
+  const userID = searchParams.get('userID');
   const router = useRouter();
   
   // State to manage dropdown visibility
@@ -55,12 +56,12 @@ const Navbar = () => {
       <nav className="bg-gray-600 py-2">
         <ul className="flex justify-center space-x-8">
           <li>
-            <Link className="text-white hover:text-gray-300 transition duration-200" href="/UserHomepage">
+            <Link className="text-white hover:text-gray-300 transition duration-200" href={`/UserHomepage?username=${username}&userID=${userID}`}>
               Home
             </Link>
           </li>
           <li>
-            <Link className="text-white hover:text-gray-300 transition duration-200" href="/myBookings">
+            <Link className="text-white hover:text-gray-300 transition duration-200" href={`/myBookings?username=${username}&userID=${userID}`}>
               Bookings
             </Link>
           </li>
