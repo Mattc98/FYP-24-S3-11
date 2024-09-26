@@ -60,7 +60,7 @@ const Navbar = () => {
             </Link>
           </li>
           <li>
-            <Link className="text-white hover:text-gray-300 transition duration-200" href="/bookings">
+            <Link className="text-white hover:text-gray-300 transition duration-200" href="/myBookings">
               Bookings
             </Link>
           </li>
