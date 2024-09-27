@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, ReactNode, useEffect } from 'react';
+import { useState, useRef, ReactNode, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import styles from './Feedback.module.css';
 import { submitFeedback, Feedback } from './SubmitFeedback';
@@ -10,7 +10,7 @@ interface FeedbackFormProps {
     userId: number;
 }
 
-export default function FeedbackForm({ children }: FeedbackFormProps) {
+function FeedbackFormContent({ children }: FeedbackFormProps) {
     const [feedback, setFeedback] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -45,23 +45,13 @@ export default function FeedbackForm({ children }: FeedbackFormProps) {
 
         const formData = new FormData(formRef.current);
         const roomValue = formData.get('rooms') as string;
-        const [roomId, roomName] = roomValue.split(':');
+        const [roomId] = roomValue.split(':');
         
-        // Debug logging
-        console.log('Form Data:');
-        console.log('Room Value:', roomValue);
-        console.log('Room ID:', roomId);
-        console.log('Room Name:', roomName);
-        console.log('User ID:', userId);
-        console.log('Feedback:', feedback);
-
         const feedbackData: Feedback = {
             RoomID: parseInt(roomId, 10),
             UserID: userId,
             Feedback: feedback
         };
-        
-        console.log('Feedback Data Object:', feedbackData);
 
         try {
             const result = await submitFeedback(feedbackData);
@@ -112,5 +102,13 @@ export default function FeedbackForm({ children }: FeedbackFormProps) {
                 {submitStatus === 'error' && <p className={styles.errorMessage}>Failed to submit feedback. Please try again.</p>}
             </form>
         </div>
+    );
+}
+
+export default function FeedbackForm(props: FeedbackFormProps) {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <FeedbackFormContent {...props} />
+        </Suspense>
     );
 }

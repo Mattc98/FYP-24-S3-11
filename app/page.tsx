@@ -1,33 +1,8 @@
-import { calluser } from '@/aws_db/db';
 import LoginForm from "./components/LoginForm/LoginForm";
 import styles from './Home.module.css';
 import Image from 'next/image';
 
-
-interface userAccount{
-  UserID: number;
-  Username: string;
-  Password: string;
-  Email: string;
-  Role: string;
-  BiometricPassword: string;
-  Status: string;
-
-}
-
-async function fetchuser() {
-  try {
-    const response = await calluser("SELECT * FROM userAccount");
-    return JSON.parse(JSON.stringify(response));
-  } catch (error) {
-    console.error(error);
-    throw new Error('Failed to fetch user data.');
-  }
-}
-
 export default async function Home() {
-  const userAccount:userAccount[] = await fetchuser();
-
   return (
     
     <main className={styles.main}>
