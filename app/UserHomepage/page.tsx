@@ -23,16 +23,15 @@ interface Room {
 }
 
 export default async function UserHomepage() {
-  // Fetch room and user data
   const allRooms: Room[] = await fetchRoom();
 
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Navbar */}
       <div className="bg-gray-300 flex justify-center items-center py-3 space-x-8">
-      <Suspense fallback={<div>Loading...</div>}>
-        <Navbar />
-      </Suspense>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Navbar />
+        </Suspense>
       </div>
 
       {/* Main Content */}
