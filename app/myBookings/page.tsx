@@ -32,10 +32,32 @@ const fetchRoom = async (): Promise<Room[]> => {
       return JSON.parse(JSON.stringify(response));
 };
 
+interface UserAccount {
+    UserID: number;
+    Username: string;
+}
+  
+  
+// Fetch user ID by username
+const fetchUserIdByUsername = async (username: string): Promise<number | undefined> => {
+    const response = await calluser(`SELECT UserID FROM userAccount WHERE Username = '${username}'`);
+    return (response as UserAccount[])[0]?.UserID;
+};
 
-const myBookings = async () => {
+const myBookings = async ({ searchParams }: { searchParams: { username: string } }) => {
+    // get all bookings and rooms from db
     const allBookings = await fetchAllBookings();
     const allRooms = await fetchRoom();
+
+    // get username and id
+    const { username } = searchParams;
+    if (!username) {
+      return <p>No username provided.</p>;
+    }
+    const userId = await fetchUserIdByUsername(username);
+    if (!userId) {
+      return <p>User not found.</p>;
+    }
 
     return (
         <div>
@@ -45,9 +67,7 @@ const myBookings = async () => {
                 </Suspense>
             </div>
             <div>
-                <Suspense fallback={<div>Loading...</div>}>
-                    <Bookings bookings={allBookings} rooms={allRooms} />
-                </Suspense>
+                <Bookings bookings={allBookings} rooms={allRooms} userid={JSON.stringify(userId)} username={username}/>
             </div>
         </div>
     )
