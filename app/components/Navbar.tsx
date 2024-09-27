@@ -55,22 +55,22 @@ const Navbar = () => {
       <nav className="bg-gray-600 py-2">
         <ul className="flex justify-center space-x-8">
           <li>
-            <Link className="text-white hover:text-gray-300 transition duration-200" href="/UserHomepage">
+            <Link className="text-white hover:text-gray-300 transition duration-200" href={{query:{username:username}, pathname:"/UserHomepage"}}> {/*To make sure the name persists throughout the navbar*/}
               Home
             </Link>
           </li>
           <li>
-            <Link className="text-white hover:text-gray-300 transition duration-200" href="/bookings">
+            <Link className="text-white hover:text-gray-300 transition duration-200" href={{query:{username:username}, pathname:"/bookings"}}>
               Bookings
             </Link>
           </li>
           <li>
-            <Link className="text-white hover:text-gray-300 transition duration-200" href="/feedback">
+            <Link className="text-white hover:text-gray-300 transition duration-200" href={{query:{username:username}, pathname:"/feedback"}}>
               Feedback
             </Link>
           </li>
           <li>
-            <Link className="text-white hover:text-gray-300 transition duration-200" href="/favourites">
+            <Link className="text-white hover:text-gray-300 transition duration-200" href={{query:{username:username}, pathname:"/FavouritesPage"}}>
               Favourites
             </Link>
           </li>
