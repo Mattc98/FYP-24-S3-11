@@ -84,8 +84,6 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms }) => {
       return `${formattedHours}:${minutes} ${suffix}`;
     };
 
-  
-
     return (
         <div className="px-6 py-6">
             <h2 className="text-center text-2xl font-bold mb-6">Here are your upcoming bookings</h2>

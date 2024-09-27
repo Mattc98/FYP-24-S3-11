@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import Navbar from '../components/Navbar'
 import Bookings from '../components/myBookings/myBookingsPage'
 import { calluser } from '@/aws_db/db';
@@ -23,22 +23,13 @@ interface Room {
 }
 
 const fetchAllBookings = async (): Promise<Bookings[]> => {
-    try {
       const response = await calluser("SELECT * FROM Booking");
       return JSON.parse(JSON.stringify(response));
-    } catch (error) {
-      throw new Error('Failed to fetch bookings.');
-    }
 };
 
 const fetchRoom = async (): Promise<Room[]> => {
-    try {
       const response = await calluser("SELECT * FROM Room");
       return JSON.parse(JSON.stringify(response));
-    } catch (error) {
-      console.error(error);
-      throw new Error('Failed to fetch rooms.');
-    }
 };
 
 
@@ -49,10 +40,14 @@ const myBookings = async () => {
     return (
         <div>
             <div>
-                <Navbar />
+                <Suspense fallback={<div>Loading...</div>}>
+                    <Navbar />
+                </Suspense>
             </div>
             <div>
-                <Bookings bookings={allBookings} rooms={allRooms} />
+                <Suspense fallback={<div>Loading...</div>}>
+                    <Bookings bookings={allBookings} rooms={allRooms} />
+                </Suspense>
             </div>
         </div>
     )
