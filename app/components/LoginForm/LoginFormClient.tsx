@@ -29,14 +29,10 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
 
     const user = userAccount.find(user => user.Username.toLowerCase() === lowercaseUsername);
     if (user && user.Password === password) {
-      if (user.Role === role ){
-        setMessage(`${role} Login Successful`);
-        const homepageRedirect = role === 'Admin' ? '/AdminHomepage' : '/UserHomepage';
-        router.push(`${homepageRedirect}?username=${username}`);
-      } else {
-        setMessage('Access Denied');
-      }
-      
+
+      setMessage(`${role} Login Successful`);
+      router.push(`/UserHomepage?username=${encodeURIComponent(username)}&userId=${user.UserID}`);
+
     } else {
       setMessage('Invalid username or password');
     }
@@ -52,7 +48,7 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
 
       <h1 className="text-5xl font-bold mb-10 text-center text-black fon">{headerText}</h1>
         <button className={styles.switchButton1} onClick={() => handleRoleChange("User")}>User</button>
-        <button className={styles.switchButton2}onClick={() => handleRoleChange("Admin")}>Admin</button>
+        <button className={styles.switchButton2} onClick={() => handleRoleChange("Admin")}>Admin</button>
         
       <form onSubmit={handleSubmit}>
         <input
