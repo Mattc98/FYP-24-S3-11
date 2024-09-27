@@ -56,12 +56,12 @@ const Navbar = () => {
       <nav className="bg-gray-600 py-2">
         <ul className="flex justify-center space-x-8">
           <li>
-            <Link className="text-white hover:text-gray-300 transition duration-200" href={`/UserHomepage?username=${username}&userID=${userID}`}>
+            <Link className="text-white hover:text-gray-300 transition duration-200" href="/UserHomepage">
               Home
             </Link>
           </li>
           <li>
-            <Link className="text-white hover:text-gray-300 transition duration-200" href={`/myBookings?username=${username}&userID=${userID}`}>
+            <Link className="text-white hover:text-gray-300 transition duration-200" href="myBookings">
               Bookings
             </Link>
           </li>
