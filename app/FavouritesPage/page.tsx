@@ -2,7 +2,7 @@
 import React from 'react';
 import Navbar from '../components/Navbar';
 import { calluser } from '@/aws_db/db';
-import TimeSlotDropdown from './TimeslotDropdown'; // Import your client component
+import TimeSlotDropdown from './TimeSlotDropdown'; // Import your client component
 
 interface UserAccount {
   UserID: number;
