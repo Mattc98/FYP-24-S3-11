@@ -1,0 +1,80 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100vw;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  .heading {
+    color: black;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .label {
+    color: black;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .select {
+    color: black;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 500px;
+  }
+  
+  .textarea {
+    resize: none;
+    color: black;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .label {
+    align-self: flex-start;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .button {
+    color: black;
+    background-color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .button:hover {
+    background-color: #f0f0f0;
+  }
+
+  .pageHeading {
+    color: black;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 2em;
+  }
