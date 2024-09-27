@@ -6,10 +6,12 @@ import { calluser } from '@/aws_db/db';
 import LoginFormClient from './LoginFormClient';
 
 
+
 interface userAccount{
   UserID: number;
   Username: string;
   Password: string;
+  Role: "User" | "Admin" | "Director";
 }
 
 async function fetchuser(): Promise<userAccount[]> {
@@ -28,7 +30,7 @@ const LoginForm = async () => {
 
   return (
     <div>
-      <LoginFormClient userAccount={userAccounts} />
+      <LoginFormClient userAccount={userAccounts} /> {/*--This is for USER and DIRECTOR'S ONLY*/}
     </div>
   );
 };
