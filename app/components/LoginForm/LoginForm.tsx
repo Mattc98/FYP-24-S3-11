@@ -1,4 +1,3 @@
-//'use client'; // Client Side Component
 import { calluser } from '@/aws_db/db';
 //import React, { useState } from 'react';
 //import { useRouter } from 'next/navigation'; // not in use not in use i just comment out 1st

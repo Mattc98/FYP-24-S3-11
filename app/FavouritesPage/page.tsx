@@ -1,8 +1,8 @@
-// app/FavouritesPage/page.tsx
 import React from 'react';
 import Navbar from '../components/Navbar';
 import { calluser } from '@/aws_db/db';
 import TimeSlotDropdown from './TimeSlotDropdown'; // Import your client component
+import DateSelector from './DateSelector'; // Import your client component
 
 interface UserAccount {
   UserID: number;
@@ -42,11 +42,14 @@ const FavouritesPage = async ({ searchParams }: { searchParams: { username: stri
   }
 
   const userId = await fetchUserIdByUsername(username);
-  if (!userId) {
+  // Explicitly ensure userId is a number
+  const parsedUserId = typeof userId === 'number' ? userId : undefined; // Ensure it's a number
+
+  if (parsedUserId === undefined) {
     return <p>User not found.</p>;
   }
 
-  const rooms = await fetchUserRooms(userId);
+  const rooms = await fetchUserRooms(parsedUserId);
   
   const timeSlots = [
     '09:00 AM - 10:00 AM',
@@ -57,14 +60,20 @@ const FavouritesPage = async ({ searchParams }: { searchParams: { username: stri
     '03:00 PM - 04:00 PM',
   ];
 
+  const dates = [ //THIS IS FAKE 
+    '2024-09-28',
+    '2024-09-29',
+    '2024-09-30',
+    '2024-10-01',
+    '2024-10-02',
+  ];
+
   return (
     <div>
       <div className="bg-gray-300 flex justify-center items-center py-3 space-x-8">
         <Navbar />
       </div>
-      <p>{`This is ${username}'s favourite page.`}</p>
-
-      <div className="bg-gray-200 p-4 rounded-md mt-4">
+      <div>
         {rooms.length > 0 ? (
           <div>
             <h2>Your Rooms:</h2>
@@ -72,19 +81,25 @@ const FavouritesPage = async ({ searchParams }: { searchParams: { username: stri
               {rooms.map((room) => (
                 <li key={room.RoomID} className="bg-gray-500 p-4 mb-4 rounded-md shadow-md">
                   <h3 className="text-xl font-semibold">{room.RoomName}</h3>
-                  {room.imagename && (
-                    <div className="w-48 h-48 mt-2 overflow-hidden rounded-md">
-                      <img 
-                        src={room.imagename}
-                        alt={`${room.RoomName} image`} 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  )}
-                  <p>Pax: {room.Pax}</p>
+                  <div className="flex items-start mt-2"> {/* Flex container to align image and dropdown */}
+                    {room.imagename && (
+                      <div className="w-48 h-48 overflow-hidden rounded-md mr-4"> {/* Image container with margin */}
+                        <img 
+                          src={room.imagename}
+                          alt={`${room.RoomName} image`} 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
+                    
+                    <div className="flex flex-col justify-between"> {/* Column layout for dropdown and Pax */}
+                      <DateSelector dates ={dates}/>
+                      <TimeSlotDropdown timeSlots={timeSlots} />
 
-                  {/* Render the TimeSlotDropdown for each room */}
-                  <TimeSlotDropdown timeSlots={timeSlots} />
+                    </div>
+                  </div>
+                  {/* Render the Pax information below the image */}
+                  <p className="mt-2">Pax: {room.Pax}</p> 
                 </li>
               ))}
             </ul>

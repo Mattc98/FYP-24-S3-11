@@ -1,4 +1,3 @@
-// components/TimeSlotDropdown.tsx
 "use client"; // This component will be rendered on the client side
 
 import React, { useState } from 'react';
@@ -16,16 +15,16 @@ const TimeSlotDropdown: React.FC<TimeSlotDropdownProps> = ({ timeSlots }) => {
 
   return (
     <div className="mt-4">
-      <label htmlFor="timeSlots" className="block text-lg font-semibold mb-2">Select Time Slot:</label>
+      <label htmlFor="timeSlots" className="block text-lg font-semibold mb-2">Time:</label>
       <select
         id="timeSlots"
         value={selectedTimeSlot}
         onChange={handleTimeSlotChange}
-        className="p-2 border border-gray-300 rounded"
+        className="p-2 border border-gray-300 rounded text-black bg-white" // Set text color and background color
       >
-        <option value="">-- Select a Time Slot --</option>
+        <option value="" className="text-gray-500">-- Choose a Time Slot --</option> {/* Grey color for placeholder */}
         {timeSlots.map((slot, index) => (
-          <option key={index} value={slot}>
+          <option key={index} value={slot} className="text-black"> {/* Set option text color */}
             {slot}
           </option>
         ))}

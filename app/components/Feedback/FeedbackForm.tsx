@@ -1,44 +1,29 @@
+// FeedbackForm.tsx (Client Component)
 'use client';
 
-import { useState, useRef, ReactNode, useEffect, Suspense } from 'react';
+import { useState, useRef, ReactNode, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import styles from './Feedback.module.css';
 import { submitFeedback, Feedback } from './SubmitFeedback';
 
 interface FeedbackFormProps {
     children: ReactNode;
-    userId: number;
+    userId: number | null; // Change to allow null value
 }
 
-function FeedbackFormContent({ children }: FeedbackFormProps) {
+function FeedbackFormContent({ children, userId }: FeedbackFormProps) {
     const [feedback, setFeedback] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
     const formRef = useRef<HTMLFormElement>(null);
-    const searchParams = useSearchParams();
-    const [userId, setUserId] = useState<number | null>(null);
-
-    useEffect(() => {
-        const userIdParam = searchParams.get('userId');
-        if (userIdParam) {
-            const parsedUserId = parseInt(userIdParam, 10);
-            if (!isNaN(parsedUserId)) {
-                setUserId(parsedUserId);
-            } else {
-                console.error('Invalid userId in URL');
-            }
-        } else {
-            console.error('userId not found in URL parameters');
-        }
-    }, [searchParams]);
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         setIsSubmitting(true);
         setSubmitStatus('idle');
-        
+
         if (!formRef.current || userId === null) {
-            console.log('Form reference is null or userId is not set');
+            console.error('Form reference is null or userId is not set');
             setIsSubmitting(false);
             return;
         }
@@ -46,11 +31,11 @@ function FeedbackFormContent({ children }: FeedbackFormProps) {
         const formData = new FormData(formRef.current);
         const roomValue = formData.get('rooms') as string;
         const [roomId] = roomValue.split(':');
-        
+
         const feedbackData: Feedback = {
             RoomID: parseInt(roomId, 10),
             UserID: userId,
-            Feedback: feedback
+            Feedback: feedback,
         };
 
         try {
@@ -71,6 +56,7 @@ function FeedbackFormContent({ children }: FeedbackFormProps) {
         }
     };
 
+    // Display loading state while user ID is null
     if (userId === null) {
         return <div>Loading...</div>;
     }
