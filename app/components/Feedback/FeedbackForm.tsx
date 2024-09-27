@@ -7,6 +7,7 @@ import { submitFeedback, Feedback } from './SubmitFeedback';
 
 interface FeedbackFormProps {
     children: ReactNode;
+    userId: number;
 }
 
 export default function FeedbackForm({ children }: FeedbackFormProps) {
