@@ -1,11 +1,13 @@
 'use client'; // This ensures the component is client-side
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { useSearchParams } from 'next/navigation';
 
 interface ClientBookingsProps {
     bookings: Bookings[];
     rooms: Room[];
+    userid: string;
+    username: string;
+
 }
 
 interface Bookings {
@@ -36,16 +38,14 @@ interface MyBooking {
     imagename: string; //room
 }
 
-const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms }) => {
+
+const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms , username, userid}) => {
     const [myBookings, setMyBookings] = useState<MyBooking[]>([]);
-    const searchParams = useSearchParams();
-    const username = searchParams.get('username');
-    const userID = searchParams.get('userID');
 
     useEffect(() =>{
       const getMyBookings = () => {
         const userBookings = bookings
-          .filter(bookings => bookings.UserID == userID)
+          .filter(bookings => bookings.UserID == userid)
           .map(booking => {
             const room = rooms.find(room => room.RoomID == booking.RoomID);
             if (room){
@@ -65,7 +65,7 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms }) => {
       };
       getMyBookings();
       // optional return fcn
-    },[bookings, rooms, userID]) // dependency array
+    },[bookings, rooms, userid]) // dependency array
     
     // Formatting functions
     const formatDate = (date: Date) => {
