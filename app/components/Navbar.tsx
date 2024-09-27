@@ -7,7 +7,6 @@ import { useSearchParams, useRouter } from 'next/navigation';
 const Navbar = () => {
   const searchParams = useSearchParams();
   const username = searchParams.get('username');
-  const userID = searchParams.get('userID');
   const router = useRouter();
   
   // State to manage dropdown visibility
