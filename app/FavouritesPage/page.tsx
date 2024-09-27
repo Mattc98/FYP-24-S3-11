@@ -49,7 +49,7 @@ const FavouritesPage = async ({ searchParams }: { searchParams: { username: stri
         <div className="bg-gray-300 flex justify-center items-center py-3 space-x-8">
           <Navbar />
         </div>
-        <p>This is {username}'s favourite page.</p>
+        <p>{`This is ${username}'s favourite page.`}</p>
         {rooms.length > 0 ? (
           <div>
             <h2>Your Rooms:</h2>
