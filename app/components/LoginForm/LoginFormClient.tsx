@@ -1,4 +1,4 @@
-'use client'; // This is a client-side component for handling state and form interactions.
+'use client';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './LoginForm.module.css';
@@ -6,23 +6,30 @@ import styles from './LoginForm.module.css';
 interface UserAccount {
   UserID: number;
   Username: string;
-  Password: string; // Store hashed passwords instead for security
-  Role: "User" | "Admin" | "Director"; // Make the roles to be more specific
+  Password: string;
+  Role: "User" | "Admin" | "Director"; // Defined roles
 }
 
 interface ClientLoginFormProps {
-  userAccount: UserAccount[]; // Accepting userAccount as a prop
+  userAccount: UserAccount[];
 }
 
 const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
-  const [role, setRole] = useState<"User" | "Admin" | "Director"> ('User'); //Defaults to User
+  const [role, setRole] = useState<"User" | "Admin">('User'); // Defaulting to 'User'
   const [headerText, setHeaderText] = useState('User Login');
   const router = useRouter();
 
-  const lowercaseUsername = username.toLowerCase(); //Converting the input username to lowercase
+  // Redirection URLs
+  const homepageRedirect = {
+    Admin: '/AdminHomepage',
+    User: '/UserHomepage',
+    Director: '/UserHomepage', // Director treated same as User
+  };
+
+  const lowercaseUsername = username.toLowerCase();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -30,24 +37,23 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
     const user = userAccount.find(user => user.Username.toLowerCase() === lowercaseUsername);
 
     if (user && user.Password === password) {
-      const homepageRedirect = user.Role === 'Admin' ? '/AdminHomepage' : '/UserHomepage';
-      if (user.Role === "User" || user.Role === "Director") {
-        setMessage(`${user.Role } Login Successful`);
-        router.push(`${homepageRedirect}?username=${username}`); 
-      }else if(user.Role === "Admin") {
-        router.push(`${homepageRedirect}?username=${username}`); 
+      if ((role === "Admin" && user.Role === "Admin") || (role === "User" && (user.Role === "User" || user.Role === "Director"))) {
+        // Successful login for Admin or User/Director
+        setMessage(`${user.Role} Login Successful`);
+        const redirectUrl = `${homepageRedirect[user.Role]}?username=${username}`;
+        router.push(redirectUrl);
       } else {
+        // Access denied if role doesn't match the account type
         setMessage('Access Denied');
       }
-      
     } else {
       setMessage('Invalid username or password');
     }
   };
-
-  const handleRoleChange = (role : "User" | "Admin") => {
-    setRole(role);
-    setHeaderText(role === "Admin" ? "Admin Login" : "User Login")
+  
+  const handleRoleChange = (selectedRole: "User" | "Admin") => {
+    setRole(selectedRole);
+    setHeaderText(selectedRole === "Admin" ? "Admin Login" : "User Login");
   };
 
   return (
