@@ -28,11 +28,14 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
     e.preventDefault();
 
     const user = userAccount.find(user => user.Username.toLowerCase() === lowercaseUsername);
+
     if (user && user.Password === password) {
-      if (user.Role === role ){
-        setMessage(`${role} Login Successful`);
-        const homepageRedirect = role === 'Admin' ? '/AdminHomepage' : '/UserHomepage';
-        router.push(`${homepageRedirect}?username=${username}`);
+      const homepageRedirect = user.Role === 'Admin' ? '/AdminHomepage' : '/UserHomepage';
+      if (user.Role === "User" || user.Role === "Director") {
+        setMessage(`${user.Role } Login Successful`);
+        router.push(`${homepageRedirect}?username=${username}`); 
+      }else if(user.Role === "Admin") {
+        router.push(`${homepageRedirect}?username=${username}`); 
       } else {
         setMessage('Access Denied');
       }
@@ -42,9 +45,9 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
     }
   };
 
-  const handleRoleChange = (newRole : "User" | "Admin") => {
-    setRole(newRole);
-    setHeaderText(newRole === "Admin" ? "Admin Login" : "User Login")
+  const handleRoleChange = (role : "User" | "Admin") => {
+    setRole(role);
+    setHeaderText(role === "Admin" ? "Admin Login" : "User Login")
   };
 
   return (
