@@ -3,12 +3,11 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useSearchParams, useRouter } from 'next/navigation';
-import FeedbackLink from './Feedback/FeedbackLink';
+//import FeedbackLink from './Feedback/FeedbackLink';
 
 const Navbar = () => {
   const searchParams = useSearchParams();
   const username = searchParams.get('username');
-  const userId = searchParams.get('userId');
   const router = useRouter();
   
   // State to manage dropdown visibility
@@ -62,7 +61,6 @@ const Navbar = () => {
             </Link>
           </li>
           <li>
-
             <Link className="text-white hover:text-gray-300 transition duration-200" href={{query:{username:username}, pathname:"/myBookings"}}>
               Bookings
             </Link>
