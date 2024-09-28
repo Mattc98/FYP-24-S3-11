@@ -19,10 +19,7 @@ export default async function Home() {
             />
           </div>
           
-          <div className="fixed top-80 right-20 bg-white p-6 rounded-lg w-full max-w-md">
-            
-            <h1 className="text-5xl font-bold mb-10 text-center text-black fon">User Login</h1>
-          
+          <div className="fixed top-80 right-20 bg-white p-6 rounded-lg w-full max-w-md">          
             <LoginForm />
           </div>
         </div>
