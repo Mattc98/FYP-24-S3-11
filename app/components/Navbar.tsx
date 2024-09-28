@@ -18,6 +18,11 @@ const Navbar = () => {
     setIsDropdownOpen((prev) => !prev);
   };
 
+  const handleSettings = () => {
+    console.log('Settings clicked');
+    router.push(`/settings?username=${username}`);
+  };
+
   const handleLogout = () => {
     // Implement your logout logic here (e.g., clear tokens, reset user state, etc.)
     // For example, you might clear user data and redirect to a login page:
@@ -42,6 +47,12 @@ const Navbar = () => {
           />
           {isDropdownOpen && (
             <div className="absolute right-0 mt-2 bg-gray-700 rounded shadow-lg">
+              <button
+                onClick={handleSettings}
+                className="block w-full text-left px-4 py-2 text-white hover:bg-gray-600"
+              >
+                Settings
+              </button>
               <button
                 onClick={handleLogout}
                 className="block px-4 py-2 text-white hover:bg-gray-600"
