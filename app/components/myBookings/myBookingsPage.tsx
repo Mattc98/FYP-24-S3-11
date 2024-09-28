@@ -160,7 +160,7 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
 
     const formatTime = (time: string) => {
       // Split the input time string (e.g., "09:00:00" or "14:00:00")
-      const [hours, minutes] = time.split(':');
+      const [hours] = time.split(':');
       const formattedHours = parseInt(hours);
   
       // Find the matching time slot based on the start time
