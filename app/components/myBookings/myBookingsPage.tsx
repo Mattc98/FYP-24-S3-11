@@ -77,6 +77,7 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
 
             setMyBookings(userBookings as MyBooking[]);
         };
+        
         getMyBookings();
     }, [bookings, rooms, userid]);
 
@@ -194,7 +195,7 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
                         <div key={index} className="bg-gray-400 p-4 rounded-lg shadow-md mb-6">
                             <div className="flex items-center space-x-4">
                                 <Image
-                                    src={booking.imagename}
+                                    src={"/images/"+ booking.imagename}
                                     alt={booking.RoomName}
                                     width={300}
                                     height={100}
