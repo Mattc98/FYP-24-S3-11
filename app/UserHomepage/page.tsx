@@ -3,15 +3,6 @@ import Navbar from '../components/Navbar';
 import { calluser } from '@/aws_db/db';
 import React, { Suspense } from 'react';
 
-async function fetchRoom() {
-  try {
-    const response = await calluser("SELECT * FROM Room");
-    return JSON.parse(JSON.stringify(response));
-  } catch (error) {
-    console.error(error);
-    throw new Error('Failed to fetch room data.');
-  }
-}
 
 interface Room {
   RoomID: number;
@@ -22,8 +13,47 @@ interface Room {
   imagename: string;
 }
 
-export default async function UserHomepage() {
+interface userAccount{
+  UserID: number;
+  Username: string;
+  Password: string;
+  Role: "User" | "Admin" | "Director";
+}
+
+async function fetchRoom() {
+  try {
+    const response = await calluser("SELECT * FROM Room");
+    return JSON.parse(JSON.stringify(response));
+  } catch (error) {
+    console.error(error);
+    throw new Error('Failed to fetch room data.');
+  }
+}
+
+// Fetch user ID by username
+const fetchUserRoleByUsername = async (username: string): Promise<string | undefined> => {
+  const response = await calluser(`SELECT Role FROM userAccount WHERE Username = '${username}'`);
+  return (response as userAccount[])[0]?.Role;
+};
+
+
+
+export default async function UserHomepage({ searchParams }: { searchParams: { username: string } }) {
   const allRooms: Room[] = await fetchRoom();
+  const { username } = searchParams;
+
+  if (!username) {
+    return <p>No username provided.</p>;
+  }
+
+  const UserRole = await fetchUserRoleByUsername(username);
+  // Explicitly ensure userId is a number
+  const parsedUserRole = typeof UserRole === 'string' ? UserRole : undefined; // Ensure it's a number
+
+  if (parsedUserRole === undefined) {
+    return <p>User does not have a role.</p>;
+  }
+  
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -38,10 +68,11 @@ export default async function UserHomepage() {
       <div className="bg-gray-600 px-8 py-6">
         <h2 className="text-lg font-semibold mb-4">Here are the rooms available</h2>
         <div className="grid grid-cols-2 gap-4">
-          {allRooms.map((room) => (
+          {allRooms.filter((room) => UserRole === "Director" || room.Type === "User") 
+            .map((room) => (
             <div key={room.RoomName} className="bg-white rounded-lg overflow-hidden shadow-lg">
               <Image
-                src={room.imagename}
+                src={"/images/" + room.imagename}
                 alt={room.RoomName}
                 width={300}
                 height={200}

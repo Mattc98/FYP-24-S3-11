@@ -7,10 +7,10 @@ interface DatabaseUser {
 
 export async function POST(request: Request) {
   try {
-    const { username, currentPassword, newPassword } = await request.json();
+    const { username, currentPassword } = await request.json();
 
-    if (!username || !currentPassword || !newPassword) {
-      return NextResponse.json({ message: 'Username, current password, and new password are required' }, { status: 400 });
+    if (!username || !currentPassword) {
+      return NextResponse.json({ message: 'Username and current password are required' }, { status: 400 });
     }
 
     const result = await calluser(`SELECT Password FROM userAccount WHERE Username = '${username}'`);
@@ -25,17 +25,13 @@ export async function POST(request: Request) {
       throw new Error('Invalid database response');
     }
 
-    if (user.Password !== currentPassword) {
+    if (user.Password === currentPassword) {
+      return NextResponse.json({ message: 'Password verified successfully' }, { status: 200 });
+    } else {
       return NextResponse.json({ message: 'Current password is incorrect' }, { status: 401 });
     }
-
-    // Update password
-    // In a real application, you would hash the new password before storing it
-    await calluser(`UPDATE userAccount SET Password = '${newPassword}' WHERE Username = '${username}'`);
-    
-    return NextResponse.json({ message: 'Password updated successfully' }, { status: 200 });
   } catch (error) {
-    console.error('Error changing password:', error);
+    console.error('Error verifying password:', error);
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
   }
 }
