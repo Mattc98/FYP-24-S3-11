@@ -2,7 +2,6 @@
 'use client';
 
 import { useState, useRef, ReactNode, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
 import styles from './Feedback.module.css';
 import { submitFeedback, Feedback } from './SubmitFeedback';
 
