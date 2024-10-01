@@ -22,6 +22,23 @@ interface userAccount{
 }
 
 
+
+interface Room {
+  RoomID: number;
+  RoomName: string;
+  Pax: number;
+  Type: string;
+  Status: string;
+  imagename: string;
+}
+
+interface userAccount{
+  UserID: number;
+  Username: string;
+  Password: string;
+  Role: "User" | "Admin" | "Director";
+}
+
 async function fetchRoom() {
   try {
     const response = await calluser("SELECT * FROM Room");
@@ -31,6 +48,13 @@ async function fetchRoom() {
     throw new Error('Failed to fetch room data.');
   }
 }
+
+// Fetch user ID by username
+const fetchUserRoleByUsername = async (username: string): Promise<string | undefined> => {
+  const response = await calluser(`SELECT Role FROM userAccount WHERE Username = '${username}'`);
+  return (response as userAccount[])[0]?.Role;
+};
+
 
 const fetchUserRoleByUsername = async (username: string): Promise<string | undefined> => {
   const response = await calluser(`SELECT Role FROM userAccount WHERE Username = '${username}'`);
@@ -46,9 +70,9 @@ const fetchUserIdByUsername = async (username: string): Promise<number | undefin
 
 
 export default async function UserHomepage({ searchParams }: { searchParams: { username: string } }) {
+export default async function UserHomepage({ searchParams }: { searchParams: { username: string } }) {
   const allRooms: Room[] = await fetchRoom();
   const { username } = searchParams;
-
 
   if (!username) {
     return <p>No username provided.</p>;
@@ -56,20 +80,13 @@ export default async function UserHomepage({ searchParams }: { searchParams: { u
 
   const UserRole = await fetchUserRoleByUsername(username);
   // Explicitly ensure userId is a number
-  const parsedUserRole = typeof UserRole === 'string' ? UserRole : undefined; // Ensure it's a string
+  const parsedUserRole = typeof UserRole === 'string' ? UserRole : undefined; // Ensure it's a number
 
   if (parsedUserRole === undefined) {
     return <p>User does not have a role.</p>;
   }
   
-  const userId = await fetchUserIdByUsername(username);
-  // Explicitly ensure userId is a number
-  const parsedUserId = typeof userId === 'number' ? userId : undefined; // Ensure it's a number
 
-  if (parsedUserId === undefined) {
-    return <p>User not found.</p>;
-  }
-  
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Navbar */}
