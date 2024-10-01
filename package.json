@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/react-datepicker": "^6.2.0",
     "mysql": "^2.18.1",
     "mysql2": "^3.11.3",
     "next": "^14.2.12",

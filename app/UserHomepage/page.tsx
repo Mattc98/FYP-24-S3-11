@@ -3,26 +3,6 @@ import Navbar from '../components/Navbar';
 import { calluser } from '@/aws_db/db';
 import React, { Suspense } from 'react';
 
-
-
-interface Room {
-  RoomID: number;
-  RoomName: string;
-  Pax: number;
-  Type: string;
-  Status: string;
-  imagename: string;
-}
-
-interface userAccount{
-  UserID: number;
-  Username: string;
-  Password: string;
-  Role: "User" | "Admin" | "Director";
-}
-
-
-
 interface Room {
   RoomID: number;
   RoomName: string;
@@ -55,21 +35,11 @@ const fetchUserRoleByUsername = async (username: string): Promise<string | undef
   return (response as userAccount[])[0]?.Role;
 };
 
-
-const fetchUserRoleByUsername = async (username: string): Promise<string | undefined> => {
-  const response = await calluser(`SELECT Role FROM userAccount WHERE Username = '${username}'`);
-  return (response as userAccount[])[0]?.Role;
-};
-
-// Fetch user ID by username
 const fetchUserIdByUsername = async (username: string): Promise<number | undefined> => {
   const response = await calluser(`SELECT UserID FROM userAccount WHERE Username = '${username}'`);
   return (response as userAccount[])[0]?.UserID;
 };
 
-
-
-export default async function UserHomepage({ searchParams }: { searchParams: { username: string } }) {
 export default async function UserHomepage({ searchParams }: { searchParams: { username: string } }) {
   const allRooms: Room[] = await fetchRoom();
   const { username } = searchParams;
@@ -85,8 +55,16 @@ export default async function UserHomepage({ searchParams }: { searchParams: { u
   if (parsedUserRole === undefined) {
     return <p>User does not have a role.</p>;
   }
-  
 
+  const userId = await fetchUserIdByUsername(username);
+  // Explicitly ensure userId is a number
+  const parsedUserId = typeof userId === 'number' ? userId : undefined; // Ensure it's a number
+
+  if (parsedUserId === undefined) {
+    return <p>User not found.</p>;
+  }
+  
+  
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Navbar */}
