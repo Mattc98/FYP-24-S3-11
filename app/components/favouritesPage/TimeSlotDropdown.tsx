@@ -4,13 +4,16 @@ import React, { useState } from 'react';
 
 interface TimeSlotDropdownProps {
   timeSlots: string[];
+  onChange: (slot: string) => void; // Add onChange prop
 }
 
-const TimeSlotDropdown: React.FC<TimeSlotDropdownProps> = ({ timeSlots }) => {
+const TimeSlotDropdown: React.FC<TimeSlotDropdownProps> = ({ timeSlots, onChange }) => {
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
 
   const handleTimeSlotChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedTimeSlot(event.target.value);
+    const newSlot = event.target.value;
+    setSelectedTimeSlot(newSlot);
+    onChange(newSlot); // Call the onChange prop to notify the parent
   };
 
   return (

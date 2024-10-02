@@ -1,7 +1,4 @@
 import { calluser } from '@/aws_db/db';
-//import React, { useState } from 'react';
-//import { useRouter } from 'next/navigation'; // not in use not in use i just comment out 1st
-//import styles from './LoginForm.module.css'; // Make sure this file exists // not in use i just comment out 1st
 import LoginFormClient from './LoginFormClient';
 
 
