@@ -34,6 +34,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ username }) => {
         const data = await response.json();
         setError(data.message || 'Current password is incorrect');
       }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       setError('An error occurred while verifying the password');
     }
@@ -70,6 +71,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ username }) => {
         const data = await response.json();
         setError(data.message || 'Failed to change password');
       }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       setError('An error occurred while changing the password');
     }
