@@ -1,5 +1,5 @@
 "use client";
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import Image from 'next/image';
 import ReactDatePicker from 'react-datepicker';
@@ -9,6 +9,7 @@ interface UserHomeProps {
     allRooms: Room[];
     UserRole: string;
     userID: number;
+    FavRooms: number[];
 }
 
 interface Room {
@@ -29,11 +30,12 @@ const timeSlots = [
     '03:00 PM - 04:00 PM',
 ];
 
-const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID }) => {
+const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, FavRooms }) => {
     const [selectedRoom, setSelectedRoom] = useState<Room | null>(null); // Modal control
     const [startDate, setStartDate] = useState<Date | null>(null);       // For Date Picker
     const [selectedTimeSlot, setSelectedTimeSlot] = useState('');        // Time slot selection
     const userId = userID;
+    const [isFavorite, setIsFavorite] = useState(false);
 
     const handleRoomClick = (room: Room) => {
         setSelectedRoom(room); // Show modal with room details
@@ -83,6 +85,36 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID }) =
         }
     };
 
+    // Update favorite state when selectedRoom changes
+    useEffect(() => {
+        if (selectedRoom) {
+            setIsFavorite(FavRooms.includes(selectedRoom.RoomID)); // Check if the selected room is a favorite
+        }
+    }, [selectedRoom, FavRooms]);
+
+    const handleFavorite = async (room: Room) => {
+        try {
+            const response = await fetch('/api/updateFavourites', {
+                method: isFavorite ? 'DELETE' : 'POST', // Use DELETE to remove, POST to add
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    UserID: userId,
+                    RoomID: room.RoomID,
+                }),
+            });
+
+            if (response.ok) {
+                setIsFavorite(!isFavorite); // Toggle favorite state
+            } else {
+                alert('Failed to update favorites.');
+            }
+        } catch (error) {
+            console.error('Error updating favorites:', error);
+        }
+    };
+
     return (
         <div className="min-h-screen bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white">
             <div className="px-8 py-6 max-w-7xl mx-auto">
@@ -115,65 +147,94 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID }) =
                 </div>
             </div>
 
-            {/* Modal for Room Booking */}
-            {selectedRoom && (
-                <div className="fixed inset-0 bg-gray-900 bg-opacity-80 flex items-center justify-center z-50">
-                    <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-1/3 text-white">
-                        <h2 className="text-2xl font-semibold mb-4">{selectedRoom.RoomName}</h2>
-                        <Image
-                            src={"/images/" + selectedRoom.imagename}
-                            alt={selectedRoom.RoomName}
-                            width={300}
-                            height={200}
-                            className="mb-4 rounded-md"
-                        />
+{/* Modal for Room Booking */}
+{selectedRoom && (
+    <div className="fixed inset-0 bg-gray-900 bg-opacity-80 flex items-center justify-center z-50">
+        <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-1/3 text-white">
+            <div className="flex justify-between items-center mb-4">
+                <h2 className="text-2xl font-semibold">{selectedRoom.RoomName}</h2>
+                <button
+                    className={`flex items-center justify-center w-8 h-8 transition duration-300 ${isFavorite ? 'text-yellow-500' : 'text-gray-400'}`}
+                    onClick={() => {
+                        handleFavorite(selectedRoom); // Update favorites when clicked
+                    }}
+                >
+                    {isFavorite ? (
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                    ) : (
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                    )}
+                </button>
+            </div>
+            <Image
+                src={"/images/" + selectedRoom.imagename}
+                alt={selectedRoom.RoomName}
+                width={300}
+                height={200}
+                className="mb-4 rounded-md"
+            />
 
-                        {/* Date Picker */}
-                        <div className="mb-4">
-                            <label className="block font-semibold mb-2">Date:</label>
-                            <ReactDatePicker
-                                selected={startDate}
-                                onChange={(date) => setStartDate(date)}
-                                className="border rounded-md p-2 w-full text-black"
-                                placeholderText="Select a date"
-                            />
-                        </div>
+            {/* Date Picker */}
+            <div className="mb-4">
+                <label className="block font-semibold mb-2">Date:</label>
+                <ReactDatePicker
+                    selected={startDate}
+                    onChange={(date) => setStartDate(date)}
+                    className="border rounded-md p-2 w-full text-black"
+                    placeholderText="Select a date"
+                />
+            </div>
 
-                        {/* Time Slot Dropdown */}
-                        <div className="mb-4">
-                            <label className="block font-semibold mb-2">Time:</label>
-                            <select
-                                value={selectedTimeSlot}
-                                onChange={(e) => setSelectedTimeSlot(e.target.value)}
-                                className="border rounded-md p-2 w-full text-black"
-                            >
-                                <option value="">Choose a time slot</option>
-                                {timeSlots.map((slot) => (
-                                    <option key={slot} value={slot}>
-                                        {slot}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
+            {/* Time Slot Dropdown */}
+            <div className="mb-4">
+                <label className="block font-semibold mb-2">Time:</label>
+                <select
+                    value={selectedTimeSlot}
+                    onChange={(e) => setSelectedTimeSlot(e.target.value)}
+                    className="border rounded-md p-2 w-full text-black"
+                >
+                    <option value="">Choose a time slot</option>
+                    {timeSlots.map((slot) => (
+                        <option key={slot} value={slot}>
+                            {slot}
+                        </option>
+                    ))}
+                </select>
+            </div>
 
-                        {/* Buttons */}
-                        <div className="flex justify-between">
-                            <button
-                                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md transition duration-300"
-                                onClick={handleBooking}
-                            >
-                                Book Now
-                            </button>
-                            <button
-                                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md transition duration-300"
-                                onClick={closeModal}
-                            >
-                                Cancel
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+            {/* Buttons */}
+            <div className="flex justify-between">
+                <button
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md transition duration-300"
+                    onClick={handleBooking}
+                >
+                    Book Now
+                </button>
+                <button
+                    className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md transition duration-300"
+                    onClick={closeModal}
+                >
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+)}
         </div>
     );
 };
