@@ -6,7 +6,6 @@ interface userAccount {
     UserID: number;
     Username: string;
     Role: string;
-    ProfilePicture: string;
   }
 
 // Handle the API request
@@ -15,6 +14,7 @@ export async function GET() {
         const users = await calluser('SELECT UserID, Username, Role FROM userAccount');
         return NextResponse.json(users);
     } catch (error) {
+        console.error(error);
         return NextResponse.json({ error: 'Failed to fetch users' }, { status: 500 });
     }
 }
@@ -32,13 +32,14 @@ export async function PUT(req: Request) {
         
         return NextResponse.json({ message: 'User updated successfully' });
     } catch (error) {
+        console.error(error);
         return NextResponse.json({ error: 'Failed to update user' }, { status: 500 });
     }
 }
 
 // Handle the POST request (Add a new user)
 export async function POST(req: Request) {
-    const { Username, Password, Role, ProfilePicture } = await req.json();
+    const { Username, Password, Role } = await req.json();
 
     try {
         // Manually create the SQL query string
@@ -56,6 +57,7 @@ export async function POST(req: Request) {
 
         return NextResponse.json(newUser[0]); // Return the newly created user
     } catch (error) {
+        console.error(error); // Log the error for debugging
         return NextResponse.json({ error: 'Failed to add user' }, { status: 500 });
     }
 }
@@ -73,6 +75,7 @@ export async function DELETE(req: Request) {
 
         return NextResponse.json({ message: 'User deleted successfully' });
     } catch (error) {
+        console.error(error); // Log the error for debugging
         return NextResponse.json({ error: 'Failed to delete user' }, { status: 500 });
     }
 }
