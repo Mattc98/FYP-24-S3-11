@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useSearchParams, useRouter } from 'next/navigation';
-//import FeedbackLink from './Feedback/FeedbackLink';
 
 const Navbar = () => {
   const searchParams = useSearchParams();
@@ -15,6 +14,11 @@ const Navbar = () => {
 
   const handleProfileClick = () => {
     setIsDropdownOpen((prev) => !prev);
+  };
+
+  const handleSettings = () => {
+    console.log('Settings clicked');
+    router.push(`/settings?username=${username}`);
   };
 
   const handleLogout = () => {
@@ -41,6 +45,12 @@ const Navbar = () => {
           />
           {isDropdownOpen && (
             <div className="absolute right-0 mt-2 bg-gray-700 rounded shadow-lg">
+              <button
+                onClick={handleSettings}
+                className="block w-full text-left px-4 py-2 text-white hover:bg-gray-600"
+              >
+                Settings
+              </button>
               <button
                 onClick={handleLogout}
                 className="block px-4 py-2 text-white hover:bg-gray-600"

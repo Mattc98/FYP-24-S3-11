@@ -8,6 +8,10 @@ interface Room {
   Status: string;
 }
 
+interface userRoleProps{
+  UserRole: string;
+}
+
 async function fetchRoomData(): Promise<Room[]> {
   try {
     const response = await calluser("SELECT * FROM Room");
@@ -18,17 +22,20 @@ async function fetchRoomData(): Promise<Room[]> {
   }
 }
 
-export default async function RoomDropdown() {
+const RoomDropdown: React.FC<userRoleProps> = async ({ UserRole }) => {  
   const rooms = await fetchRoomData();
 
   return (
     <select name="rooms" id="rooms" style={{ color: 'black' }}>
       <option value="">Select a room</option>
-      {rooms.map((room) => (
-        <option key={room.RoomID} value={`${room.RoomID}:${room.RoomName}`}>
-          {room.RoomName}
-        </option>
+      {rooms.filter((room) => UserRole === "Director" || room.Type === "User")
+        .map((room) => (
+          <option key={room.RoomID} value={`${room.RoomID}:${room.RoomName}`}>
+            {room.RoomName}
+          </option>
       ))}
     </select>
   );
 }
+
+export default RoomDropdown;
