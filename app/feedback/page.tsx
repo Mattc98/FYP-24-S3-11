@@ -48,11 +48,9 @@ export default async function Feedback({ searchParams }: { searchParams: { usern
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Navbar */}
-      <div className="bg-gray-300 flex justify-center items-center py-3 space-x-8">
         <Suspense fallback={<div>Loading...</div>}>
           <Navbar />
         </Suspense>
-      </div>
       <div className={styles.container}>
         <h1 className={styles.pageHeading}>Share your feedback</h1>
         <FeedbackForm userId={parsedUserId}>

@@ -8,7 +8,7 @@ const Navbar = () => {
   const searchParams = useSearchParams();
   const username = searchParams.get('username');
   const router = useRouter();
-  
+
   // State to manage dropdown visibility
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -22,38 +22,36 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    // Implement your logout logic here (e.g., clear tokens, reset user state, etc.)
-    // For example, you might clear user data and redirect to a login page:
+    // Implement your logout logic here
     console.log('User logged out');
-    // Redirect to login page or home
-    router.push('/'); // Change '/login' to your actual login route
+    router.push('/'); // Redirect to home or login
   };
 
   return (
-    <div className="w-full bg-gray-500 text-white">
+    <div className="w-full bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white shadow-lg">
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4">
-        <div className="text-2xl font-bold">Welcome back, {username}</div>
-        <div className="relative flex items-center">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+        <div className="text-2xl font-bold text-white tracking-wide">Welcome back, {username}</div>
+        <div className="relative">
           <Image
             src="/images/profile-icon.png" // Replace with actual image
             alt="Profile"
             width={48}
             height={48}
-            className="rounded-full cursor-pointer"
+            className="rounded-full cursor-pointer ring-2 ring-gray-700 transition duration-300 transform hover:scale-105 hover:ring-gray-500"
             onClick={handleProfileClick} // Toggle dropdown on click
           />
           {isDropdownOpen && (
-            <div className="absolute right-0 mt-2 bg-gray-700 rounded shadow-lg">
+            <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg py-2">
               <button
                 onClick={handleSettings}
-                className="block w-full text-left px-4 py-2 text-white hover:bg-gray-600"
+                className="block w-full text-left px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white transition duration-300"
               >
                 Settings
               </button>
               <button
                 onClick={handleLogout}
-                className="block px-4 py-2 text-white hover:bg-gray-600"
+                className="block w-full text-left px-4 py-2 text-gray-300 hover:bg-red-600 hover:text-white transition duration-300"
               >
                 Logout
               </button>
@@ -61,28 +59,28 @@ const Navbar = () => {
           )}
         </div>
       </div>
-      
+
       {/* Navigation Menu */}
-      <nav className="bg-gray-600 py-2">
-        <ul className="flex justify-center space-x-8">
+      <nav className="bg-gray-900 py-3 shadow-md">
+        <ul className="flex justify-center space-x-8 max-w-7xl mx-auto">
           <li>
-            <Link className="text-white hover:text-gray-300 transition duration-200" href={{query:{username:username}, pathname:"/UserHomepage"}}> {/*To make sure the name persists throughout the navbar*/}
-              Home
+            <Link  className="text-gray-300 hover:text-white transition duration-300 ease-in-out hover:border-b-2 border-indigo-500" href={{ query: { username }, pathname: "/UserHomepage" }}>
+                Home
             </Link>
           </li>
           <li>
-            <Link className="text-white hover:text-gray-300 transition duration-200" href={{query:{username:username}, pathname:"/myBookings"}}>
-              Bookings
+            <Link className="text-gray-300 hover:text-white transition duration-300 ease-in-out hover:border-b-2 border-indigo-500" href={{ query: { username }, pathname: "/myBookings" }}>
+                Bookings
             </Link>
           </li>
           <li>
-            <Link className="text-white hover:text-gray-300 transition duration-200" href={{query:{username:username}, pathname:"/feedback"}}>
-            Feedback
+            <Link className="text-gray-300 hover:text-white transition duration-300 ease-in-out hover:border-b-2 border-indigo-500" href={{ query: { username }, pathname: "/feedback" }}>
+                Feedback
             </Link>
           </li>
           <li>
-            <Link className="text-white hover:text-gray-300 transition duration-200" href={{query:{username:username}, pathname:"/FavouritesPage"}}>
-              Favourites
+            <Link className="text-gray-300 hover:text-white transition duration-300 ease-in-out hover:border-b-2 border-indigo-500" href={{ query: { username }, pathname: "/FavouritesPage" }}>
+                Favourites
             </Link>
           </li>
         </ul>

@@ -66,18 +66,13 @@ export default async function UserHomepage({ searchParams }: { searchParams: { u
   
   
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="bg-gray-100">
       {/* Navbar */}
-      <div className="bg-gray-300 flex justify-center items-center py-3 space-x-8">
         <Suspense fallback={<div>Loading...</div>}>
           <Navbar />
         </Suspense>
-      </div>
-
       {/* Main Content */}
-      <div>
         <UserHome allRooms={allRooms} UserRole={parsedUserRole} userID={parsedUserId}/>
-      </div>
     </div>
   );
 }

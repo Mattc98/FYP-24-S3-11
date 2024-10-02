@@ -160,65 +160,59 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
     };
 
     const formatTime = (time: string) => {
-      // Split the input time string (e.g., "09:00:00" or "14:00:00")
       const [hours] = time.split(':');
       const formattedHours = parseInt(hours);
   
-      // Find the matching time slot based on the start time
       const formattedTime = timeSlots.find((slot) => {
-          const [startTime] = slot.split(' - '); // Split into start and end time
+          const [startTime] = slot.split(' - ');
           const [startHour] = startTime.split(':');
           const startHourFormatted = parseInt(startHour);
   
-          // Compare the hours
           return startHourFormatted === (formattedHours % 12 || 12);
       });
   
-      // If a matching time slot is found, return it
       if (formattedTime) {
           return formattedTime;
       }
   
-      // If no matching time slot is found, return a default message
       return 'Time not available in slots';
     };
 
     return (
-        <div className="px-6 py-6">
-            <h2 className="text-center text-2xl font-bold mb-6">Here are your upcoming bookings</h2>
-            {/* Booking Cards */}
-            <div className="space-y-6">
+        <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 px-8 py-6">
+            <h2 className="text-center text-2xl font-semibold mb-6">Here are your upcoming bookings</h2>
+            <div className="grid grid-cols-1 gap-6">
                 {myBookings.length === 0 ? (
                     <p>No bookings found for {username}.</p>
                 ) : (
                     myBookings.map((booking, index) => (
-                        <div key={index} className="bg-gray-400 p-4 rounded-lg shadow-md mb-6">
-                            <div className="flex items-center space-x-4">
+                        <div key={index} className="bg-gradient-to-r from-gray-500 via-gray-700 to-gray-800 rounded-lg overflow-hidden shadow-lg">
+                            <div className="flex items-center p-4">
                                 <Image
-                                    src={"/images/"+ booking.imagename}
+                                    src={"/images/" + booking.imagename}
                                     alt={booking.RoomName}
                                     width={300}
-                                    height={100}
-                                    className="rounded-md"
+                                    height={200}
+                                    className="w-full h-40 object-cover"
                                 />
-                                <div>
-                                    <h3 className="text-xl font-bold">{booking.RoomName}</h3>
+                                <div className="ml-4">
+                                    <h3 className="text-lg font-semibold">{booking.RoomName}</h3>
                                     <p>Date: {formatDate(new Date(booking.BookingDate))}</p>
                                     <p>Time: {formatTime(booking.BookingTime)}</p>
                                     <p>Attendees: {booking.Pax}</p>
                                     <p>Type: {booking.Type}</p>
                                 </div>
                             </div>
-                            <div className="flex justify-end space-x-2 mt-4">
+                            <div className="bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 flex justify-between px-4 py-2 bg-gray-600">
                                 <button
-                                  className="bg-blue-500 text-white px-4 py-2 rounded"
-                                  onClick={() => handleAmendBooking(booking)}
+                                    className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                                    onClick={() => handleAmendBooking(booking)}
                                 >
                                     Amend
                                 </button>
                                 <button
-                                    className="bg-red-500 text-white px-4 py-2 rounded"
-                                    onClick={() => handleCancelBooking(booking.BookingID)} // Handle cancellation
+                                    className="text-white px-4 py-2 rounded-md"
+                                    onClick={() => handleCancelBooking(booking.BookingID)}
                                 >
                                     Cancel
                                 </button>
@@ -229,50 +223,50 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
             </div>
         {/* Modal for amending booking */}
         {showAmendModal && selectedBooking && (
-                <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
-                    <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-                        <h3 className="text-xl font-bold mb-4">Amend Booking</h3>
-                        <div className="mb-4">
-                            <label className="block font-semibold mb-2">Select New Date</label>
-                            <input
-                                type="date"
-                                value={newDate}
-                                onChange={(e) => setNewDate(e.target.value)}
-                                className="w-full p-2 border border-gray-300 rounded"
-                            />
-                        </div>
-                        <div className="mb-4">
-                            <label className="block font-semibold mb-2">Select New Time Slot</label>
-                            <select
-                                value={newTime}
-                                onChange={(e) => setNewTime(e.target.value)}
-                                className="w-full p-2 border border-gray-300 rounded"
-                            >
-                                {timeSlots.map((slot, index) => (
-                                    <option key={index} value={slot}>
-                                        {slot}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="flex justify-end space-x-2">
-                            <button
-                                className="bg-gray-400 text-white px-4 py-2 rounded"
-                                onClick={() => setShowAmendModal(false)}
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                className="bg-blue-500 text-white px-4 py-2 rounded"
-                                onClick={handleSubmitAmend}
-                            >
-                                Save Changes
-                            </button>
-                        </div>
+            <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+                <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 p-6 rounded-lg shadow-lg w-1/3">
+                    <h3 className="text-xl font-semibold mb-4">Amend Booking</h3>
+                    <div className="mb-4">
+                        <label className="block font-semibold mb-2">Select New Date</label>
+                        <input
+                            type="date"
+                            value={newDate}
+                            onChange={(e) => setNewDate(e.target.value)}
+                            className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 w-full p-2 border border-gray-300 rounded"
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <label className="block font-semibold mb-2">Select New Time Slot</label>
+                        <select
+                            value={newTime}
+                            onChange={(e) => setNewTime(e.target.value)}
+                            className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 w-full p-2 border border-gray-300 rounded"
+                        >
+                            {timeSlots.map((slot, index) => (
+                                <option key={index} value={slot}>
+                                    {slot}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="flex justify-end space-x-2">
+                        <button
+                            className="bg-gray-400 text-white px-4 py-2 rounded-md"
+                            onClick={() => setShowAmendModal(false)}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                            onClick={handleSubmitAmend}
+                        >
+                            Save Changes
+                        </button>
                     </div>
                 </div>
-            )}
-        </div>
+            </div>
+        )}
+    </div>
     );
 };
 
