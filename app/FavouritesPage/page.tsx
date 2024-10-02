@@ -84,8 +84,9 @@ const FavouritesPage = async ({ searchParams }: { searchParams: { username: stri
                   <div className="flex items-start mt-2"> {/* Flex container to align image and dropdown */}
                     {room.imagename && (
                       <div className="w-48 h-48 overflow-hidden rounded-md mr-4"> {/* Image container with margin */}
+                      
                         <img 
-                          src={room.imagename}
+                          src={"/images/"+ room.imagename}
                           alt={`${room.RoomName} image`} 
                           className="w-full h-full object-cover"
                         />
