@@ -1,28 +1,28 @@
 import LoginForm from "./components/LoginForm/LoginForm";
-import styles from './Home.module.css';
 import Image from 'next/image';
 
-
 export default async function Home() {
-
   return (
-    
-    <main className={styles.main}>
-      <div>
-        <div className="fixed top-52 left-52">
+    <main className="min-h-screen bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center">
+      <div className="relative flex flex-col items-center w-full">
+      
+        {/* Login Form Section */}
+        <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
+          <h2 className="text-4xl font-bold text-white text-center mb-6">FYP-24-S3-11</h2>
+          {/* Logo Section */}
+          <div className="mb-8">
             <Image
-              src="/images/logo.png" // Replace with actual image
+              src="/images/logo.png" // Replace with your actual image path
               alt="Company Logo"
-              width={1000}
-              height={1000}
-              className="object-cover h-[500px] w-[500px]"
+              width={500}
+              height={500}
+              className="object-contain h-100 w-100" // Logo styled to fit nicely
             />
           </div>
-          
-          <div className="fixed top-80 right-20 bg-white p-6 rounded-lg w-full max-w-md">          
-            <LoginForm />
-          </div>
+          <h2 className="text-4xl font-bold text-white text-center mb-6">Login to your account</h2>
+          <LoginForm />
         </div>
+      </div>
     </main>
   );
 }

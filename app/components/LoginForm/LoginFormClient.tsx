@@ -58,8 +58,7 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
 
   return (
     <div>
-
-      <h1 className="text-5xl font-bold mb-10 text-center text-black fon">{headerText}</h1>
+      <h1 className="text-3xl font-bold mb-10 text-center text-gray-400 fon">{headerText}</h1>
         <button className={styles.switchButton1} onClick={() => handleRoleChange("User")}>User</button>
         <button className={styles.switchButton2}onClick={() => handleRoleChange("Admin")}>Admin</button>        
       <form onSubmit={handleSubmit}>

@@ -1,7 +1,7 @@
-import React, { Suspense } from 'react'
+import React, { Suspense } from 'react';
 import Navbar from '../components/Navbar';
 import { calluser } from '@/aws_db/db';
-import ChangePassword from '@/app/components/AccountSettings/changePassword'; 
+import ChangePassword from '@/app/components/AccountSettings/changePassword';
 
 interface UserAccount {
     UserID: number;
@@ -42,33 +42,31 @@ const SettingsPage = async ({ searchParams }: { searchParams: { username: string
     }
 
     return (
-        <div className="container mx-auto mt-8 p-4">
-            <div>
-                <Suspense fallback={<div>Loading...</div>}>
-                    <Navbar />
-                </Suspense>
-            </div>
-            <h1 className="text-2xl font-bold mb-4">Account Information</h1>
+        <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 min-h-screen p-8">
+            <Suspense fallback={<div>Loading...</div>}>
+                <Navbar />
+            </Suspense>
+            <h1 className="text-3xl font-bold text-white mb-6">Account Information</h1>
             {error ? (
                 <div className="text-red-500">{error}</div>
             ) : userInfo ? (
-                <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+                <div className="bg-gray-800 shadow-lg rounded-lg px-8 py-6 mb-4">
                     <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
+                        <label className="block text-white text-sm font-bold mb-2" htmlFor="username">
                             Username
                         </label>
-                        <p className="text-gray-700" id="username">{userInfo.Username}</p>
+                        <p className="text-white" id="username">{userInfo.Username}</p>
                     </div>
                     <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+                        <label className="block text-white text-sm font-bold mb-2" htmlFor="email">
                             Email
                         </label>
-                        <p className="text-gray-700" id="email">{userInfo.Email}</p>
+                        <p className="text-white" id="email">{userInfo.Email}</p>
                     </div>
                     <ChangePassword username={userInfo.Username} />
                 </div>
             ) : (
-                <div>No user information available</div>
+                <div className="text-gray-300">No user information available</div>
             )}
         </div>
     );

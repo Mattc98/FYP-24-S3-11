@@ -64,11 +64,11 @@ function FeedbackFormContent({ children, userId }: FeedbackFormProps) {
         <div className={styles.container}>
             <form ref={formRef} onSubmit={handleSubmit} className={styles.form}>
                 <div>
-                    <label htmlFor="rooms" className={styles.label}>Room:</label>
+                    <label htmlFor="rooms" className={styles.label}>Room: </label>
                     {children}
                 </div>
                 <div>
-                    <label htmlFor="feedback" className={styles.label}>Feedback:</label>
+                    <label htmlFor="feedback" className={styles.label}>Feedback: </label>
                     <textarea
                         id="feedback"
                         name="feedback"
