@@ -193,14 +193,13 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
                                     alt={booking.RoomName}
                                     width={300}
                                     height={200}
-                                    className="w-full h-40 object-cover"
+                                    className="w-1/3 h-40 object-cover"
                                 />
                                 <div className="ml-4">
                                     <h3 className="text-lg font-semibold">{booking.RoomName}</h3>
                                     <p>Date: {formatDate(new Date(booking.BookingDate))}</p>
                                     <p>Time: {formatTime(booking.BookingTime)}</p>
                                     <p>Attendees: {booking.Pax}</p>
-                                    <p>Type: {booking.Type}</p>
                                 </div>
                             </div>
                             <div className="bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 flex justify-between px-4 py-2 bg-gray-600">
