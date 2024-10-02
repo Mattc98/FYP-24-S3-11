@@ -7,16 +7,17 @@
     width: 100vw;
     padding: 20px;
     box-sizing: border-box;
+    background: linear-gradient(to right, #111827, #1f2937, #111827); /* bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 */
   }
 
   .heading {
-    color: black;
+    color: white;
     margin-bottom: 20px;
     text-align: center;
   }
 
   .label {
-    color: black;
+    color: white;
     margin-bottom: 20px;
     text-align: center;
   }
@@ -49,6 +50,7 @@
     border: 1px solid #ccc;
     width: 100%;
     margin-bottom: 20px;
+    background: linear-gradient(to right, #111827, #1f2937, #111827); /* bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 */
   }
   
   .label {
@@ -73,7 +75,7 @@
   }
 
   .pageHeading {
-    color: black;
+    color: white;
     margin-bottom: 20px;
     text-align: center;
     font-size: 2em;

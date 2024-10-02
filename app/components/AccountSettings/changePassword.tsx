@@ -82,7 +82,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ username }) => {
       return (
         <form onSubmit={handleVerifyCurrentPassword} className="mt-4">
           <div className="mb-4">
-            <label htmlFor="currentPassword" className="block text-gray-700 text-sm font-bold mb-2">
+            <label htmlFor="currentPassword" className="block text-gray-300 text-sm font-bold mb-2">
               Current Password
             </label>
             <input
@@ -90,7 +90,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ username }) => {
               id="currentPassword"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="shadow appearance-none border border-gray-600 rounded w-full py-2 px-3 bg-gray-800 text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
           </div>
@@ -119,7 +119,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ username }) => {
       return (
         <form onSubmit={handleChangePassword} className="mt-4">
           <div className="mb-4">
-            <label htmlFor="newPassword" className="block text-gray-700 text-sm font-bold mb-2">
+            <label htmlFor="newPassword" className="block text-gray-300 text-sm font-bold mb-2">
               New Password
             </label>
             <input
@@ -127,12 +127,12 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ username }) => {
               id="newPassword"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="shadow appearance-none border border-gray-600 rounded w-full py-2 px-3 bg-gray-800 text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="confirmPassword" className="block text-gray-700 text-sm font-bold mb-2">
+            <label htmlFor="confirmPassword" className="block text-gray-300 text-sm font-bold mb-2">
               Confirm New Password
             </label>
             <input
@@ -140,7 +140,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ username }) => {
               id="confirmPassword"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="shadow appearance-none border border-gray-600 rounded w-full py-2 px-3 bg-gray-800 text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
           </div>
@@ -171,11 +171,11 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ username }) => {
   };
 
   return (
-    <div className="mt-4">
+    <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 p-6 rounded-lg shadow-lg">
       {!isChangingPassword ? (
         <button
           onClick={() => setIsChangingPassword(true)}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
         >
           Change Password
         </button>

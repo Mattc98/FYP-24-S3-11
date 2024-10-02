@@ -19,9 +19,24 @@ interface userAccount{
   Role: "User" | "Admin" | "Director";
 }
 
+interface userFav{
+  UserID: number;
+  RoomID: number;
+}
+
 async function fetchRoom() {
   try {
     const response = await calluser("SELECT * FROM Room");
+    return JSON.parse(JSON.stringify(response));
+  } catch (error) {
+    console.error(error);
+    throw new Error('Failed to fetch room data.');
+  }
+}
+
+async function fetchFavs() {
+  try {
+    const response = await calluser("SELECT * FROM Favourite");
     return JSON.parse(JSON.stringify(response));
   } catch (error) {
     console.error(error);
@@ -42,6 +57,8 @@ const fetchUserIdByUsername = async (username: string): Promise<number | undefin
 
 export default async function UserHomepage({ searchParams }: { searchParams: { username: string } }) {
   const allRooms: Room[] = await fetchRoom();
+  const userFavs: userFav[] = await fetchFavs();
+
   const { username } = searchParams;
 
   if (!username) {
@@ -64,20 +81,19 @@ export default async function UserHomepage({ searchParams }: { searchParams: { u
     return <p>User not found.</p>;
   }
   
+  const userFavoriteRooms = userFavs
+  .filter((fav) => fav.UserID == parsedUserId) // Filter based on userID
+  .map((fav) => fav.RoomID); // Extract RoomID from filtered results
+
   
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="bg-gray-100">
       {/* Navbar */}
-      <div className="bg-gray-300 flex justify-center items-center py-3 space-x-8">
         <Suspense fallback={<div>Loading...</div>}>
           <Navbar />
         </Suspense>
-      </div>
-
       {/* Main Content */}
-      <div>
-        <UserHome allRooms={allRooms} UserRole={parsedUserRole} userID={parsedUserId}/>
-      </div>
+        <UserHome allRooms={allRooms} UserRole={parsedUserRole} userID={parsedUserId} FavRooms={userFavoriteRooms}/>
     </div>
   );
 }
