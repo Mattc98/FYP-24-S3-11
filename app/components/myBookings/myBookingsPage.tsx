@@ -152,7 +152,7 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
     
     // Formatting functions
     const formatDate = (date: Date) => {
-        return new Intl.DateTimeFormat('en-US', {
+        return new Intl.DateTimeFormat('en-CA', {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
