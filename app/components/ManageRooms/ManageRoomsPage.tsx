@@ -10,10 +10,6 @@ interface Room {
     imagename: string; // This should be the image URL or path
 }
 
-
-
-
-
 const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
     const [rooms, setRooms] = useState<Room[]>(initialRooms);
     const [newRoomName, setNewRoomName] = useState<string>('');
@@ -25,6 +21,18 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setNewImageName(reader.result as string); // Set the Base64 string
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+
     const handleAddRoom = async () => {
         const response = await fetch('/api/manageRooms', {
             method: 'POST',
@@ -33,17 +41,16 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
             },
             body: JSON.stringify({
                 RoomName: newRoomName,
-                Pax: Number(newPax), // Convert to number if needed
+                Pax: Number(newPax),
                 Type: newType,
                 Status: newStatus,
-                imagename: newImageName,
+                imagename: newImageName, // Use the Base64 string here
             }),
         });
-    
+
         if (response.ok) {
             const addedRoom = await response.json();
             setRooms((prevRooms) => [...prevRooms, addedRoom]);
-            // Resetting individual state variables
             setNewRoomName('');
             setNewPax('');
             setNewType('');
@@ -53,7 +60,6 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
         }
     };
     
-
     const handleEditRoom = async (roomId: number) => {
         if (editRoom) {
             const response = await fetch('/api/manageRooms', {
@@ -172,12 +178,12 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
                             className="border p-2 mr-2 mb-2 w-full text-black"
                         />
                         <input
-                            type="text"
-                            placeholder="Image Name"
-                            value={newImageName}
-                            onChange={(e) => setNewImageName(e.target.value)}
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleFileChange(e)}
                             className="border p-2 mr-2 mb-2 w-full text-black"
                         />
+
                         <button
                             className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600"
                             onClick={handleAddRoom}
