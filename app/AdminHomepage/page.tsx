@@ -1,4 +1,3 @@
-// Use dynamic imports to handle the suspense and client-only rendering
 "use client";
 import React, { Suspense, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -19,9 +18,15 @@ const AdminHomepage = () => {
         }
     }, []);
 
-    const routeManageUsers = () => {
+    const redirectUsers = () => {
         if (username) {
             router.push(`/ManageUsersPage?username=${username}`);
+        }
+    };
+
+    const redirectRooms = () => {
+        if (username) {
+            router.push(`/manageRooms?username=${username}`);
         }
     };
 
@@ -33,8 +38,11 @@ const AdminHomepage = () => {
         <div>
             <Navbar />
             <div>
-                <button onClick={routeManageUsers} disabled={!username}>
+                <button onClick={redirectUsers} disabled={!username}>
                     Manage Users
+                </button>
+                <button onClick={redirectRooms} disabled={!username}>
+                    Manage Rooms
                 </button>
             </div>
         </div>
