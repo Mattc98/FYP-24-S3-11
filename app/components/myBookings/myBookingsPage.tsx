@@ -116,7 +116,6 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
         setNewTime(booking.BookingTime); // Default to current booking time
         setShowAmendModal(true); // Show the modal
     };
-
    
    // Function to handle modal submission (updating the booking)
     const handleSubmitAmend = async () => {
@@ -124,8 +123,8 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
 
         const isDuplicate = bookings.filter(
             (booking) =>
-                formatDate(new Date(booking.BookingDate)) == formatDate(new Date(newDate)) &&
-                booking.BookingTime == newTime && booking.RoomID == selectedBooking.RoomID
+                formatDate(new Date(booking.BookingDate)) === formatDate(new Date(newDate)) &&
+                formatTime(booking.BookingTime) === formatTime(newTime) && booking.RoomID === selectedBooking.RoomID
         );
 
         if (isDuplicate.length != 0) {
@@ -174,7 +173,6 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
             console.error('Error amending booking:', error);
         }
     };
-
     
     // Formatting functions
     const formatDate = (date: Date) => {
