@@ -1,16 +1,16 @@
 import { calluser } from '@/aws_db/db';
 import LoginFormClient from './LoginFormClient';
 
-
-
-interface userAccount{
+interface UserAccount {
   UserID: number;
   Username: string;
   Password: string;
   Role: "User" | "Admin" | "Director";
+  FailLogin: number;
+  IsLocked: boolean;
 }
 
-async function fetchuser(): Promise<userAccount[]> {
+async function fetchuser(): Promise<UserAccount[]> {
   try {
     const response = await calluser("SELECT * FROM userAccount");
     return JSON.parse(JSON.stringify(response));
@@ -20,13 +20,12 @@ async function fetchuser(): Promise<userAccount[]> {
   }
 }
 
-
 const LoginForm = async () => {
-  const userAccounts= await fetchuser(); // Fetching user data on the server
+  const userAccounts = await fetchuser(); // Fetching user data on the server
 
   return (
     <div>
-      <LoginFormClient userAccount={userAccounts} /> {/*--This is for USER and DIRECTOR'S ONLY*/}
+      <LoginFormClient userAccount={userAccounts} />
     </div>
   );
 };
