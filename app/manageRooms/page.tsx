@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
-import Navbar from '../components/Navbar';
 import { calluser } from '@/aws_db/db';
 import ManageRoomsPage from '../components/ManageRooms/ManageRoomsPage';
+import AdminNavbar from '../components/adminNavbar';
 
 interface Room {
     RoomID: number;
@@ -29,7 +29,7 @@ const ManageRooms = async () => {
     return (
         <div className="bg-gray-100 min-h-screen">
             <Suspense fallback={<div>Loading...</div>}>
-                <Navbar />
+                <AdminNavbar />
             </Suspense>
             {/* Pass room data to the client component */}
             <div className="w-full mx-auto bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white">
