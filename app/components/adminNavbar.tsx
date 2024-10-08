@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useSearchParams, useRouter } from 'next/navigation';
 
-const adminNavbar = () => {
+const AdminNavbar = () => {
   const searchParams = useSearchParams();
   const username = searchParams.get('username');
   const router = useRouter();
@@ -74,4 +74,4 @@ const adminNavbar = () => {
   );
 };
 
-export default adminNavbar;
+export default AdminNavbar;
