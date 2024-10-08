@@ -110,7 +110,7 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
         console.log(room.RoomID); // Log the RoomID here outside the JSX
 
         return (
-            <div key={room.RoomID} className="bg-white text-gray-800 p-4 rounded-lg shadow-lg">
+            <div key={room.RoomID} className="bg-gray-800 rounded-lg text-white p-4 shadow-lg">
                 {room.imagename && (
                     <img
                         src={"/images/" + room.imagename} // Adjust this based on your image path
@@ -146,42 +146,42 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
 
             {/* Add Room Modal */}
             {isAddModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                    <div className="bg-gray-400 p-6 rounded shadow-lg w-1/3">
+                <div className="fixed inset-0 bg-gray-900 bg-opacity-80 flex items-center justify-center z-50">
+                    <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-1/3 text-white">
                         <h2 className="text-xl font-semibold mb-4">Add New Room</h2>
                         <input
                             type="text"
                             placeholder="Room Name"
                             value={newRoomName}
                             onChange={(e) => setNewRoomName(e.target.value)}
-                            className="border p-2 mr-2 mb-2 w-full text-black"
+                            className="border p-2 mr-2 mb-2 w-full text-black md"
                         />
                         <input
                             type="number"
                             placeholder="Pax"
                             value={newPax}
                             onChange={(e) => setNewPax(e.target.value)}
-                            className="border p-2 mr-2 mb-2 w-full text-black"
+                            className="border p-2 mr-2 mb-2 w-full text-black md"
                         />
                         <input
                             type="text"
                             placeholder="Type"
                             value={newType}
                             onChange={(e) => setNewType(e.target.value)}
-                            className="border p-2 mr-2 mb-2 w-full text-black"
+                            className="border p-2 mr-2 mb-2 w-full text-black md"
                         />
                         <input
                             type="text"
                             placeholder="Status"
                             value={newStatus}
                             onChange={(e) => setNewStatus(e.target.value)}
-                            className="border p-2 mr-2 mb-2 w-full text-black"
+                            className="border p-2 mr-2 mb-2 w-full text-black md"
                         />
                         <input
                             type="file"
                             accept="image/*"
                             onChange={(e) => handleFileChange(e)}
-                            className="border p-2 mr-2 mb-2 w-full text-black"
+                            className="border p-2 mr-2 mb-2 w-full text-white md"
                         />
 
                         <button
@@ -202,43 +202,43 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
 
             {/* Edit Room Modal */}
             {isEditModalOpen && editRoom && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                    <div className="bg-gray-400 p-6 rounded shadow-lg w-1/3">
+                <div className="fixed inset-0 bg-gray-900 bg-opacity-80 flex justify-center items-center z-50">
+                    <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-1/3 text-white">
                         <h2 className="text-xl font-semibold mb-4">Edit Room</h2>
                         <input
                             type="text"
                             placeholder="Room Name"
                             value={editRoom.RoomName || ''}
                             onChange={(e) => setEditRoom({ ...editRoom, RoomName: e.target.value })}
-                            className="border p-2 mr-2 mb-2 w-full text-black"
+                            className="border p-2 mr-2 mb-2 w-full text-black rounded-md"
                         />
                         <input
                             type="number"
                             placeholder="Pax"
                             value={editRoom.Pax || ''}
                             onChange={(e) => setEditRoom({ ...editRoom, Pax: Number(e.target.value) })}
-                            className="border p-2 mr-2 mb-2 w-full text-black"
+                            className="border p-2 mr-2 mb-2 w-full text-black rounded-md"
                         />
                         <input
                             type="text"
                             placeholder="Type"
                             value={editRoom.Type || ''}
                             onChange={(e) => setEditRoom({ ...editRoom, Type: e.target.value })}
-                            className="border p-2 mr-2 mb-2 w-full text-black"
+                            className="border p-2 mr-2 mb-2 w-full text-black rounded-md"
                         />
                         <input
                             type="text"
                             placeholder="Status"
                             value={editRoom.Status || ''}
                             onChange={(e) => setEditRoom({ ...editRoom, Status: e.target.value })}
-                            className="border p-2 mr-2 mb-2 w-full text-black"
+                            className="border p-2 mr-2 mb-2 w-full text-black rounded-md"
                         />
                         <input
                             type="text"
                             placeholder="Image Name"
                             value={editRoom.imagename || ''}
                             onChange={(e) => setEditRoom({ ...editRoom, imagename: e.target.value })}
-                            className="border p-2 mr-2 mb-2 w-full text-black"
+                            className="border p-2 mr-2 mb-2 w-full text-black rounded-md"
                         />
                         <button
                             className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
