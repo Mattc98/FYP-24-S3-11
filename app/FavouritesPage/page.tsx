@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import Navbar from '../components/Navbar';
 import { calluser } from '@/aws_db/db';
 import FavouritesList from '../components/favouritesPage/FavouritesList'; // Import your client component
@@ -51,16 +51,23 @@ const FavouritesPage = async ({ searchParams }: { searchParams: { username: stri
   const rooms = await fetchUserRooms(parsedUserId);
 
   return (
-    <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 min-h-screen">
-      <Navbar />
-      <div className="container mx-auto px-4 py-8">
-        {rooms.length > 0 ? (
-          <FavouritesList rooms={rooms} userId={parsedUserId} />
-        ) : (
-          <p className="text-gray-400">No rooms found for this user.</p>
-        )}
+    <div>
+      <div>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Navbar/>
+        </Suspense>
+      </div>
+      <div  className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 min-h-screen">
+        <div className="container mx-auto px-4 py-8">
+          {rooms.length > 0 ? (
+            <FavouritesList rooms={rooms} userId={parsedUserId} />
+          ) : (
+            <p className="text-gray-400">No rooms found for this user.</p>
+          )}
+        </div>
       </div>
     </div>
+      
   );
 };
 

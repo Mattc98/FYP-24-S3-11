@@ -1,12 +1,12 @@
 import React, { Suspense } from 'react';
 import ManageUsersClient from '../components/manageUsers/ManageUsersPage';
-import Navbar from '../components/Navbar';
+import AdminNavbar from '../components/adminNavbar';
 
 const ManageUsersPage = () => {
   return (
     <div>
       <Suspense fallback={<div>Loading...</div>}>
-          <Navbar />
+          <AdminNavbar/>
       </Suspense>
       <ManageUsersClient />
     </div>

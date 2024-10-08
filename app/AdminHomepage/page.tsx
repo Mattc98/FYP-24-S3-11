@@ -1,7 +1,7 @@
 "use client";
 import React, { Suspense, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Navbar from '../components/Navbar';
+import AdminNavbar from '../components/adminNavbar';
 
 const AdminHomepage = () => {
     const [username, setUsername] = useState<string | null>(null);
@@ -9,7 +9,6 @@ const AdminHomepage = () => {
     const router = useRouter();
 
     useEffect(() => {
-        // Ensuring this runs only on the client
         if (typeof window !== 'undefined') {
             const searchParams = new URLSearchParams(window.location.search);
             const usernameParam = searchParams.get('username');
@@ -36,18 +35,30 @@ const AdminHomepage = () => {
 
     return (
         <div>
-            <Navbar />
             <div>
-                <button onClick={redirectUsers} disabled={!username}>
+                <Suspense fallback={<div>Loading...</div>}>
+                    <AdminNavbar />
+                </Suspense>
+            </div>
+            <div className="min-h-screen bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white flex flex-col items-center justify-center space-y-8">
+                <button
+                    onClick={redirectUsers}
+                    disabled={!username}
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-8 text-xl rounded-lg disabled:bg-gray-500"
+                >
                     Manage Users
                 </button>
-                <button onClick={redirectRooms} disabled={!username}>
+                <button
+                    onClick={redirectRooms}
+                    disabled={!username}
+                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-4 px-8 text-xl rounded-lg disabled:bg-gray-500"
+                >
                     Manage Rooms
                 </button>
             </div>
         </div>
     );
-}
+};
 
 // Ensure to wrap the default export in a Suspense boundary
 export default function Page() {
