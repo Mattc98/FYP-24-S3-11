@@ -56,25 +56,32 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+  
     const user = userAccount.find(user => user.Username.toLowerCase() === lowercaseUsername);
-
+  
     if (user) {
       if (user.IsLocked) {
         setMessage('Account is locked. Please contact administrator');
         setIsLocked(true);
         return;
       }
-
+  
       if (user.Password === password) {
-        if ((role === "Admin" && user.Role === "Admin") || (role === "User" && (user.Role === "User" || user.Role === "Director"))) {
+        // Check if the role matches for successful login
+        if ((role === "Admin" && user.Role === "Admin") || 
+            (role === "User" && (user.Role === "User" || user.Role === "Director"))) {
+          
           // Successful login
           setMessage(`${user.Role} Login Successful`);
           const redirectUrl = `${homepageRedirect[user.Role]}?username=${username}`;
           
           // Reset FailLogin count on successful login
           await updateUserAccount({ ...user, FailLogin: 0, IsLocked: false });
-          
+  
+          // Update local user account state
+          user.FailLogin = 0;
+          user.IsLocked = false;
+  
           router.push(redirectUrl);
         } else {
           // Access denied if role doesn't match the account type
@@ -85,7 +92,11 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
         const newFailLogin = user.FailLogin + 1;
         const isLocked = newFailLogin >= 3;
         await updateUserAccount({ ...user, FailLogin: newFailLogin, IsLocked: isLocked });
-
+  
+        // Update local user account state
+        user.FailLogin = newFailLogin;
+        user.IsLocked = isLocked;
+  
         if (isLocked) {
           setMessage('Account locked due to multiple failed attempts. Please contact administrator.');
           setIsLocked(true);
@@ -98,6 +109,8 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
       setMessage('Invalid username or password');
     }
   };
+  
+  
   
   const handleRoleChange = (selectedRole: "User" | "Admin") => {
     setRole(selectedRole);
