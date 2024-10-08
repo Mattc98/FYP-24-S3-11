@@ -67,18 +67,26 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
       }
   
       if (user.Password === password) {
-        // Successful login
-        setMessage(`${user.Role} Login Successful`);
-        const redirectUrl = `${homepageRedirect[user.Role]}?username=${username}`;
-        
-        // Reset FailLogin count on successful login
-        await updateUserAccount({ ...user, FailLogin: 0, IsLocked: false });
+        // Check if the role matches for successful login
+        if ((role === "Admin" && user.Role === "Admin") || 
+            (role === "User" && (user.Role === "User" || user.Role === "Director"))) {
+          
+          // Successful login
+          setMessage(`${user.Role} Login Successful`);
+          const redirectUrl = `${homepageRedirect[user.Role]}?username=${username}`;
+          
+          // Reset FailLogin count on successful login
+          await updateUserAccount({ ...user, FailLogin: 0, IsLocked: false });
   
-        // Update local user account state
-        user.FailLogin = 0;
-        user.IsLocked = false;
+          // Update local user account state
+          user.FailLogin = 0;
+          user.IsLocked = false;
   
-        router.push(redirectUrl);
+          router.push(redirectUrl);
+        } else {
+          // Access denied if role doesn't match the account type
+          setMessage('Access Denied');
+        }
       } else {
         // Increment FailLogin count
         const newFailLogin = user.FailLogin + 1;
@@ -101,6 +109,7 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
       setMessage('Invalid username or password');
     }
   };
+  
   
   
   const handleRoleChange = (selectedRole: "User" | "Admin") => {
