@@ -93,28 +93,29 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
         }).format(date);
     };
 
-      const handleAvaBooking = () => {
+    const handleAvaBooking = () => {
         if (!startDate || !selectedTimeSlot) {
             alert("Please select a date and time.");
             return;
         }
-
+    
         const formattedDate = formatDate(new Date(startDate));
-
+    
         // Find the unavailable bookings (rooms that are booked)
         const unAvaBookings = allBookings.filter(
             (booking) =>
                 formatDate(new Date(booking.BookingDate)) === formattedDate &&
                 formatTime(booking.BookingTime) === selectedTimeSlot
         );
-
+    
         // Store the RoomIDs of the unavailable rooms
         const unAvaRoomIDs = unAvaBookings.map((booking) => booking.RoomID);
         setUnAvaRooms(unAvaRoomIDs);
-
-        console.log("unava Rooms", unAvaBookings);
+    
+        // Close the date picker modal after rooms are fetched
+        setShowDatePicker(false);
     };
-
+    
     const availableRooms = allRooms.filter((room) => !unAvaRooms.includes(room.RoomID));
 
 
@@ -340,3 +341,4 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
 };
 
 export default UserHomepage;
+

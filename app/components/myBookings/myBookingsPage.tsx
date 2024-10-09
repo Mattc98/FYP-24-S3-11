@@ -50,7 +50,6 @@ const timeSlots = [
   '03:00 PM - 04:00 PM',
 ];
 
-
 const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, username, userid, userRole }) => {
     const [myBookings, setMyBookings] = useState<MyBooking[]>([]);
     const [showAmendModal, setShowAmendModal] = useState(false); // To control modal visibility
@@ -134,6 +133,12 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
                     alert('Director code is invalid.');
                     return;
                 }
+                if (directorCode === '123') {
+                    alert('Director code is valid. Room as been overrided.');
+                    handleCancelBooking(isDuplicate[0].BookingID);
+                    setShowAmendModal(false); // Close the modal after overriding
+                    return;
+                }       
                 // You could add further validation for the director code here if needed
             } else {
                 alert('A booking already exists at this time. Please choose a different time slot.');
