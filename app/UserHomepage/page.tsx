@@ -11,7 +11,7 @@ interface Room {
   Status: string;
   imagename: string;
 }
-
+//allRooms = allRooms.filter(room => room.RoomID == unAvaBookings[0].RoomID)
 interface userAccount{
   UserID: number;
   Username: string;
@@ -22,6 +22,16 @@ interface userAccount{
 interface userFav{
   UserID: number;
   RoomID: number;
+}
+
+interface Bookings {
+  BookingID: number;
+  RoomID: number;
+  UserID: string;
+  BookingDate: string;
+  BookingTime: string;
+  RoomPin: number;
+  BiometricPassword: number;
 }
 
 async function fetchRoom() {
@@ -44,6 +54,16 @@ async function fetchFavs() {
   }
 }
 
+async function fetchBookings() {
+  try {
+    const response = await calluser("SELECT * FROM Booking");
+    return JSON.parse(JSON.stringify(response));
+  } catch (error) {
+    console.error(error);
+    throw new Error('Failed to fetch room data.');
+  }
+}
+
 // Fetch user ID by username
 const fetchUserRoleByUsername = async (username: string): Promise<string | undefined> => {
   const response = await calluser(`SELECT Role FROM userAccount WHERE Username = '${username}'`);
@@ -58,6 +78,7 @@ const fetchUserIdByUsername = async (username: string): Promise<number | undefin
 export default async function UserHomepage({ searchParams }: { searchParams: { username: string } }) {
   const allRooms: Room[] = await fetchRoom();
   const userFavs: userFav[] = await fetchFavs();
+  const allBookings: Bookings[] = await fetchBookings();
 
   const { username } = searchParams;
 
@@ -93,7 +114,7 @@ export default async function UserHomepage({ searchParams }: { searchParams: { u
           <Navbar />
         </Suspense>
       {/* Main Content */}
-        <UserHome allRooms={allRooms} UserRole={parsedUserRole} userID={parsedUserId} FavRooms={userFavoriteRooms}/>
+        <UserHome allRooms={allRooms} UserRole={parsedUserRole} userID={parsedUserId} FavRooms={userFavoriteRooms} allBookings={allBookings}/>
     </div>
   );
 }

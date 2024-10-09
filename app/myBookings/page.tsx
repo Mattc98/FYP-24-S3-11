@@ -32,16 +32,23 @@ const fetchRoom = async (): Promise<Room[]> => {
       return JSON.parse(JSON.stringify(response));
 };
 
-interface UserAccount {
+interface userAccount{
     UserID: number;
     Username: string;
-}
+    Password: string;
+    Role: "User" | "Admin" | "Director";
+  }
   
-  
+// Fetch user ID by username
+const fetchUserRoleByUsername = async (username: string): Promise<string | undefined> => {
+    const response = await calluser(`SELECT Role FROM userAccount WHERE Username = '${username}'`);
+    return (response as userAccount[])[0]?.Role;
+ };
+
 // Fetch user ID by username
 const fetchUserIdByUsername = async (username: string): Promise<number | undefined> => {
     const response = await calluser(`SELECT UserID FROM userAccount WHERE Username = '${username}'`);
-    return (response as UserAccount[])[0]?.UserID;
+    return (response as userAccount[])[0]?.UserID;
 };
 
 const myBookings = async ({ searchParams }: { searchParams: { username: string } }) => {
@@ -54,6 +61,15 @@ const myBookings = async ({ searchParams }: { searchParams: { username: string }
     if (!username) {
       return <p>No username provided.</p>;
     }
+
+    const UserRole = await fetchUserRoleByUsername(username);
+    // Explicitly ensure userId is a number
+    const parsedUserRole = typeof UserRole === 'string' ? UserRole : undefined; // Ensure it's a number
+  
+    if (parsedUserRole === undefined) {
+      return <p>User does not have a role.</p>;
+    }
+
     const userId = await fetchUserIdByUsername(username);
     if (!userId) {
       return <p>User not found.</p>;
@@ -67,7 +83,7 @@ const myBookings = async ({ searchParams }: { searchParams: { username: string }
                 </Suspense>
             </div>
             <div>
-                <Bookings bookings={allBookings} rooms={allRooms} userid={JSON.stringify(userId)} username={username}/>
+                <Bookings bookings={allBookings} rooms={allRooms} userid={JSON.stringify(userId)} username={username} userRole={parsedUserRole}/>
             </div>
         </div>
     )

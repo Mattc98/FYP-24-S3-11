@@ -7,6 +7,7 @@ interface ClientBookingsProps {
     rooms: Room[];
     userid: string;
     username: string;
+    userRole: string;
 }
 
 interface Bookings {
@@ -30,6 +31,7 @@ interface Room {
 
 interface MyBooking {
     BookingID: number;  // Include BookingID to cancel the correct booking
+    RoomID: number; // Include RoomID to cancel the correct booking
     RoomName: string;
     Pax: number;
     BookingDate: string;
@@ -48,7 +50,7 @@ const timeSlots = [
   '03:00 PM - 04:00 PM',
 ];
 
-const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, username, userid }) => {
+const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, username, userid, userRole }) => {
     const [myBookings, setMyBookings] = useState<MyBooking[]>([]);
     const [showAmendModal, setShowAmendModal] = useState(false); // To control modal visibility
     const [selectedBooking, setSelectedBooking] = useState<MyBooking | null>(null); // The booking to amend
@@ -64,6 +66,7 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
                     if (room) {
                         return {
                             BookingID: booking.BookingID,  // Add BookingID here
+                            RoomID: room.RoomID,
                             RoomName: room.RoomName,
                             Pax: room.Pax,
                             BookingDate: booking.BookingDate,
@@ -112,47 +115,73 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
         setNewTime(booking.BookingTime); // Default to current booking time
         setShowAmendModal(true); // Show the modal
     };
-
-    // Function to handle modal submission (updating the booking)
+   
+   // Function to handle modal submission (updating the booking)
     const handleSubmitAmend = async () => {
-      if (!selectedBooking) return;
+        if (!selectedBooking) return;
 
-      try {
-          const response = await fetch('/api/amendBooking', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                  bookingId: selectedBooking.BookingID,
-                  newDate,
-                  newTime,
-              }),
-          });
+        const isDuplicate = bookings.filter(
+            (booking) =>
+                formatDate(new Date(booking.BookingDate)) === formatDate(new Date(newDate)) &&
+                formatTime(booking.BookingTime) === formatTime(newTime) && booking.RoomID === selectedBooking.RoomID
+        );
 
-          const data = await response.json();
+        if (isDuplicate.length != 0) {
+            if (userRole === 'Director') {
+                const directorCode = prompt('A booking already exists at this time. Please enter the Director Code to proceed:');
+                if (!directorCode) {
+                    alert('Director code is invalid.');
+                    return;
+                }
+                if (directorCode === '123') {
+                    alert('Director code is valid. Room as been overrided.');
+                    handleCancelBooking(isDuplicate[0].BookingID);
+                    setShowAmendModal(false); // Close the modal after overriding
+                    return;
+                }       
+                // You could add further validation for the director code here if needed
+            } else {
+                alert('A booking already exists at this time. Please choose a different time slot.');
+                return;
+            }
+        }
 
-          if (data.success) {
-              // Update the booking in the state
-              setMyBookings(prevBookings =>
-                  prevBookings.map(booking =>
-                      booking.BookingID === selectedBooking.BookingID
-                          ? { ...booking, BookingDate: newDate, BookingTime: newTime }
-                          : booking
-                  )
-              );
-              setShowAmendModal(false); // Close the modal
-          } else {
-              console.error('Failed to amend booking:', data.error);
-          }
-      } catch (error) {
-          console.error('Error amending booking:', error);
-      }
+        try {
+            const response = await fetch('/api/amendBooking', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    bookingId: selectedBooking.BookingID,
+                    newDate,
+                    newTime,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Update the booking in the state
+                setMyBookings(prevBookings =>
+                    prevBookings.map(booking =>
+                        booking.BookingID === selectedBooking.BookingID
+                            ? { ...booking, BookingDate: newDate, BookingTime: newTime }
+                            : booking
+                    )
+                );
+                setShowAmendModal(false); // Close the modal
+            } else {
+                console.error('Failed to amend booking:', data.error);
+            }
+        } catch (error) {
+            console.error('Error amending booking:', error);
+        }
     };
     
     // Formatting functions
     const formatDate = (date: Date) => {
-        return new Intl.DateTimeFormat('en-US', {
+        return new Intl.DateTimeFormat('en-CA', {
             year: 'numeric',
             month: 'long',
             day: 'numeric',

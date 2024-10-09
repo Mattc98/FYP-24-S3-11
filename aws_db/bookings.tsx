@@ -1,4 +1,3 @@
-// /aws_db/bookings.ts
 import mysql from 'mysql2/promise';
 
 export async function createBookingInDB(RoomID: number, UserID: number, BookingDate: string, BookingTime: string, RoomPin: string) {

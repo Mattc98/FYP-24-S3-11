@@ -42,7 +42,7 @@ const Navbar = () => {
             onClick={handleProfileClick} // Toggle dropdown on click
           />
           {isDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg py-2">
+            <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg py-2 z-50">
               <button
                 onClick={handleSettings}
                 className="block w-full text-left px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white transition duration-300"
