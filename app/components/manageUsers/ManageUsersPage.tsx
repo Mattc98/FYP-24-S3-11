@@ -1,11 +1,13 @@
 'use client'; // Marks this component as a Client Component
 import React, { useEffect, useState} from 'react';
+import RoleDropdown from './RoleDropdown'; // Ensure you import RoleDropdown correctly
 
 
 interface UserAccount {
   UserID: number;
   Username: string;
   Password: string;
+  Email: string;
   Role: string; // Assuming users have roles
   ProfilePicture: string; // Assuming there's a profile picture URL
 }
@@ -15,12 +17,6 @@ const ManageUsersPage = () => {
   const [editUsername, setEditUsername] = useState<string>('');
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
-
-  // State for adding a new user
-  const [newUsername, setNewUsername] = useState<string>('');
-  const [newPassword, setNewPassword] = useState<string>('');
-  const [newRole, setNewRole] = useState<string>('');
-  const [newProfilePicture, setNewProfilePicture] = useState<string>('');
 
   // State for modal visibility
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -103,9 +99,9 @@ const ManageUsersPage = () => {
     setCurrentUserId(null); // Reset current user ID
     setEditUsername(''); // Clear the edit username input
   };
-
+  
   // Function to add a new user
-  const addUser = async () => {
+  const addUser = async (userData: { username: string; password: string; email:string, role: string }) => {
     try {
       const response = await fetch('/api/manageUsers', {
         method: 'POST',
@@ -113,19 +109,17 @@ const ManageUsersPage = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          Username: newUsername,
-          Password: newPassword,
-          Role: newRole,
-          ProfilePicture: newProfilePicture,
+          Username: userData.username,
+          Password: userData.password,
+          Email: userData.email,
+          Role: userData.role,
+          ProfilePicture: '/images/profile-icon.png', // Use a default profile picture or handle dynamically
         }), // Send new user data
       });
 
       if (response.ok) {
         const newUser = await response.json(); // Assuming the API returns the created user
         setManageUsers((prevUsers) => [...prevUsers, newUser]); // Add the new user to the list
-        setNewUsername(''); // Clear input fields
-        setNewRole('');
-        setNewProfilePicture('');
         setIsModalOpen(false); // Close the modal
       }
     } catch (error) {
@@ -221,55 +215,11 @@ const ManageUsersPage = () => {
       </div>
 
       {/* Modal for Adding User */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-gray-400 p-6 rounded shadow-lg w-1/3">
-            <h2 className="text-2xl font-semibold mb-4">Add New User</h2>
-            <div className="mb-2">
-              <label className="block font-medium">Username</label>
-              <input
-                type="text"
-                value={newUsername}
-                onChange={(e) => setNewUsername(e.target.value)}
-                className="border border-gray-300 p-1 rounded w-full text-black"
-              />
-            </div>
-            <div className="mb-2">
-              <label className="block font-medium">Password</label>
-              <input
-                type="text"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                className="border border-gray-300 p-1 rounded w-full text-black"
-              />
-            </div>
-            <div className="mb-2">
-              <label className="block font-medium">Role</label>
-              <input
-                type="text"
-                value={newRole}
-                onChange={(e) => setNewRole(e.target.value)}
-                className="border border-gray-300 p-1 rounded w-full text-black"
-              />
-            </div>
-            
-            <div className="flex space-x-4">
-              <button
-                onClick={addUser}
-                className="bg-blue-500 text-white px-4 py-2 rounded"
-              >
-                Add User
-              </button>
-              <button
-                onClick={() => setIsModalOpen(false)} // Close the modal
-                className="bg-gray-500 text-white px-4 py-2 rounded"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <RoleDropdown
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        addUser={addUser} // Pass the correct addUser function
+      />
     </div>
   );
 };
