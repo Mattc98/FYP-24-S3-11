@@ -10,6 +10,8 @@ interface UserAccount {
   Email: string;
   Role: string; // Assuming users have roles
   ProfilePicture: string; // Assuming there's a profile picture URL
+  FailLogin: number;
+  IsLocked: boolean;
 }
 
 const ManageUsersPage = () => {
@@ -41,6 +43,33 @@ const ManageUsersPage = () => {
 
     fetchManageUsers();
   }, []);
+
+  const unlockUser = async (userID: number) => {
+    try {
+      const response = await fetch('api/unlockUser',{
+        method: 'PUT',
+        headers: {
+        'Content-Type': 'application/json',
+      },
+      body:JSON.stringify({
+        UserID: userID,
+        FailLogin: 0,
+        IsLocked: 0,
+      })
+    });
+
+    if (response.ok) {
+      // Handle successful response if needed
+      console.log("User unlocked successfully");
+      alert("User has been unlocked. Do remember to inform them that their account is unlocked.")
+
+    } else {
+      console.log("Failed to unlock user");
+    }
+  } catch (error) {
+    console.error("Error unlocking user:", error);
+  }
+};
 
   // Handle edit button click
   const handleEdit = async (userID: number) => {
@@ -202,6 +231,12 @@ const ManageUsersPage = () => {
                         className="bg-red-500 text-white px-2 py-1 rounded"
                       >
                         Terminate
+                      </button>
+                      <button
+                        onClick={() => unlockUser(user.UserID)}
+                        className="bg-teal-600 text-white px-2 py-1 rounded"
+                      >
+                        Unlock
                       </button>
                     </div>
                   </li>
