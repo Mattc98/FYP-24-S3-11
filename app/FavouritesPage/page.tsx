@@ -51,13 +51,13 @@ const FavouritesPage = async ({ searchParams }: { searchParams: { username: stri
   const rooms = await fetchUserRooms(parsedUserId);
 
   return (
-    <div>
+    <div className="bg-neutral-900 h-max">
       <div>
         <Suspense fallback={<div>Loading...</div>}>
           <Navbar/>
         </Suspense>
       </div>
-      <div  className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 min-h-screen">
+      <div  className="bg-neutral-800 flex-1 ml-auto mr-auto w-[1100px] h-screen shadow-xl shadow-black-500/50">
         <div className="container mx-auto px-4 py-8">
           {rooms.length > 0 ? (
             <FavouritesList rooms={rooms} userId={parsedUserId} />

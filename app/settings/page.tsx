@@ -42,33 +42,56 @@ const SettingsPage = async ({ searchParams }: { searchParams: { username: string
     }
 
     return (
-        <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 min-h-screen p-8">
-            <Suspense fallback={<div>Loading...</div>}>
-                <Navbar />
-            </Suspense>
-            <h1 className="text-3xl font-bold text-white mb-6">Account Information</h1>
+        <div className="bg-neutral-900 min-h-screen flex flex-col items-center">
+            <div className='bg-neutral-800'>
+                <Suspense fallback={<div>Loading...</div>}>
+                    <Navbar />
+                </Suspense>
+            </div>
+            <h1 className='p-5 text-3xl font-mono flex item-center justify-center bg-neutral-800 w-[1100px]'>
+                Account Information
+            </h1>
+                {/* Conditional rendering for error and user information */}
             {error ? (
-                <div className="text-red-500">{error}</div>
+                <div className="text-red-500 mt-4 text-center">{error}</div>
             ) : userInfo ? (
-                <div className="bg-gray-800 shadow-lg rounded-lg px-8 py-6 mb-4">
+                <div className="w-full max-w-[1100px] bg-neutral-800 shadow-lg px-8 py-6">
+                    {/* Username */}
                     <div className="mb-4">
-                        <label className="block text-white text-sm font-bold mb-2" htmlFor="username">
+                        <label
+                            className="block text-white text-sm font-bold mb-2"
+                            htmlFor="username"
+                        >
                             Username
                         </label>
-                        <p className="text-white" id="username">{userInfo.Username}</p>
+                        <p className="text-white" id="username">
+                            {userInfo.Username}
+                        </p>
                     </div>
+
+                    {/* Email */}
                     <div className="mb-4">
-                        <label className="block text-white text-sm font-bold mb-2" htmlFor="email">
+                        <label
+                            className="block text-white text-sm font-bold mb-2"
+                            htmlFor="email"
+                        >
                             Email
                         </label>
-                        <p className="text-white" id="email">{userInfo.Email}</p>
+                        <p className="text-white" id="email">
+                            {userInfo.Email}
+                        </p>
                     </div>
+
+                    {/* Change password component */}
                     <ChangePassword username={userInfo.Username} />
                 </div>
             ) : (
-                <div className="text-gray-300">No user information available</div>
+                <div className="text-gray-300 mt-4 text-center">
+                    No user information available
+                </div>
             )}
         </div>
+
     );
 };
 

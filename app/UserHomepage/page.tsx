@@ -108,7 +108,7 @@ export default async function UserHomepage({ searchParams }: { searchParams: { u
 
   
   return (
-    <div className="bg-gray-100">
+    <div className="bg-neutral-900 h-max">
       {/* Navbar */}
         <Suspense fallback={<div>Loading...</div>}>
           <Navbar />
@@ -118,3 +118,4 @@ export default async function UserHomepage({ searchParams }: { searchParams: { u
     </div>
   );
 }
+
