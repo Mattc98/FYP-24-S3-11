@@ -28,7 +28,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="w-full bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white shadow-lg">
+    <div className="w-full bg-gradient-to-r bg-neutral-950 text-white shadow-lg">
       {/* Header */}
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
         <div className="text-2xl font-bold text-white tracking-wide">Welcome back, {username}</div>
