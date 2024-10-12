@@ -62,7 +62,7 @@ export const HoverEffect = ({
     
     const handleBooking = async () => {
         if (!selectedRoom || !startDate || !selectedTimeSlot) {
-            alert("Please select a Room.");
+            alert("Please select a date and time.");
             return;
         }
 
@@ -142,7 +142,7 @@ export const HoverEffect = ({
             <Link
             href=""
             key={item?.RoomID}
-            className="relative group  block p-2 h-full w-full"
+            className="relative group block p-2 h-full w-full"
             onMouseEnter={() => setHoveredIndex(idx)}
             onMouseLeave={() => setHoveredIndex(null)}
             onClick={() => handleRoomClick(item)}

@@ -7,7 +7,6 @@ import { BackgroundBeams } from "../ui/background-beams";
 import { HoverEffect } from "../ui/card-hover-effect";
 
 
-
 interface UserHomeProps {
     allRooms: Room[];
     UserRole: string;
@@ -161,7 +160,7 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
 
                     {/* Date Picker - Shows only when icon is clicked */}
                     {showDatePicker && (
-                        <div className="absolute top-12 right-0 bg-gray-800 p-4 rounded-lg shadow-lg z-50">
+                        <div className="absolute top-12 right-0 bg-black p-4 rounded-lg shadow-lg z-50 border border-white dark:border-white/[0.2]">
                             <div className='mb-2'>
                                 <ReactDatePicker
                                     selected={startDate}
@@ -194,7 +193,6 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
                                 Get Rooms
                             </button>
                         </div>
-                        
                     )}
                 </div>
                 

@@ -61,7 +61,7 @@ const Navbar = () => {
       </div>
 
       {/* Navigation Menu */}
-      <nav className="bg-gray-900 py-3 shadow-md">
+      <nav className="bg-black py-3 shadow-md">
         <ul className="flex justify-center space-x-8 max-w-7xl mx-auto">
           <li>
             <Link  className="text-gray-300 hover:text-white transition duration-300 ease-in-out hover:border-b-2 border-indigo-500" href={{ query: { username }, pathname: "/UserHomepage" }}>
