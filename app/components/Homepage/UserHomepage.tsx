@@ -3,10 +3,7 @@ import React, { useState } from 'react';
 import { FaCalendarAlt } from 'react-icons/fa';
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { BackgroundBeams } from "../ui/background-beams";
 import { HoverEffect } from "../ui/card-hover-effect";
-import { motion } from "framer-motion";
-import { AuroraBackground } from "../ui/aurora-background";
 
 interface UserHomeProps {
     allRooms: Room[];
@@ -80,6 +77,7 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
 
 
     const handleDateIconClick = () => {
+        closeModal();
         setShowDatePicker(!showDatePicker); 
     };
 
@@ -116,7 +114,6 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
     };
 
     const handleAvaBooking = () => {
-        closeModal();
         if (!startDate || !selectedTimeSlot) {
             alert("Please select a date and time.");
             return;
@@ -130,6 +127,7 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
                 formatDate(new Date(booking.BookingDate)) === formattedDate &&
                 formatTime(booking.BookingTime) === selectedTimeSlot
         );
+
     
         // Store the RoomIDs of the unavailable rooms
         const unAvaRoomIDs = unAvaBookings.map((booking) => booking.RoomID);
@@ -140,8 +138,8 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
     };
     
     const availableRooms = allRooms.filter((room) => !unAvaRooms.includes(room.RoomID));
-
-
+    const unAvailableRooms = allRooms.filter((room) => unAvaRooms.includes(room.RoomID));
+    console.log(unAvailableRooms);
 
     return (
         <div className='bg-neutral-800 flex-1 ml-auto mr-auto w-[1100px] h-screen shadow-xl shadow-black-500/50'>
@@ -200,12 +198,14 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
       
             <div className="max-w-5xl mx-auto px-8">
               <HoverEffect 
-                items={availableRooms} 
+                items={availableRooms}
+                unAvailableRooms={unAvailableRooms}
                 UserRole={UserRole} 
                 FavRooms={FavRooms} 
                 userId={userId} 
                 startDate={startDate}
                 selectedTimeSlot={selectedTimeSlot}
+                allBookings={allBookings}
               />
             </div>
           </div>

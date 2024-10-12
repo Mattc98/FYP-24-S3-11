@@ -2,11 +2,6 @@ import UserHome from "../components/Homepage/UserHomepage";
 import Navbar from '../components/Navbar';
 import { calluser } from '@/aws_db/db';
 import React, { Suspense } from 'react';
-import { BackgroundBeams } from "../components/ui/background-beams";
- 
-import { motion } from "framer-motion";
-
-import { AuroraBackground } from "../components/ui/aurora-background";
 
 interface Room {
   RoomID: number;
