@@ -76,7 +76,7 @@ const myBookings = async ({ searchParams }: { searchParams: { username: string }
     }
 
     return (
-        <div>
+        <div className='bg-neutral-900 h-max '>
             <div>
                 <Suspense fallback={<div>Loading...</div>}>
                     <Navbar />

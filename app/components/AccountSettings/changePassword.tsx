@@ -90,7 +90,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ username }) => {
               id="currentPassword"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
-              className="shadow appearance-none border border-gray-600 rounded w-full py-2 px-3 bg-gray-800 text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
+              className="shadow appearance-none border border-gray-600 rounded w-full py-2 px-3 bg-neutral-600 text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
           </div>
@@ -127,7 +127,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ username }) => {
               id="newPassword"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="shadow appearance-none border border-gray-600 rounded w-full py-2 px-3 bg-gray-800 text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
+              className="shadow appearance-none border border-gray-600 rounded w-full py-2 px-3 bg-neutral-600 text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
           </div>
@@ -140,7 +140,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ username }) => {
               id="confirmPassword"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="shadow appearance-none border border-gray-600 rounded w-full py-2 px-3 bg-gray-800 text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
+              className="shadow appearance-none border border-gray-600 rounded w-full py-2 px-3 bg-neutral-600 text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
           </div>
@@ -171,7 +171,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ username }) => {
   };
 
   return (
-    <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 p-6 rounded-lg shadow-lg">
+    <div className="bg-neutral-900 p-6 rounded-lg shadow-lg">
       {!isChangingPassword ? (
         <button
           onClick={() => setIsChangingPassword(true)}

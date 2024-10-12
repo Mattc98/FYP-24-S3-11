@@ -208,14 +208,14 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
     };
 
     return (
-        <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 px-8 py-6">
+        <div className="bg-neutral-800 px-8 py-6 flex-1 ml-auto mr-auto w-[1100px] h-max shadow-lg shadow-black-500/50">
             <h2 className="text-center text-2xl font-semibold mb-6">Here are your upcoming bookings</h2>
             <div className="grid grid-cols-1 gap-6">
                 {myBookings.length === 0 ? (
                     <p>No bookings found for {username}.</p>
                 ) : (
                     myBookings.map((booking, index) => (
-                        <div key={index} className="bg-gradient-to-r from-gray-500 via-gray-700 to-gray-800 rounded-lg overflow-hidden shadow-lg">
+                        <div key={index} className="flex-1 ml-auto mr-auto w-[65%] bg-gradient-to-r from-neutral-500 via-neutral-700 to-neutral-800 rounded-lg overflow-hidden shadow-lg">
                             <div className="flex items-center p-4">
                                 <Image
                                     src={"/images/" + booking.imagename}
@@ -231,7 +231,7 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
                                     <p>Attendees: {booking.Pax}</p>
                                 </div>
                             </div>
-                            <div className="bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 flex justify-between px-4 py-2 bg-gray-600">
+                            <div className="bg-gradient-to-r from-neutral-800 via-neutral-700 to-neutral-800 flex justify-between px-4 py-2 bg-gray-600">
                                 <button
                                     className="bg-blue-500 text-white px-4 py-2 rounded-md"
                                     onClick={() => handleAmendBooking(booking)}
@@ -251,8 +251,8 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
             </div>
         {/* Modal for amending booking */}
         {showAmendModal && selectedBooking && (
-            <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
-                <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 p-6 rounded-lg shadow-lg w-1/3">
+            <div className="fixed inset-0 bg-neutral-900 bg-opacity-50 flex items-center justify-center z-50">
+                <div className="bg-gradient-to-r from-neutral-900 via-neutral-800 to-neutral-900 p-6 rounded-lg shadow-lg w-1/3">
                     <h3 className="text-xl font-semibold mb-4">Amend Booking</h3>
                     <div className="mb-4">
                         <label className="block font-semibold mb-2">Select New Date</label>
@@ -260,7 +260,7 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
                             type="date"
                             value={newDate}
                             onChange={(e) => setNewDate(e.target.value)}
-                            className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 w-full p-2 border border-gray-300 rounded"
+                            className="bg-gradient-to-r from-neutral-900 via-neutral-800 to-neutral-900 w-full p-2 border border-neutral-300 rounded"
                         />
                     </div>
                     <div className="mb-4">
@@ -268,7 +268,7 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
                         <select
                             value={newTime}
                             onChange={(e) => setNewTime(e.target.value)}
-                            className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 w-full p-2 border border-gray-300 rounded"
+                            className="bg-gradient-to-r from-neutral-900 via-neutral-800 to-neutral-900 w-full p-2 border border-neutral-300 rounded"
                         >
                             {timeSlots.map((slot, index) => (
                                 <option key={index} value={slot}>

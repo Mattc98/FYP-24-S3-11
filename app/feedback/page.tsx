@@ -46,7 +46,7 @@ export default async function Feedback({ searchParams }: { searchParams: { usern
 
    
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-neutral-900">
       {/* Navbar */}
         <Suspense fallback={<div>Loading...</div>}>
           <Navbar />

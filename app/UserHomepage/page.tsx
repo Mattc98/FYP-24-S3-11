@@ -2,6 +2,11 @@ import UserHome from "../components/Homepage/UserHomepage";
 import Navbar from '../components/Navbar';
 import { calluser } from '@/aws_db/db';
 import React, { Suspense } from 'react';
+import { BackgroundBeams } from "../components/ui/background-beams";
+ 
+import { motion } from "framer-motion";
+
+import { AuroraBackground } from "../components/ui/aurora-background";
 
 interface Room {
   RoomID: number;
@@ -108,7 +113,7 @@ export default async function UserHomepage({ searchParams }: { searchParams: { u
 
   
   return (
-    <div className="bg-gray-100">
+    <div className="bg-neutral-900 h-max">
       {/* Navbar */}
         <Suspense fallback={<div>Loading...</div>}>
           <Navbar />
@@ -118,3 +123,4 @@ export default async function UserHomepage({ searchParams }: { searchParams: { u
     </div>
   );
 }
+

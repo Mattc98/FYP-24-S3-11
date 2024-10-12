@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useSearchParams, useRouter } from 'next/navigation';
-
 const Navbar = () => {
   const searchParams = useSearchParams();
   const username = searchParams.get('username');
@@ -28,10 +27,11 @@ const Navbar = () => {
   };
 
   return (
-    <div className="w-full bg-gradient-to-r bg-neutral-950 text-white shadow-lg">
+    
+    <div className="flex-1 ml-auto mr-auto w-[1100px] bg-gradient-to-r bg-neutral-800 text-white shadow-xl shadow-black-500/50 ">
       {/* Header */}
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
-        <div className="text-2xl font-bold text-white tracking-wide">Welcome back, {username}</div>
+        <div className="text-2xl font-bold text-white tracking-wide font-mono">Welcome back, {username}</div>
         <div className="relative">
           <Image
             src="/images/profile-icon.png" // Replace with actual image
@@ -42,10 +42,10 @@ const Navbar = () => {
             onClick={handleProfileClick} // Toggle dropdown on click
           />
           {isDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg py-2 z-50">
+            <div className="absolute right-0 mt-2 w-48 bg-neutral-900 rounded-lg shadow-lg py-2 z-50">
               <button
                 onClick={handleSettings}
-                className="block w-full text-left px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white transition duration-300"
+                className="block w-full text-left px-4 py-2 text-gray-300 hover:bg-neutral-800 hover:text-white transition duration-300"
               >
                 Settings
               </button>
@@ -58,28 +58,29 @@ const Navbar = () => {
             </div>
           )}
         </div>
-      </div>
+        
+      </div>      
 
       {/* Navigation Menu */}
-      <nav className="bg-black py-3 shadow-md">
+      <nav className="font-sans bold flex-1 ml-auto mr-auto rounded-full w-[550px] bg-gradient-to-r from-neutral-900 via-neutral-900 to-neutral-900 py-5 shadow-md text-xl">
         <ul className="flex justify-center space-x-8 max-w-7xl mx-auto">
           <li>
-            <Link  className="text-gray-300 hover:text-white transition duration-300 ease-in-out hover:border-b-2 border-indigo-500" href={{ query: { username }, pathname: "/UserHomepage" }}>
+            <Link  className="text-gray-300 hover:text-white transition duration-300 ease-in-out hover:border-b-2 border-neutral-100" href={{ query: { username }, pathname: "/UserHomepage" }}>
                 Home
             </Link>
           </li>
           <li>
-            <Link className="text-gray-300 hover:text-white transition duration-300 ease-in-out hover:border-b-2 border-indigo-500" href={{ query: { username }, pathname: "/myBookings" }}>
+            <Link className="text-gray-300 hover:text-white transition duration-300 ease-in-out hover:border-b-2 border-neutral-100" href={{ query: { username }, pathname: "/myBookings" }}>
                 Bookings
             </Link>
           </li>
           <li>
-            <Link className="text-gray-300 hover:text-white transition duration-300 ease-in-out hover:border-b-2 border-indigo-500" href={{ query: { username }, pathname: "/feedback" }}>
+            <Link className="text-gray-300 hover:text-white transition duration-300 ease-in-out hover:border-b-2 border-neutral-100" href={{ query: { username }, pathname: "/feedback" }}>
                 Feedback
             </Link>
           </li>
           <li>
-            <Link className="text-gray-300 hover:text-white transition duration-300 ease-in-out hover:border-b-2 border-indigo-500" href={{ query: { username }, pathname: "/FavouritesPage" }}>
+            <Link className="text-gray-300 hover:text-white transition duration-300 ease-in-out hover:border-b-2 border-neutral-100" href={{ query: { username }, pathname: "/FavouritesPage" }}>
                 Favourites
             </Link>
           </li>

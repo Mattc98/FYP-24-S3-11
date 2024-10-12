@@ -150,7 +150,7 @@ export const HoverEffect = ({
             <AnimatePresence>
                 {hoveredIndex === idx && (
                 <motion.span
-                    className="absolute inset-0 h-full w-full bg-neutral-200 dark:bg-slate-800/[0.8] block  rounded-3xl"
+                    className="absolute inset-0 h-full w-full bg-white dark:bg-slate-800/[0.8] block  rounded-3xl"
                     layoutId="hoverBackground"
                     initial={{ opacity: 0 }}
                     animate={{
@@ -173,14 +173,14 @@ export const HoverEffect = ({
                     height={200}
                     className="w-full h-48 object-cover"
                 />
-                <CardDescription>pax: {item.Pax}</CardDescription>
+                <CardDescription>Room Pax: {item.Pax}</CardDescription>
             </Card>
             </Link>
         ))}
 
         {/* Modal for Room Booking */}
         {selectedRoom && (
-                <div className="fixed inset-0 bg-gray-900 bg-opacity-80 flex items-center justify-center z-50">
+                <div className="fixed inset-0 bg-neutral-800 bg-opacity-10 flex items-center justify-center z-50">
                     <div 
                         className="bg-black p-6 rounded-lg shadow-lg text-white"
                         style={{ width: '350px', height: '300px' }} // Fixed width and height
@@ -255,11 +255,11 @@ export const Card = ({
   return (
     <div
       className={cn(
-        "rounded-2xl h-full w-full p-4 overflow-hidden bg-black border border-transparent dark:border-white/[0.2] group-hover:border-slate-700 relative z-20",
+        "rounded-2xl h-full w-full p-4 overflow-hidden bg-neutral-900 border border-transparent dark:border-black/[0.2] group-hover:border-slate-700 relative z-20",
         className
       )}
     >
-      <div className="relative z-50">
+      <div className="relative z-50 text-zinc-200">
         <div className="p-4">{children}</div>
       </div>
     </div>
@@ -273,8 +273,8 @@ export const CardTitle = ({
   children: React.ReactNode;
 }) => {
   return (
-    <h4 className={cn("text-zinc-100 font-bold tracking-wide mt-4", className)}>
-      {children}
+    <h4 className={cn("item-center justifiy-center text-zinc-200 font-bold tracking-wide mt-4", className)}>
+      -{children}-
     </h4>
   );
 };
@@ -288,7 +288,7 @@ export const CardDescription = ({
   return (
     <p
       className={cn(
-        "mt-8 text-zinc-400 tracking-wide leading-relaxed text-sm",
+        "mt-8 text-zinc-200 tracking-wide leading-relaxed text-sm",
         className
       )}
     >

@@ -5,7 +5,8 @@ import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { BackgroundBeams } from "../ui/background-beams";
 import { HoverEffect } from "../ui/card-hover-effect";
-
+import { motion } from "framer-motion";
+import { AuroraBackground } from "../ui/aurora-background";
 
 interface UserHomeProps {
     allRooms: Room[];
@@ -143,75 +144,75 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
 
 
     return (
-        <div className="min-h-screen bg-gradient-to-r bg-neutral-950 text-white relative">
-            <div className="px-8 py-6 max-w-7xl mx-auto relative z-10">
-                <div className="relative">
-                    <h2 className="text-3xl font-semibold mb-6 text-center">Here are the rooms available</h2>
-                    
-                    {/* Calendar Icon */}
-                    <div className="absolute top-0 right-0">
-                        <button
-                            className="p-2 bg-gray-800 rounded-full hover:bg-gray-700 transition duration-300 z-20"
-                            onClick={handleDateIconClick}
-                        >
-                            <FaCalendarAlt className="text-white w-6 h-6" />
-                        </button>
+        <div className='bg-neutral-800 flex-1 ml-auto mr-auto w-[1100px] h-screen shadow-xl shadow-black-500/50'>
+          <div className="px-8 py-6 max-w-7xl mx-auto relative z-10">
+           {/* Calendar Icon */}
+            <div className="relative">
+                <button
+                    className="absolute top-0 right-[50%] bg-neutral-900 p-2 rounded-full hover:bg-neutral-700 transition duration-300 z-20"
+                    onClick={handleDateIconClick}
+                >
+                    <FaCalendarAlt className="text-white w-6 h-6" />
+                </button>
+
+                {/* Date Picker - Shows only when icon is clicked */}
+                {showDatePicker && (
+                    <div
+                    className="absolute bg-neutral-900 p-4 rounded-lg shadow-lg z-50 border border-white dark:border-white/[0.2]"
+                    style={{ top: "50%", left: "50%", transform: "translateX(-50%)" }} // Adjust position here
+                    >
+                    <div className="mb-2">
+                        <ReactDatePicker
+                        selected={startDate}
+                        onChange={(date) => setStartDate(date)}
+                        className="border rounded-md p-2 w-full text-white bg-neutral-800"
+                        placeholderText="Select a date"
+                        />
                     </div>
 
-                    {/* Date Picker - Shows only when icon is clicked */}
-                    {showDatePicker && (
-                        <div className="absolute top-12 right-0 bg-black p-4 rounded-lg shadow-lg z-50 border border-white dark:border-white/[0.2]">
-                            <div className='mb-2'>
-                                <ReactDatePicker
-                                    selected={startDate}
-                                    onChange={(date) => setStartDate(date)}
-                                    className="border rounded-md p-2 w-full text-black"
-                                    placeholderText="Select a date"
-                                />
-                            </div>
-                            {/* Time Slot Dropdown */}
-                            <div className="mb-4">
-                                <label className="block font-semibold mb-2">Time:</label>
-                                <select
-                                    value={selectedTimeSlot}
-                                    onChange={(e) => setSelectedTimeSlot(e.target.value)}
-                                    className="border rounded-md p-2 w-full text-black"
-                                >
-                                    <option value="">Choose a time slot</option>
-                                    {timeSlots.map((slot) => (
-                                        <option key={slot} value={slot}>
-                                            {slot}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
+                    {/* Time Slot Dropdown */}
+                    <div className="mb-4">
+                        <label className="block font-semibold mb-2">Time:</label>
+                        <select
+                        value={selectedTimeSlot}
+                        onChange={(e) => setSelectedTimeSlot(e.target.value)}
+                        className="border rounded-md p-2 w-full text-white bg-neutral-800"
+                        >
+                        <option value="">Choose a time slot</option>
+                        {timeSlots.map((slot) => (
+                            <option key={slot} value={slot}>
+                            {slot}
+                            </option>
+                        ))}
+                        </select>
+                    </div>
 
-                            <button
-                                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md transition duration-300"
-                                onClick={handleAvaBooking}
-                            >
-                                Get Rooms
-                            </button>
-                        </div>
-                    )}
-                </div>
-                
-                <div className="max-w-5xl mx-auto px-8">
-                    <HoverEffect 
-                    items={availableRooms} 
-                    UserRole={UserRole} 
-                    FavRooms={FavRooms} 
-                    userId={userId} 
-                    startDate={startDate}
-                    selectedTimeSlot={selectedTimeSlot}/>
-                </div>
+                    <button
+                        className="bg-neutral-800 hover:bg-neutral-700 text-white px-4 py-2 rounded-md transition duration-300"
+                        onClick={handleAvaBooking}
+                    >
+                        Get Rooms
+                    </button>
+                    </div>
+                )}
             </div>
 
-            
-            <BackgroundBeams />
+      
+            <div className="max-w-5xl mx-auto px-8">
+              <HoverEffect 
+                items={availableRooms} 
+                UserRole={UserRole} 
+                FavRooms={FavRooms} 
+                userId={userId} 
+                startDate={startDate}
+                selectedTimeSlot={selectedTimeSlot}
+              />
+            </div>
+          </div>
         </div>
-    );
+      );
 };
+      
 
 export default UserHomepage;
 
