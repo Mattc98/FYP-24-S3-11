@@ -80,5 +80,5 @@
 
   
   .message {
-    @apply text-red-500 mb-4;
+    @apply mb-4;
   }
