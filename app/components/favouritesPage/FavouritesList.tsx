@@ -75,7 +75,7 @@ const FavouritesList: React.FC<FavouritesListProps> = ({ rooms,userId }) => {
   }
 
   return (
-    <div className='bg-neutral-800 flex-1 ml-auto mr-auto w-[70%] h-max'>
+    <div className='pb-7 bg-neutral-800 flex-1 ml-auto mr-auto w-[70%] h-max'>
       <h2 className="text-2xl font-bold text-white mb-6">Your Favourite Rooms</h2>
       <ul className="space-y-8">
         {rooms.map((room) => (

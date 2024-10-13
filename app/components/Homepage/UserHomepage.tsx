@@ -142,7 +142,7 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
     console.log(unAvailableRooms);
 
     return (
-        <div className='bg-neutral-800 flex-1 ml-auto mr-auto w-[1100px] h-screen shadow-xl shadow-black-500/50'>
+        <div className='bg-neutral-800 flex-1 ml-auto mr-auto w-[1100px] h-full'>
           <div className="px-8 py-6 max-w-7xl mx-auto relative z-10">
            {/* Calendar Icon */}
             <div className="relative">

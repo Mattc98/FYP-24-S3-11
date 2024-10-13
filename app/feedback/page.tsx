@@ -4,6 +4,7 @@ import FeedbackForm from '@/app/components/Feedback/FeedbackForm';
 import Navbar from '../components/Navbar';
 import React, { Suspense } from 'react';
 import { calluser } from '@/aws_db/db'; // Ensure this is correctly imported
+import { Vortex } from '../components/ui/vortex';
 
 interface UserAccount {
   UserID: number;
@@ -46,17 +47,26 @@ export default async function Feedback({ searchParams }: { searchParams: { usern
 
    
   return (
-    <div className="min-h-screen bg-neutral-900">
-      {/* Navbar */}
-        <Suspense fallback={<div>Loading...</div>}>
-          <Navbar />
-        </Suspense>
-      <div className={styles.container}>
-        <h1 className={styles.pageHeading}>Share your feedback</h1>
-        <FeedbackForm userId={parsedUserId}>
-          <RoomDropdown UserRole={parsedUserRole}/>
-        </FeedbackForm>
-      </div>
+
+    <div className="flex bg-fixed w-full h-screen overflow-hidden">
+        <Vortex
+          backgroundColor="black"
+          rangeY={800}
+          particleCount={500}
+          baseHue={120}
+          className="w-full h-screen z-0"
+        >
+          {/* Navbar */}
+          <Suspense fallback={<div>Loading...</div>}>
+            <Navbar />
+          </Suspense>
+          <div className={styles.container}>
+            <h1 className={styles.pageHeading}>Share your feedback</h1>
+            <FeedbackForm userId={parsedUserId}>
+              <RoomDropdown UserRole={parsedUserRole}/>
+            </FeedbackForm>
+          </div>
+        </Vortex>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import UserHome from "../components/Homepage/UserHomepage";
 import Navbar from '../components/Navbar';
 import { calluser } from '@/aws_db/db';
 import React, { Suspense } from 'react';
+import { Vortex } from "../components/ui/vortex";
 
 interface Room {
   RoomID: number;
@@ -108,14 +109,24 @@ export default async function UserHomepage({ searchParams }: { searchParams: { u
 
   
   return (
-    <div className="bg-neutral-900 h-max">
-      {/* Navbar */}
+
+  <div className="w-[100%] h-screen overflow-hidden p-4">
+    <Vortex
+      backgroundColor="black"
+      rangeY={800}
+      particleCount={500}
+      baseHue={120}
+      className="flex items-center flex-col justify-center w-full h-screen"
+    >
+        {/* Navbar */}
         <Suspense fallback={<div>Loading...</div>}>
           <Navbar />
         </Suspense>
-      {/* Main Content */}
+        {/* Main Content */}
         <UserHome allRooms={allRooms} UserRole={parsedUserRole} userID={parsedUserId} FavRooms={userFavoriteRooms} allBookings={allBookings}/>
-    </div>
+    </Vortex>
+  </div>
+
   );
 }
 

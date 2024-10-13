@@ -2,6 +2,7 @@ import React, { Suspense } from 'react';
 import Navbar from '../components/Navbar';
 import { calluser } from '@/aws_db/db';
 import FavouritesList from '../components/favouritesPage/FavouritesList'; // Import your client component
+import { Vortex } from '../components/ui/vortex';
 
 interface UserAccount {
   UserID: number;
@@ -51,23 +52,26 @@ const FavouritesPage = async ({ searchParams }: { searchParams: { username: stri
   const rooms = await fetchUserRooms(parsedUserId);
 
   return (
-    <div className="bg-neutral-900 h-max">
-      <div>
-        <Suspense fallback={<div>Loading...</div>}>
-          <Navbar/>
-        </Suspense>
-      </div>
-      <div  className="bg-neutral-800 flex-1 ml-auto mr-auto w-[1100px] h-screen shadow-xl shadow-black-500/50">
-        <div className="container mx-auto px-4 py-8">
-          {rooms.length > 0 ? (
-            <FavouritesList rooms={rooms} userId={parsedUserId} />
-          ) : (
-            <p className="text-gray-400">No rooms found for this user.</p>
-          )}
-        </div>
-      </div>
+      <div className="flex w-full max-h-screen overflow-hidden">
+        <Vortex
+        backgroundColor="black"
+        rangeY={800}
+        particleCount={500}
+        baseHue={120}
+        className="w-full max-h-screen"
+      >
+          <Suspense fallback={<div>Loading...</div>}>
+              <Navbar/>
+            </Suspense>
+        <div  className="overflow-y-scroll no-scrollbar overflow-hidden h-[83.5vh] bg-neutral-800 flex-1 ml-auto mr-auto w-[1100px] shadow-xl shadow-black-500/50">
+            {rooms.length > 0 ? (
+              <FavouritesList rooms={rooms} userId={parsedUserId} />
+            ) : (
+              <p className="text-gray-400">No rooms found for this user.</p>
+            )}
+          </div>
+      </Vortex>
     </div>
-      
   );
 };
 

@@ -111,7 +111,6 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
   };
   
   
-  
   const handleRoleChange = (selectedRole: "User" | "Admin") => {
     setRole(selectedRole);
     setHeaderText(selectedRole === "Admin" ? "Admin Login" : "User Login");
@@ -143,7 +142,13 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
           Sign In
         </button>
       </form>
-      {message && <p className={styles.message}>{message}</p>}
+      {message && (
+        <p
+          className={`${message.includes("Login Successful") ? "text-green-500" : "text-red-500"} ${styles.message}`}
+        >
+          {message}
+        </p>
+      )}
       <footer className="mt-8 text-center text-sm text-gray-500">
        © 2024 FYP-24-S3-11. All rights reserved.
      </footer>
