@@ -111,7 +111,6 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
   };
   
   
-  
   const handleRoleChange = (selectedRole: "User" | "Admin") => {
     setRole(selectedRole);
     setHeaderText(selectedRole === "Admin" ? "Admin Login" : "User Login");

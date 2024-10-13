@@ -28,7 +28,7 @@ const Navbar = () => {
 
   return (
     
-    <div className="flex-1 ml-auto mr-auto w-[1100px] bg-gradient-to-r bg-neutral-800 text-white shadow-xl shadow-black-500/50 ">
+    <div className="flex-1 ml-auto mr-auto w-[1100px] pb-4 bg-neutral-800 text-white shadow-xl shadow-black-500/50 ">
       {/* Header */}
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
         <div className="text-2xl font-bold text-white tracking-wide font-mono">Welcome back, {username}</div>

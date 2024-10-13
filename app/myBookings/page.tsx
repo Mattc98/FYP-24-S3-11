@@ -2,7 +2,7 @@ import React, { Suspense } from 'react'
 import Navbar from '../components/Navbar'
 import Bookings from '../components/myBookings/myBookingsPage'
 import { calluser } from '@/aws_db/db';
-
+import { Vortex } from "../components/ui/vortex";
 interface Bookings {
     BookingID: number;
     RoomID: number;
@@ -76,16 +76,30 @@ const myBookings = async ({ searchParams }: { searchParams: { username: string }
     }
 
     return (
-        <div className='bg-neutral-900 h-max '>
-            <div>
-                <Suspense fallback={<div>Loading...</div>}>
-                    <Navbar />
-                </Suspense>
+        <div className="flex w-full max-h-screen overflow-hidden">
+          <Vortex
+           backgroundColor="black"
+           rangeY={800}
+           particleCount={500}
+           baseHue={120}
+           className="w-full max-h-screen"
+         >
+            <div className='min-h-screen'>
+              {/* Navbar */}
+              <Suspense fallback={<div>Loading...</div>}>
+                <Navbar />
+              </Suspense>
+              <Bookings
+                  bookings={allBookings}
+                  rooms={allRooms}
+                  userid={JSON.stringify(userId)}
+                  username={username}
+                  userRole={parsedUserRole}
+                />
             </div>
-            <div>
-                <Bookings bookings={allBookings} rooms={allRooms} userid={JSON.stringify(userId)} username={username} userRole={parsedUserRole}/>
-            </div>
-        </div>
+         </Vortex>
+       </div>
+       
     )
 }
 

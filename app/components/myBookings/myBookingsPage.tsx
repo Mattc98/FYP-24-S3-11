@@ -208,7 +208,7 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
     };
 
     return (
-        <div className="bg-neutral-800 px-8 py-6 flex-1 ml-auto mr-auto w-[1100px] h-max shadow-lg shadow-black-500/50">
+        <div className="overflow-hidden no-scrollbar col-span-1 overflow-y-scroll bg-neutral-800 px-8 py-6 flex-1 ml-auto mr-auto w-[1100px] h-[83.5vh] shadow-lg shadow-black-500/50">
             <h2 className="text-center text-2xl font-semibold mb-6">Here are your upcoming bookings</h2>
             <div className="grid grid-cols-1 gap-6">
                 {myBookings.length === 0 ? (
