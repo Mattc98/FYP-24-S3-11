@@ -1,5 +1,4 @@
-import React, { Suspense } from 'react'
-import Navbar from '../components/Navbar'
+import React from 'react'
 import Bookings from '../components/myBookings/myBookingsPage'
 import { calluser } from '@/aws_db/db';
 import { Vortex } from "../components/ui/vortex";

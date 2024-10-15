@@ -15,10 +15,9 @@ interface Room {
 interface FavouritesListProps {
   rooms: Room[];
   userId: number;
-  username: string;
 }
 
-const FavouritesList: React.FC<FavouritesListProps> = ({ rooms, userId, username }) => {
+const FavouritesList: React.FC<FavouritesListProps> = ({ rooms, userId }) => {
   
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>(''); 

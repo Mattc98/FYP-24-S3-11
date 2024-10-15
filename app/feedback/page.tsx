@@ -61,7 +61,7 @@ export default async function Feedback() {
         >
           {/* Navbar */}
           <Suspense fallback={<div>Loading...</div>}>
-            <Navbar username={username.value}/>
+            <Navbar />
           </Suspense>
           <div className="flex flex-col justify-center items-center h-screen lg:w-[1100px] mx-auto bg-neutral-800">
             <h1 className={styles.pageHeading}>Share your feedback</h1>

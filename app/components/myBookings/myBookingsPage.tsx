@@ -210,7 +210,7 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
 
     return (
         <div className="pb-6 overflow-hidden no-scrollbar col-span-1 overflow-y-scroll bg-neutral-800 flex-1 ml-auto mr-auto lg:w-[1100px] h-screen">
-            <Navbar username ={username}/>
+            <Navbar />
 
             <h2 className="text-center text-2xl font-semibold pb-6">Here are your upcoming bookings</h2>
             <div className="grid grid-cols-1 gap-6">

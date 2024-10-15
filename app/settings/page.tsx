@@ -48,7 +48,7 @@ const SettingsPage = async () => {
     return (
         <div className="bg-neutral-900 min-h-screen flex-col items-center">
             <Suspense fallback={<div>Loading...</div>}>
-                <Navbar username={username.value}/>
+                <Navbar />
             </Suspense>
             <h1 className='p-7 mx-4 lg:text-3xl md:text-2xl sm:text-2xl font-mono item-center justify-center bg-neutral-800 w-[1100px] flex-1 ml-auto mr-auto'>
                 Account Information  

@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import Navbar from '../components/Navbar';
 import { calluser } from '@/aws_db/db';
 import FavouritesList from '../components/favouritesPage/FavouritesList'; // Import your client component
@@ -65,9 +65,9 @@ const FavouritesPage = async () => {
         className="w-full max-h-screen"
       >
           <div  className="overflow-y-scroll no-scrollbar h-screen bg-neutral-800 flex-1 ml-auto mr-auto lg:w-[1100px] shadow-xl shadow-black-500/50 ">
-            <Navbar username ={username.value}/>
+            <Navbar />
             {rooms.length > 0 ? (
-              <FavouritesList rooms={rooms} userId={parsedUserId} username={username.value}/>
+              <FavouritesList rooms={rooms} userId={parsedUserId} />
             ) : (
               <p className="text-gray-400">No rooms found for this user.</p>
             )}

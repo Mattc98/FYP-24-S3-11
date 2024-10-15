@@ -7,7 +7,6 @@ import { HoverEffect } from "../ui/card-hover-effect";
 import Navbar from '../Navbar';
 
 interface UserHomeProps {
-    username: string;
     allRooms: Room[];
     UserRole: string;
     userID: number;
@@ -70,13 +69,12 @@ export const projects = [
     },
   ];
 
-const UserHomepage: React.FC<UserHomeProps> = ({ username, allRooms, UserRole, userID, FavRooms, allBookings }) => {
+const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, FavRooms, allBookings }) => {
     const [startDate, setStartDate] = useState<Date | null>(null);       // For Date Picker
     const [selectedTimeSlot, setSelectedTimeSlot] = useState('');        // Time slot selection
     const userId = userID;
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [unAvaRooms, setUnAvaRooms] = useState<number[]>([]); // To store unavailable room IDs
-
 
     const handleDateIconClick = () => {
         closeModal();
@@ -145,7 +143,7 @@ const UserHomepage: React.FC<UserHomeProps> = ({ username, allRooms, UserRole, u
 
     return (
         <div className='overflow-hidden no-scrollbar overflow-y-scroll bg-neutral-800 flex-1 ml-auto mr-auto lg:w-[1100px] h-full'>
-          <Navbar username={username}/>
+          <Navbar />
           <div className="px-8 py-6 max-w-7xl mx-auto relative z-10">
            {/* Calendar Icon */}
             <div className="relative py-2">

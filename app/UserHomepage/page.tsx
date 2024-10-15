@@ -1,7 +1,6 @@
 import UserHome from "../components/Homepage/UserHomepage";
-import Navbar from '../components/Navbar';
 import { calluser } from '@/aws_db/db';
-import React, { Suspense } from 'react';
+import React from 'react';
 import { Vortex } from "../components/ui/vortex";
 import { cookies } from 'next/headers'
 
@@ -121,11 +120,9 @@ export default async function UserHomepage() {
       baseHue={120}
       className="flex items-center flex-col justify-center w-full h-screen"
     >
-        <div className="flex-1 ml-auto mr-auto min-h-screen">
-          {/* Main Content */}
-          <UserHome username={username.value} allRooms={allRooms} UserRole={parsedUserRole} userID={parsedUserId} FavRooms={userFavoriteRooms} allBookings={allBookings}/>
-        </div>
-        
+      <div className="flex-1 ml-auto mr-auto min-h-screen">
+          <UserHome allRooms={allRooms} UserRole={parsedUserRole} userID={parsedUserId} FavRooms={userFavoriteRooms} allBookings={allBookings}/>
+      </div>
     </Vortex>
   </div>
 
