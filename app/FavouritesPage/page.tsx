@@ -3,6 +3,8 @@ import Navbar from '../components/Navbar';
 import { calluser } from '@/aws_db/db';
 import FavouritesList from '../components/favouritesPage/FavouritesList'; // Import your client component
 import { Vortex } from '../components/ui/vortex';
+import { cookies } from 'next/headers'
+
 
 interface UserAccount {
   UserID: number;
@@ -34,14 +36,16 @@ const fetchUserRooms = async (userId: number): Promise<Room[]> => {
 };
 
 // Main Favourites page component
-const FavouritesPage = async ({ searchParams }: { searchParams: { username: string } }) => {
-  const { username } = searchParams;
+const FavouritesPage = async () => { 
+  const cookieStore = cookies()
+  const username = JSON.parse(JSON.stringify(cookieStore.get('username')));
 
-  if (!username) {
+
+  if (!username.value) {
     return <p>No username provided.</p>;
   }
 
-  const userId = await fetchUserIdByUsername(username);
+  const userId = await fetchUserIdByUsername(username.value);
   // Explicitly ensure userId is a number
   const parsedUserId = typeof userId === 'number' ? userId : undefined;
 
@@ -61,9 +65,9 @@ const FavouritesPage = async ({ searchParams }: { searchParams: { username: stri
         className="w-full max-h-screen"
       >
           <Suspense fallback={<div>Loading...</div>}>
-              <Navbar/>
-            </Suspense>
-        <div  className="overflow-y-scroll no-scrollbar overflow-hidden h-[83.5vh] bg-neutral-800 flex-1 ml-auto mr-auto w-[1100px] shadow-xl shadow-black-500/50">
+            <Navbar username={username.value}/>
+          </Suspense>
+          <div  className="overflow-y-scroll no-scrollbar overflow-hidden h-[83.5vh] bg-neutral-800 flex-1 ml-auto mr-auto w-[1100px] shadow-xl shadow-black-500/50">
             {rooms.length > 0 ? (
               <FavouritesList rooms={rooms} userId={parsedUserId} />
             ) : (

@@ -3,6 +3,8 @@ import Navbar from '../components/Navbar';
 import { calluser } from '@/aws_db/db';
 import React, { Suspense } from 'react';
 import { Vortex } from "../components/ui/vortex";
+import { cookies } from 'next/headers'
+
 
 interface Room {
   RoomID: number;
@@ -76,18 +78,19 @@ const fetchUserIdByUsername = async (username: string): Promise<number | undefin
   return (response as userAccount[])[0]?.UserID;
 };
 
-export default async function UserHomepage({ searchParams }: { searchParams: { username: string } }) {
+export default async function UserHomepage() {
   const allRooms: Room[] = await fetchRoom();
   const userFavs: userFav[] = await fetchFavs();
   const allBookings: Bookings[] = await fetchBookings();
 
-  const { username } = searchParams;
+  const cookieStore = cookies()
+  const username = JSON.parse(JSON.stringify(cookieStore.get('username')));
 
-  if (!username) {
+  if (!username.value) {
     return <p>No username provided.</p>;
   }
 
-  const UserRole = await fetchUserRoleByUsername(username);
+  const UserRole = await fetchUserRoleByUsername(username.value);
   // Explicitly ensure userId is a number
   const parsedUserRole = typeof UserRole === 'string' ? UserRole : undefined; // Ensure it's a number
 
@@ -95,7 +98,7 @@ export default async function UserHomepage({ searchParams }: { searchParams: { u
     return <p>User does not have a role.</p>;
   }
 
-  const userId = await fetchUserIdByUsername(username);
+  const userId = await fetchUserIdByUsername(username.value);
   // Explicitly ensure userId is a number
   const parsedUserId = typeof userId === 'number' ? userId : undefined; // Ensure it's a number
 
@@ -120,7 +123,7 @@ export default async function UserHomepage({ searchParams }: { searchParams: { u
     >
         {/* Navbar */}
         <Suspense fallback={<div>Loading...</div>}>
-          <Navbar />
+          <Navbar username={username.value}/>
         </Suspense>
         {/* Main Content */}
         <UserHome allRooms={allRooms} UserRole={parsedUserRole} userID={parsedUserId} FavRooms={userFavoriteRooms} allBookings={allBookings}/>

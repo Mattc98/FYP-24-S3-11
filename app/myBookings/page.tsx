@@ -3,6 +3,9 @@ import Navbar from '../components/Navbar'
 import Bookings from '../components/myBookings/myBookingsPage'
 import { calluser } from '@/aws_db/db';
 import { Vortex } from "../components/ui/vortex";
+import { cookies } from 'next/headers'
+
+
 interface Bookings {
     BookingID: number;
     RoomID: number;
@@ -51,18 +54,20 @@ const fetchUserIdByUsername = async (username: string): Promise<number | undefin
     return (response as userAccount[])[0]?.UserID;
 };
 
-const myBookings = async ({ searchParams }: { searchParams: { username: string } }) => {
+const myBookings = async () => {
     // get all bookings and rooms from db
     const allBookings = await fetchAllBookings();
     const allRooms = await fetchRoom();
 
     // get username and id
-    const { username } = searchParams;
-    if (!username) {
+    const cookieStore = cookies()
+    const username = JSON.parse(JSON.stringify(cookieStore.get('username')));
+
+    if (!username.value) {
       return <p>No username provided.</p>;
     }
 
-    const UserRole = await fetchUserRoleByUsername(username);
+    const UserRole = await fetchUserRoleByUsername(username.value);
     // Explicitly ensure userId is a number
     const parsedUserRole = typeof UserRole === 'string' ? UserRole : undefined; // Ensure it's a number
   
@@ -70,7 +75,7 @@ const myBookings = async ({ searchParams }: { searchParams: { username: string }
       return <p>User does not have a role.</p>;
     }
 
-    const userId = await fetchUserIdByUsername(username);
+    const userId = await fetchUserIdByUsername(username.value);
     if (!userId) {
       return <p>User not found.</p>;
     }
@@ -87,13 +92,13 @@ const myBookings = async ({ searchParams }: { searchParams: { username: string }
             <div className='min-h-screen'>
               {/* Navbar */}
               <Suspense fallback={<div>Loading...</div>}>
-                <Navbar />
+                <Navbar username={username.value}/>
               </Suspense>
               <Bookings
                   bookings={allBookings}
                   rooms={allRooms}
                   userid={JSON.stringify(userId)}
-                  username={username}
+                  username={username.value}
                   userRole={parsedUserRole}
                 />
             </div>

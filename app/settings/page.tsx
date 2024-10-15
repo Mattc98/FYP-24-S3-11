@@ -2,6 +2,8 @@ import React, { Suspense } from 'react';
 import Navbar from '../components/Navbar';
 import { calluser } from '@/aws_db/db';
 import ChangePassword from '@/app/components/AccountSettings/changePassword';
+import { cookies } from 'next/headers'
+
 
 interface UserAccount {
     UserID: number;
@@ -20,8 +22,10 @@ const fetchUserInfo = async (userId: number): Promise<UserAccount | null> => {
     return (response as UserAccount[])[0] || null;
 };
 
-const SettingsPage = async ({ searchParams }: { searchParams: { username: string } }) => {
-    const username = searchParams.username;
+const SettingsPage = async () => {
+    const cookieStore = cookies()
+    const username = JSON.parse(JSON.stringify(cookieStore.get('username')));
+
     let userInfo: UserAccount | null = null;
     let error: string | null = null;
 
@@ -45,7 +49,7 @@ const SettingsPage = async ({ searchParams }: { searchParams: { username: string
         <div className="bg-neutral-900 min-h-screen flex flex-col items-center">
             <div className='bg-neutral-800'>
                 <Suspense fallback={<div>Loading...</div>}>
-                    <Navbar />
+                    <Navbar username={username.value}/>
                 </Suspense>
             </div>
             <h1 className='p-5 text-3xl font-mono flex item-center justify-center bg-neutral-800 w-[1100px]'>

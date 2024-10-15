@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './LoginForm.module.css';
+import { useCookies } from 'next-client-cookies';
 
 interface UserAccount {
   UserID: number;
@@ -24,6 +25,7 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
   const [headerText, setHeaderText] = useState('User Login');
   const [isLocked, setIsLocked] = useState(false);
   const router = useRouter();
+  const cookies = useCookies();
 
   const homepageRedirect = {
     Admin: '/AdminHomepage',
@@ -73,7 +75,6 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
           
           // Successful login
           setMessage(`${user.Role} Login Successful`);
-          const redirectUrl = `${homepageRedirect[user.Role]}?username=${username}`;
           
           // Reset FailLogin count on successful login
           await updateUserAccount({ ...user, FailLogin: 0, IsLocked: false });
@@ -81,8 +82,10 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
           // Update local user account state
           user.FailLogin = 0;
           user.IsLocked = false;
-  
-          router.push(redirectUrl);
+
+          cookies.set('username', username);
+
+          router.push(homepageRedirect[user.Role]);
         } else {
           // Access denied if role doesn't match the account type
           setMessage('Access Denied');
