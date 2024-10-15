@@ -4,6 +4,7 @@ import { FaCalendarAlt } from 'react-icons/fa';
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { HoverEffect } from "../ui/card-hover-effect";
+import Navbar from '../Navbar';
 
 interface UserHomeProps {
     allRooms: Room[];
@@ -75,7 +76,6 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [unAvaRooms, setUnAvaRooms] = useState<number[]>([]); // To store unavailable room IDs
 
-
     const handleDateIconClick = () => {
         closeModal();
         setShowDatePicker(!showDatePicker); 
@@ -142,10 +142,11 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
     console.log(unAvailableRooms);
 
     return (
-        <div className='bg-neutral-800 flex-1 ml-auto mr-auto w-[1100px] h-full'>
+        <div className='overflow-hidden no-scrollbar overflow-y-scroll bg-neutral-800 flex-1 ml-auto mr-auto lg:w-[1100px] h-full'>
+          <Navbar />
           <div className="px-8 py-6 max-w-7xl mx-auto relative z-10">
            {/* Calendar Icon */}
-            <div className="relative">
+            <div className="relative py-2">
                 <button
                     className="absolute top-0 right-[50%] bg-neutral-900 p-2 rounded-full hover:bg-neutral-700 transition duration-300 z-20"
                     onClick={handleDateIconClick}

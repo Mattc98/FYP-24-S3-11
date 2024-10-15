@@ -1,7 +1,29 @@
-import LoginForm from "./components/LoginForm/LoginForm";
+import LoginForm from "./components/LoginForm/LoginFormClient";
 import Image from 'next/image';
+import { calluser } from '@/aws_db/db';
+
+interface UserAccount {
+  UserID: number;
+  Username: string;
+  Password: string;
+  Role: "User" | "Admin" | "Director";
+  FailLogin: number;
+  IsLocked: boolean;
+}
+
+async function fetchuser(): Promise<UserAccount[]> {
+  try {
+    const response = await calluser("SELECT * FROM userAccount");
+    return JSON.parse(JSON.stringify(response));
+  } catch (error) {
+    console.error(error);
+    throw new Error('Failed to fetch user data.');
+  }
+}
 
 export default async function Home() {
+  const userAccounts = await fetchuser();
+
   return (
     <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-gray-800 to-black text-white">
       
@@ -16,7 +38,7 @@ export default async function Home() {
             />
           </div>
           <h2 className="text-4xl font-bold text-white text-center mb-6">Sign In</h2>
-          <LoginForm />
+          <LoginForm userAccount={userAccounts}/>
       </div>
     </main>
   );

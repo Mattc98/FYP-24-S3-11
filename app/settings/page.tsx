@@ -2,6 +2,8 @@ import React, { Suspense } from 'react';
 import Navbar from '../components/Navbar';
 import { calluser } from '@/aws_db/db';
 import ChangePassword from '@/app/components/AccountSettings/changePassword';
+import { cookies } from 'next/headers'
+
 
 interface UserAccount {
     UserID: number;
@@ -20,14 +22,16 @@ const fetchUserInfo = async (userId: number): Promise<UserAccount | null> => {
     return (response as UserAccount[])[0] || null;
 };
 
-const SettingsPage = async ({ searchParams }: { searchParams: { username: string } }) => {
-    const username = searchParams.username;
+const SettingsPage = async () => {
+    const cookieStore = cookies()
+    const username = JSON.parse(JSON.stringify(cookieStore.get('username')));
+
     let userInfo: UserAccount | null = null;
     let error: string | null = null;
 
-    if (username) {
+    if (username.value) {
         try {
-            const userId = await fetchUserIdByUsername(username);
+            const userId = await fetchUserIdByUsername(username.value);
             if (userId) {
                 userInfo = await fetchUserInfo(userId);
             } else {
@@ -42,20 +46,18 @@ const SettingsPage = async ({ searchParams }: { searchParams: { username: string
     }
 
     return (
-        <div className="bg-neutral-900 min-h-screen flex flex-col items-center">
-            <div className='bg-neutral-800'>
-                <Suspense fallback={<div>Loading...</div>}>
-                    <Navbar />
-                </Suspense>
-            </div>
-            <h1 className='p-5 text-3xl font-mono flex item-center justify-center bg-neutral-800 w-[1100px]'>
-                Account Information
+        <div className="bg-neutral-900 min-h-screen flex-col items-center">
+            <Suspense fallback={<div>Loading...</div>}>
+                <Navbar />
+            </Suspense>
+            <h1 className='p-7 mx-4 lg:text-3xl md:text-2xl sm:text-2xl font-mono item-center justify-center bg-neutral-800 w-[1100px] flex-1 ml-auto mr-auto'>
+                Account Information  
             </h1>
                 {/* Conditional rendering for error and user information */}
             {error ? (
                 <div className="text-red-500 mt-4 text-center">{error}</div>
             ) : userInfo ? (
-                <div className="w-full max-w-[1100px] bg-neutral-800 shadow-lg px-8 py-6">
+                <div className="w-full max-w-[1100px] bg-neutral-800 shadow-lg px-8 py-6 flex-1 ml-auto mr-auto">
                     {/* Username */}
                     <div className="mb-4">
                         <label

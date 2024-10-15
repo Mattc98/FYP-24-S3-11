@@ -61,7 +61,7 @@ function FeedbackFormContent({ children, userId }: FeedbackFormProps) {
     }
 
     return (
-        <div className={styles.container}>
+        <div className="flex flex-col justify-center items-center h-screen lg:w-[1100px] mx-auto bg-neutral-800">
             <form ref={formRef} onSubmit={handleSubmit} className={styles.form}>
                 <div>
                     <label htmlFor="rooms" className={styles.label}>Room: </label>
