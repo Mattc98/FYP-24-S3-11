@@ -113,7 +113,7 @@ export default async function UserHomepage() {
   
   return (
 
-  <div className="w-[100%] h-screen overflow-hidden p-4">
+  <div className="w-[100%] h-screen overflow-hidden">
     <Vortex
       backgroundColor="black"
       rangeY={800}
@@ -121,12 +121,11 @@ export default async function UserHomepage() {
       baseHue={120}
       className="flex items-center flex-col justify-center w-full h-screen"
     >
-        {/* Navbar */}
-        <Suspense fallback={<div>Loading...</div>}>
-          <Navbar username={username.value}/>
-        </Suspense>
-        {/* Main Content */}
-        <UserHome allRooms={allRooms} UserRole={parsedUserRole} userID={parsedUserId} FavRooms={userFavoriteRooms} allBookings={allBookings}/>
+        <div className="flex-1 ml-auto mr-auto min-h-screen">
+          {/* Main Content */}
+          <UserHome username={username.value} allRooms={allRooms} UserRole={parsedUserRole} userID={parsedUserId} FavRooms={userFavoriteRooms} allBookings={allBookings}/>
+        </div>
+        
     </Vortex>
   </div>
 

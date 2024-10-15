@@ -81,19 +81,15 @@ const myBookings = async () => {
     }
 
     return (
-        <div className="flex w-full max-h-screen overflow-hidden">
+        <div className="flex w-full min-h-screen overflow-hidden">
           <Vortex
            backgroundColor="black"
            rangeY={800}
            particleCount={500}
            baseHue={120}
-           className="w-full max-h-screen"
+           className="w-full h-screen"
          >
-            <div className='min-h-screen'>
-              {/* Navbar */}
-              <Suspense fallback={<div>Loading...</div>}>
-                <Navbar username={username.value}/>
-              </Suspense>
+            <div className='min-h-screen flex-1 ml-auto mr-auto pb-9'>
               <Bookings
                   bookings={allBookings}
                   rooms={allRooms}

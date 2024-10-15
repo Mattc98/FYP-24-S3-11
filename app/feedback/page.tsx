@@ -63,7 +63,7 @@ export default async function Feedback() {
           <Suspense fallback={<div>Loading...</div>}>
             <Navbar username={username.value}/>
           </Suspense>
-          <div className={styles.container}>
+          <div className="flex flex-col justify-center items-center h-screen lg:w-[1100px] mx-auto bg-neutral-800">
             <h1 className={styles.pageHeading}>Share your feedback</h1>
             <FeedbackForm userId={parsedUserId}>
               <RoomDropdown UserRole={parsedUserRole}/>

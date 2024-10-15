@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Navbar from '../Navbar'
 
 interface ClientBookingsProps {
     bookings: Bookings[];
@@ -208,14 +209,16 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
     };
 
     return (
-        <div className="overflow-hidden no-scrollbar col-span-1 overflow-y-scroll bg-neutral-800 px-8 py-6 flex-1 ml-auto mr-auto w-[1100px] h-[83.5vh] shadow-lg shadow-black-500/50">
-            <h2 className="text-center text-2xl font-semibold mb-6">Here are your upcoming bookings</h2>
+        <div className="pb-6 overflow-hidden no-scrollbar col-span-1 overflow-y-scroll bg-neutral-800 flex-1 ml-auto mr-auto lg:w-[1100px] h-screen">
+            <Navbar username ={username}/>
+
+            <h2 className="text-center text-2xl font-semibold pb-6">Here are your upcoming bookings</h2>
             <div className="grid grid-cols-1 gap-6">
                 {myBookings.length === 0 ? (
                     <p>No bookings found for {username}.</p>
                 ) : (
                     myBookings.map((booking, index) => (
-                        <div key={index} className="flex-1 ml-auto mr-auto w-[65%] bg-gradient-to-r from-neutral-500 via-neutral-700 to-neutral-800 rounded-lg overflow-hidden shadow-lg">
+                        <div key={index} className="flex-1 ml-auto mr-auto lg:w-[65%] bg-gradient-to-r from-neutral-500 via-neutral-700 to-neutral-800 rounded-lg overflow-hidden shadow-lg">
                             <div className="flex items-center p-4">
                                 <Image
                                     src={"/images/" + booking.imagename}

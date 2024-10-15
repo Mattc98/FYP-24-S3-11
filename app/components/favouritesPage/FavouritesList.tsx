@@ -4,6 +4,7 @@ import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css'; 
 import TimeSlotDropdown from './TimeSlotDropdown'; // Ensure this path is correct
 
+
 interface Room {
   RoomID: number;
   RoomName: string;
@@ -14,9 +15,10 @@ interface Room {
 interface FavouritesListProps {
   rooms: Room[];
   userId: number;
+  username: string;
 }
 
-const FavouritesList: React.FC<FavouritesListProps> = ({ rooms,userId }) => {
+const FavouritesList: React.FC<FavouritesListProps> = ({ rooms, userId, username }) => {
   
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>(''); 
@@ -75,8 +77,9 @@ const FavouritesList: React.FC<FavouritesListProps> = ({ rooms,userId }) => {
   }
 
   return (
-    <div className='pb-7 bg-neutral-800 flex-1 ml-auto mr-auto w-[70%] h-max'>
-      <h2 className="text-2xl font-bold text-white mb-6">Your Favourite Rooms</h2>
+    
+    <div className='bg-neutral-800 flex-1 ml-auto mr-auto w-[70%] h-screen'>
+      <h2 className="text-2xl font-bold text-white">Your Favourite Rooms</h2>
       <ul className="space-y-8">
         {rooms.map((room) => (
           <li key={room.RoomID} className="bg-neutral-900 p-6 rounded-lg shadow-xl shadow-black-500/50">

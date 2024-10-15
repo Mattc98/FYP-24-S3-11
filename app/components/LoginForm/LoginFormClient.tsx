@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './LoginForm.module.css';
-import { useCookies } from 'next-client-cookies';
+import { setCookie } from "cookies-next";
 
 interface UserAccount {
   UserID: number;
@@ -25,7 +25,6 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
   const [headerText, setHeaderText] = useState('User Login');
   const [isLocked, setIsLocked] = useState(false);
   const router = useRouter();
-  const cookies = useCookies();
 
   const homepageRedirect = {
     Admin: '/AdminHomepage',
@@ -83,7 +82,7 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
           user.FailLogin = 0;
           user.IsLocked = false;
 
-          cookies.set('username', username);
+          setCookie('username', username);
 
           router.push(homepageRedirect[user.Role]);
         } else {

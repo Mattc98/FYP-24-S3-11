@@ -56,7 +56,7 @@ const FavouritesPage = async () => {
   const rooms = await fetchUserRooms(parsedUserId);
 
   return (
-      <div className="flex w-full max-h-screen overflow-hidden">
+      <div className="flex w-full h-screen overflow-hidden">
         <Vortex
         backgroundColor="black"
         rangeY={800}
@@ -64,12 +64,10 @@ const FavouritesPage = async () => {
         baseHue={120}
         className="w-full max-h-screen"
       >
-          <Suspense fallback={<div>Loading...</div>}>
-            <Navbar username={username.value}/>
-          </Suspense>
-          <div  className="overflow-y-scroll no-scrollbar overflow-hidden h-[83.5vh] bg-neutral-800 flex-1 ml-auto mr-auto w-[1100px] shadow-xl shadow-black-500/50">
+          <div  className="overflow-y-scroll no-scrollbar h-screen bg-neutral-800 flex-1 ml-auto mr-auto lg:w-[1100px] shadow-xl shadow-black-500/50 ">
+            <Navbar username ={username.value}/>
             {rooms.length > 0 ? (
-              <FavouritesList rooms={rooms} userId={parsedUserId} />
+              <FavouritesList rooms={rooms} userId={parsedUserId} username={username.value}/>
             ) : (
               <p className="text-gray-400">No rooms found for this user.</p>
             )}
