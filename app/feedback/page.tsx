@@ -1,4 +1,3 @@
-import styles from '@/app/components/Feedback/Feedback.module.css';
 import RoomDropdown from '@/app/components/Feedback/RoomDropdown';
 import FeedbackForm from '@/app/components/Feedback/FeedbackForm';
 import Navbar from '../components/Navbar';
@@ -64,7 +63,6 @@ export default async function Feedback() {
             <Navbar />
           </Suspense>
           <div className="flex flex-col justify-center items-center h-screen lg:w-[1100px] mx-auto bg-neutral-800">
-            <h1 className={styles.pageHeading}>Share your feedback</h1>
             <FeedbackForm userId={parsedUserId}>
               <RoomDropdown UserRole={parsedUserRole}/>
             </FeedbackForm>
