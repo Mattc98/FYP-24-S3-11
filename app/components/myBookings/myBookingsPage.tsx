@@ -58,6 +58,7 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
     const [selectedBooking, setSelectedBooking] = useState<MyBooking | null>(null); // The booking to amend
     const [newDate, setNewDate] = useState(''); // The new date
     const [newTime, setNewTime] = useState(''); // The new time slot
+    const currentDate = new Date().toISOString().split('T')[0]; // Get current date in 'YYYY-MM-DD' format
 
     useEffect(() => {
         const getMyBookings = () => {
@@ -267,6 +268,7 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
                         <input
                             type="date"
                             value={newDate}
+                            min={currentDate}  // This prevents selecting past dates
                             onChange={(e) => setNewDate(e.target.value)}
                             className="bg-gradient-to-r from-neutral-900 via-neutral-800 to-neutral-900 w-full p-2 border border-neutral-300 rounded"
                         />

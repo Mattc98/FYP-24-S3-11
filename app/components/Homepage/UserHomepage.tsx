@@ -75,6 +75,7 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
     const userId = userID;
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [unAvaRooms, setUnAvaRooms] = useState<number[]>([]); // To store unavailable room IDs
+    const currentDate = new Date(); // Get the current date
 
     const handleDateIconClick = () => {
         closeModal();
@@ -161,12 +162,13 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
                     style={{ top: "50%", left: "50%", transform: "translateX(-50%)" }} // Adjust position here
                     >
                     <div className="mb-2">
-                        <ReactDatePicker
+                    <ReactDatePicker
                         selected={startDate}
                         onChange={(date) => setStartDate(date)}
+                        minDate={currentDate} // Restrict past dates
                         className="border rounded-md p-2 w-full text-white bg-neutral-800"
                         placeholderText="Select a date"
-                        />
+                    />
                     </div>
 
                     {/* Time Slot Dropdown */}
