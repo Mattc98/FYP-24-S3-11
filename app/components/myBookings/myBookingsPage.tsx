@@ -51,6 +51,7 @@ const timeSlots = [
   '03:00 PM - 04:00 PM',
 ];
 
+
 const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, username, userid, userRole }) => {
     const [myBookings, setMyBookings] = useState<MyBooking[]>([]);
     const [showAmendModal, setShowAmendModal] = useState(false); // To control modal visibility
@@ -60,8 +61,10 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
 
     useEffect(() => {
         const getMyBookings = () => {
+            const currentDate = new Date();
+
             const userBookings = bookings
-                .filter(booking => booking.UserID == userid)
+                .filter(booking => booking.UserID == userid && new Date(booking.BookingDate) >= currentDate)
                 .map(booking => {
                     const room = rooms.find(room => room.RoomID == booking.RoomID);
                     if (room) {
@@ -78,11 +81,13 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
                     }
                     return "Not this room";
                 });
-
+            
             setMyBookings(userBookings as MyBooking[]);
         };
-        
+
+
         getMyBookings();
+        
     }, [bookings, rooms, userid]);
 
     // Function to handle booking cancellation
@@ -180,7 +185,6 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
         }
     };
     
-    // Formatting functions
     const formatDate = (date: Date) => {
         return new Intl.DateTimeFormat('en-CA', {
             year: 'numeric',
@@ -217,6 +221,7 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
                 {myBookings.length === 0 ? (
                     <p>No bookings found for {username}.</p>
                 ) : (
+                    
                     myBookings.map((booking, index) => (
                         <div key={index} className="flex-1 ml-auto mr-auto lg:w-[65%] bg-gradient-to-r from-neutral-500 via-neutral-700 to-neutral-800 rounded-lg overflow-hidden shadow-lg">
                             <div className="flex items-center p-4">
