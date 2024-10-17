@@ -5,6 +5,8 @@ import ChangePassword from '@/app/components/AccountSettings/changePassword';
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'; // Use for server-side redirection
 
+export const dynamic = 'force-dynamic'; // Ensure dynamic rendering
+
 interface UserAccount {
     UserID: number;
     Username: string;

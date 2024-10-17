@@ -5,7 +5,7 @@ import { Vortex } from "../components/ui/vortex";
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'; // Use for server-side redirection
 
-
+export const dynamic = 'force-dynamic'; // Ensure dynamic rendering
 
 interface Room {
   RoomID: number;
