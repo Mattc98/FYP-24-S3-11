@@ -43,7 +43,7 @@ const RoleDropdown: React.FC<RoleDropdownProps> = ({ isOpen, onClose, addUser })
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-neutral-800 p-6 rounded shadow-lg w-1/3">
+      <div className="bg-neutral-700 p-6 rounded shadow-lg w-1/3">
         <h2 className="text-2xl font-semibold mb-4">Add New User</h2>
 
         {/* Display error message */}
