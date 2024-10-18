@@ -23,18 +23,18 @@ const AdminHomepage = () => {
                     <AdminNavbar />
                 </Suspense>
             </div>
-            <div className="min-h-screen bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white flex flex-col items-center justify-center space-y-8">
+            <div className="min-h-screen  bg-neutral-800 text-white flex flex-col items-center justify-center space-y-8">
                 <button
                     onClick={redirectUsers}
                     //disabled={!username}
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-8 text-xl rounded-lg disabled:bg-gray-500"
+                    className="bg-neutral-600 hover:bg-neutral-500 text-white font-bold py-4 px-8 text-xl rounded-lg disabled:bg-gray-500"
                 >
                     Manage Users
                 </button>
                 <button
                     onClick={redirectRooms}
                     //disabled={!username}
-                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-4 px-8 text-xl rounded-lg disabled:bg-gray-500"
+                    className="bg-neutral-600 hover:bg-neutral-500 text-white font-bold py-4 px-8 text-xl rounded-lg disabled:bg-gray-500"
                 >
                     Manage Rooms
                 </button>

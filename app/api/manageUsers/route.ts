@@ -40,19 +40,35 @@ export async function PUT(req: Request) {
 }
 
 export async function POST(req: Request) {
-    const { Username, Password, Email, Role} = await req.json();
+    const { Username, Password, Email, Role } = await req.json();
 
     try {
-        // Get the highest existing UserID
-        const getMaxUserIDQuery = `SELECT MAX(UserID) as maxID FROM userAccount WHERE Role = '${Role}'`;
-        const result = await calluser(getMaxUserIDQuery) as MaxIDResult[];
-        
-        if (!result || result.length === 0) {
-            throw new Error('Failed to retrieve max UserID');
+        // Check if Username or Email already exists
+        const checkDuplicateQuery = `
+            SELECT * FROM userAccount 
+            WHERE Username = '${Username}' OR Email = '${Email}'
+        `;
+        const duplicateResult = await calluser(checkDuplicateQuery) as UserAccount[];
+
+        if (duplicateResult.length > 0) {
+            return NextResponse.json({ error: 'Username or Email already exists' }, { status: 400 });
+            
         }
 
-        const maxID = result[0].maxID;
-        const nextUserID = (maxID ?? 0) + 1;  // If maxID is null, start from 1
+        // Get the highest existing UserID for the given role
+        const getMaxUserIDQuery = `SELECT MAX(UserID) as maxID FROM userAccount WHERE Role = '${Role}'`;
+        const result = await calluser(getMaxUserIDQuery) as { maxID: number | null }[];
+
+        // Declare nextUserID outside of if/else block for scope visibility
+        let nextUserID: number;
+
+        if (!result || result.length === 0 || result[0].maxID === null) {
+            // If no UserID exists for the role, start from 1
+            nextUserID = 1;
+        } else {
+            // Get the next UserID based on the maximum found
+            nextUserID = result[0].maxID + 1;
+        }
 
         // Insert the new user with the calculated UserID
         const insertQuery = `
@@ -61,7 +77,7 @@ export async function POST(req: Request) {
         `;
         await calluser(insertQuery);
 
-        const newUser: UserAccount = { UserID: nextUserID, Username, Role, Email};
+        const newUser: UserAccount = { UserID: nextUserID, Username, Role, Email };
         return NextResponse.json(newUser);
     } catch (error) {
         console.error(error);

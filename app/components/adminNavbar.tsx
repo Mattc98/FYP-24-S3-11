@@ -30,7 +30,7 @@ const Navbar= () => {
   };
 
   return (
-    <div className="flex-1 ml-auto mr-auto lg:w-[1100px] p-4 bg-neutral-800 text-white">
+    <div className="flex-1 ml-auto mr-auto  p-4 bg-neutral-800 text-white">
       {/* Hamburger icon for mobile */}
       <div className="sm:hidden">
         <button
