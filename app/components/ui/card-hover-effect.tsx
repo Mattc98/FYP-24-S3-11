@@ -84,19 +84,10 @@ export const HoverEffect = ({
             day: 'numeric',
         }).format(date);
     };
-
-    const timeSlots = [
-        '09:00 AM - 10:00 AM',
-        '10:00 AM - 11:00 AM',
-        '11:00 AM - 12:00 PM',
-        '01:00 PM - 02:00 PM',
-        '02:00 PM - 03:00 PM',
-        '03:00 PM - 04:00 PM',
-      ];
       
       // Helper function to convert time to 24-hour format
       const convertTo24Hour = (time: string) => {
-        let [hours, minutesPart] = time.split(':');
+        const [hours, minutesPart] = time.split(':');
         const minutes = minutesPart.slice(0, 2);
         const period = minutesPart.slice(3); // Extract AM or PM
       
