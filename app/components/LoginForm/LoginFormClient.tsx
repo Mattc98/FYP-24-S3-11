@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './LoginForm.module.css';
 import { setCookie } from "cookies-next";
+import { rp } from 'framer-motion/client';
 
 interface UserAccount {
   UserID: number;
@@ -83,6 +84,7 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
           user.IsLocked = false;
 
           setCookie('username', username);
+          setCookie('role', role);
 
           router.push(homepageRedirect[user.Role]);
         } else {
