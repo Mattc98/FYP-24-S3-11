@@ -34,7 +34,8 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
     const [feedback, setFeedback] = useState<Feedback[]>([]);
     const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
     const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null);
-    const [users, setUsers] = useState<UserAccount[]>([]); // State to store users
+    const [, setUsers] = useState<UserAccount[]>([]); // State to store users
+
 
     // Fetch users when the component mounts
     useEffect(() => {

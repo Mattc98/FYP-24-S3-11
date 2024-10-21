@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './LoginForm.module.css';
 import { setCookie } from "cookies-next";
-import { rp } from 'framer-motion/client';
 
 interface UserAccount {
   UserID: number;

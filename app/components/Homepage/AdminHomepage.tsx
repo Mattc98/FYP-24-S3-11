@@ -1,12 +1,11 @@
 "use client";
-import React, { Suspense, useEffect, useState } from 'react';
+import React, { Suspense} from 'react';
 import { useRouter } from 'next/navigation';
 import AdminNavbar from '../adminNavbar';
 
 const AdminHomepage = () => {
     
     const router = useRouter();
-
 
     const redirectUsers = () => {
         router.push(`/ManageUsersPage`);

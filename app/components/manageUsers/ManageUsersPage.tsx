@@ -71,32 +71,6 @@ const ManageUsersPage = () => {
   }
 };
 
-// Lock User Function
-const lockUser = async (userID: number) => {
-  try {
-    const response = await fetch('api/lockUser', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        UserID: userID,
-        IsLocked: 1, // Lock the user
-        FailLogin: 1, // Increment failed login attempts or set to a specific value
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to lock user');
-    }
-
-    const data = await response.json();
-    console.log('User locked successfully:', data);
-  } catch (error) {
-    console.error('Error locking user:', error);
-  }
-};
-
   // Handle edit button click
   const handleEdit = async (userID: number) => {
     try {
