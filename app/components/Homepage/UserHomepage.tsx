@@ -166,6 +166,8 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
                         onChange={(date) => setStartDate(date)}
                         className="border rounded-md p-2 w-full text-white bg-neutral-800"
                         placeholderText="Select a date"
+                        minDate={new Date()}
+                        onKeyDown={(e) => e.preventDefault()}
                         />
                     </div>
 

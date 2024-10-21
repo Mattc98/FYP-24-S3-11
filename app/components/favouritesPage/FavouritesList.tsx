@@ -99,6 +99,8 @@ const FavouritesList: React.FC<FavouritesListProps> = ({ rooms, userId }) => {
                   onChange={(date) => setStartDate(date)}
                   className="border rounded-md p-2 w-full text-black" // Adjusted width
                   placeholderText="Select a date"
+                  minDate={new Date()} 
+                  onKeyDown={(e) => e.preventDefault()}
                 />
                 <TimeSlotDropdown timeSlots={timeSlots} onChange={(slot) => setSelectedTimeSlot(slot)} />
                 <p className="mt-4 text-gray-300">Pax: {room.Pax}</p>

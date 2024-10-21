@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import Navbar from '../Navbar'
+import Navbar from '../Navbar';
 
 interface ClientBookingsProps {
     bookings: Bookings[];
@@ -274,7 +274,7 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
                             className="bg-gradient-to-r from-neutral-900 via-neutral-800 to-neutral-900 w-full p-2 border border-neutral-300 rounded"
                         >
                             {timeSlots.map((slot, index) => (
-                                <option key={index} value={slot}>
+                                <option key={index} value={slot} style={{ color: 'black' }}>
                                     {slot}
                                 </option>
                             ))}
