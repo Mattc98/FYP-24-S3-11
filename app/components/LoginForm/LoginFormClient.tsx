@@ -83,6 +83,7 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
           user.IsLocked = false;
 
           setCookie('username', username);
+          setCookie('role', role);
 
           router.push(homepageRedirect[user.Role]);
         } else {

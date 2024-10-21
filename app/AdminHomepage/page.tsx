@@ -1,70 +1,70 @@
-"use client";
-import React, { Suspense, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import AdminNavbar from '../components/adminNavbar';
+import { calluser } from '@/aws_db/db';
+import React, { Suspense } from 'react';
+import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'; // Use for server-side redirection
+import AdminHome from "../components/Homepage/AdminHomepage";
 
-const AdminHomepage = () => {
-    const [username, setUsername] = useState<string | null>(null);
-    const [loading, setLoading] = useState(true);
-    const router = useRouter();
+interface userAccount{
+    UserID: number;
+    Username: string;
+    Password: string;
+    Role: "User" | "Admin" | "Director";
+  }
 
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const searchParams = new URLSearchParams(window.location.search);
-            const usernameParam = searchParams.get('username');
-            setUsername(usernameParam);
-            setLoading(false);
-        }
-    }, []);
-
-    const redirectUsers = () => {
-        if (username) {
-            router.push(`/ManageUsersPage?username=${username}`);
-        }
-    };
-
-    const redirectRooms = () => {
-        if (username) {
-            router.push(`/manageRooms?username=${username}`);
-        }
-    };
-
-    if (loading) {
-        return <div>Loading...</div>;
-    }
-
-    return (
-        <div>
-            <div>
-                <Suspense fallback={<div>Loading...</div>}>
-                    <AdminNavbar />
-                </Suspense>
-            </div>
-            <div className="min-h-screen bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white flex flex-col items-center justify-center space-y-8">
-                <button
-                    onClick={redirectUsers}
-                    disabled={!username}
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-8 text-xl rounded-lg disabled:bg-gray-500"
-                >
-                    Manage Users
-                </button>
-                <button
-                    onClick={redirectRooms}
-                    disabled={!username}
-                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-4 px-8 text-xl rounded-lg disabled:bg-gray-500"
-                >
-                    Manage Rooms
-                </button>
-            </div>
-        </div>
-    );
-};
+// Fetch user ID by username
+const fetchUserRoleByUsername = async (username: string): Promise<string | undefined> => {
+    const response = await calluser(`SELECT Role FROM userAccount WHERE Username = '${username}'`);
+    return (response as userAccount[])[0]?.Role;
+  };
+  
+  const fetchUserIdByUsername = async (username: string): Promise<number | undefined> => {
+    const response = await calluser(`SELECT UserID FROM userAccount WHERE Username = '${username}'`);
+    return (response as userAccount[])[0]?.UserID;
+  };
 
 // Ensure to wrap the default export in a Suspense boundary
-export default function Page() {
+export default async function AdminHomepage() {
+
+    const cookieStore = cookies();
+    const usernameCookie = cookieStore.get('username');
+
+    if (!usernameCookie) {
+      // If the username cookie doesn't exist, redirect to the home page
+      redirect('/');
+    }
+
+    // Parse the cookie if it exists
+    const username = JSON.parse(JSON.stringify(usernameCookie));
+    
+    if (!username?.value) {
+      // If there's no valid value in the cookie, redirect to home
+      redirect('/');
+    }
+
+    if (!username.value) {
+      return <p>No username provided.</p>;
+    }
+  
+    const UserRole = await fetchUserRoleByUsername(username.value);
+    // Explicitly ensure userId is a number
+    const parsedUserRole = typeof UserRole === 'string' ? UserRole : undefined; // Ensure it's a number
+  
+    if (parsedUserRole === undefined) {
+      return <p>User does not have a role.</p>;
+    }
+  
+    const userId = await fetchUserIdByUsername(username.value);
+    // Explicitly ensure userId is a number
+    const parsedUserId = typeof userId === 'number' ? userId : undefined; // Ensure it's a number
+  
+    if (parsedUserId === undefined) {
+      return <p>User not found.</p>;
+    }
+    
     return (
+        
         <Suspense fallback={<div>Loading...</div>}>
-            <AdminHomepage />
+            <AdminHome />
         </Suspense>
     );
 }

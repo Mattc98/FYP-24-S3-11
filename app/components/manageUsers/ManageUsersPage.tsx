@@ -91,8 +91,10 @@ const ManageUsersPage = () => {
         );
         setEditUsername(''); // Clear the input
         setCurrentUserId(null); // Reset current user ID
+        alert('User successfully updated!'); // Show success message
       }
     } catch (error) {
+      alert('Error updating user'); // Show error message
       console.error('Error updating user:', error);
     }
   };
@@ -117,8 +119,10 @@ const ManageUsersPage = () => {
       if (response.ok) {
         // Remove the user from the list
         setManageUsers((prevUsers) => prevUsers.filter((user) => user.UserID !== userID));
+        alert('User successfully terminated!'); // Show success message
       }
     } catch (error) {
+      alert('Error terminating user'); // Show error message
       console.error('Error terminating user:', error);
     }
   };
@@ -129,8 +133,7 @@ const ManageUsersPage = () => {
     setEditUsername(''); // Clear the edit username input
   };
   
-  // Function to add a new user
-  const addUser = async (userData: { username: string; password: string; email:string, role: string }) => {
+  const addUser = async (userData: { username: string; password: string; email: string; role: string }) => {
     try {
       const response = await fetch('/api/manageUsers', {
         method: 'POST',
@@ -142,29 +145,39 @@ const ManageUsersPage = () => {
           Password: userData.password,
           Email: userData.email,
           Role: userData.role,
-          ProfilePicture: '/images/profile-icon.png', // Use a default profile picture or handle dynamically
-        }), // Send new user data
+          ProfilePicture: '/images/profile-icon.png', // Default profile picture
+        }),
       });
-
+  
       if (response.ok) {
         const newUser = await response.json(); // Assuming the API returns the created user
-        setManageUsers((prevUsers) => [...prevUsers, newUser]); // Add the new user to the list
+        setManageUsers((prevUsers) => [...prevUsers, newUser]); // Add new user to the list
         setIsModalOpen(false); // Close the modal
+        alert('User successfully created!'); // Show success message
+      } else {
+        const errorData = await response.json();
+        if (errorData.error === 'Username or Email already exists') {
+          alert('Error: Username or Email already exists.');
+        } else {
+          alert('Error creating user. Please try again.');
+        }
       }
     } catch (error) {
       console.error('Error adding user:', error);
+      alert('Error creating user. Please try again.');
     }
   };
+  
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white">
+    <div className="min-h-screen  bg-neutral-800  text-white">
       <div className="container mx-auto p-4">
         <h1 className="text-3xl font-bold mb-4 text-white">Manage Users</h1>
 
         {/* Add User Button */}
         <button
           onClick={() => setIsModalOpen(true)} // Open the modal when clicked
-          className="bg-blue-500 text-white px-4 py-2 rounded mb-4"
+          className="bg-neutral-600 text-white px-4 py-2 rounded mb-4 hover:bg-neutral-500"
         >
           Add User
         </button>
@@ -176,7 +189,7 @@ const ManageUsersPage = () => {
             {manageUsers.length > 0 ? (
               <ul className="space-y-4">
                 {manageUsers.map((user) => (
-                  <li key={user.UserID} className="flex items-center bg-gray-400 p-4 rounded-md shadow-md">
+                  <li key={user.UserID} className="flex items-center bg-neutral-900 p-4 rounded-md shadow-md">
                     <div className="relative mr-4">
                       <p>UserID: {user.UserID}</p>
                       <img
