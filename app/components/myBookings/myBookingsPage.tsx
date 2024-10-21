@@ -1,5 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import ReactDatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css'; 
 import Image from 'next/image';
 import Navbar from '../Navbar';
 
@@ -259,11 +261,14 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
                     <h3 className="text-xl font-semibold mb-4">Amend Booking</h3>
                     <div className="mb-4">
                         <label className="block font-semibold mb-2">Select New Date</label>
-                        <input
-                            type="date"
-                            value={newDate}
-                            onChange={(e) => setNewDate(e.target.value)}
-                            className="bg-gradient-to-r from-neutral-900 via-neutral-800 to-neutral-900 w-full p-2 border border-neutral-300 rounded"
+                        <ReactDatePicker
+                            selected={newDate ? new Date(newDate) : null}
+                            onChange={(date) => setNewDate(date ? date.toISOString().split('T')[0] : '')}
+                            dateFormat="yyyy-MM-dd"
+                            className="border rounded-md p-2 w-full text-white bg-neutral-800"
+                            placeholderText="Select a date"
+                            minDate={new Date()}
+                            onKeyDown={(e) => e.preventDefault()}
                         />
                     </div>
                     <div className="mb-4">
