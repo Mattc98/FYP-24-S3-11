@@ -75,7 +75,6 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
     const userId = userID;
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [unAvaRooms, setUnAvaRooms] = useState<number[]>([]); // To store unavailable room IDs
-    const currentDate = new Date(); // Get the current date
 
     const handleDateIconClick = () => {
         closeModal();

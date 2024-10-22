@@ -60,7 +60,6 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
     const [selectedBooking, setSelectedBooking] = useState<MyBooking | null>(null); // The booking to amend
     const [newDate, setNewDate] = useState(''); // The new date
     const [newTime, setNewTime] = useState(''); // The new time slot
-    const currentDate = new Date().toISOString().split('T')[0]; // Get current date in 'YYYY-MM-DD' format
 
     useEffect(() => {
         const getMyBookings = () => {
