@@ -92,7 +92,7 @@ function FeedbackFormContent({ children, userId }: FeedbackFormProps) {
 
 export default function FeedbackForm(props: FeedbackFormProps) {
     return (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<div></div>}>
             <FeedbackFormContent {...props} />
         </Suspense>
     );

@@ -75,6 +75,7 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
     const userId = userID;
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [unAvaRooms, setUnAvaRooms] = useState<number[]>([]); // To store unavailable room IDs
+    const currentDate = new Date(); // Get the current date
 
     const handleDateIconClick = () => {
         closeModal();
@@ -148,7 +149,7 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
            {/* Calendar Icon */}
             <div className="relative py-2">
                 <button
-                    className="absolute top-0 right-[50%] bg-neutral-900 p-2 rounded-full hover:bg-neutral-700 transition duration-300 z-20"
+                    className="absolute top-0 left-[48%] bg-neutral-900 p-2 rounded-full hover:bg-neutral-700 transition duration-300 z-20"
                     onClick={handleDateIconClick}
                 >
                     <FaCalendarAlt className="text-white w-6 h-6" />
@@ -157,7 +158,7 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
                 {/* Date Picker - Shows only when icon is clicked */}
                 {showDatePicker && (
                     <div
-                    className="absolute bg-neutral-900 p-4 rounded-lg shadow-lg z-50 border border-white dark:border-white/[0.2]"
+                    className="absolute bg-neutral-900 mt-8 p-7 rounded-lg shadow-lg z-50 border border-white dark:border-white/[0.2]"
                     style={{ top: "50%", left: "50%", transform: "translateX(-50%)" }} // Adjust position here
                     >
                     <div className="mb-2">

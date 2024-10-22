@@ -3,6 +3,9 @@ import Bookings from '../components/myBookings/myBookingsPage'
 import { calluser } from '@/aws_db/db';
 import { Vortex } from "../components/ui/vortex";
 import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'; // Use for server-side redirection
+
+export const dynamic = 'force-dynamic'; // Ensure dynamic rendering
 
 
 interface Bookings {
@@ -54,13 +57,28 @@ const fetchUserIdByUsername = async (username: string): Promise<number | undefin
 };
 
 const myBookings = async () => {
+
+  try {
+    const cookieStore = cookies();
+    const usernameCookie = cookieStore.get('username');
+
+    if (!usernameCookie) {
+      // If the username cookie doesn't exist, redirect to the home page
+      redirect('/');
+    }
+
+    // Parse the cookie if it exists
+    const username = JSON.parse(JSON.stringify(usernameCookie));
+    
+    if (!username?.value) {
+      // If there's no valid value in the cookie, redirect to home
+      redirect('/');
+    }
+
     // get all bookings and rooms from db
     const allBookings = await fetchAllBookings();
     const allRooms = await fetchRoom();
 
-    // get username and id
-    const cookieStore = cookies()
-    const username = JSON.parse(JSON.stringify(cookieStore.get('username')));
 
     if (!username.value) {
       return <p>No username provided.</p>;
@@ -101,6 +119,12 @@ const myBookings = async () => {
        </div>
        
     )
+
+  } catch (error) {
+    // Handle any errors (e.g., JSON parsing issues)
+    console.error('Error reading cookie:', error);
+    redirect('/'); // Redirect to the home page on error
+  }
 }
 
 export default myBookings

@@ -1,4 +1,3 @@
-import styles from '@/app/components/Feedback/Feedback.module.css';
 import RoomDropdown from '@/app/components/Feedback/RoomDropdown';
 import FeedbackForm from '@/app/components/Feedback/FeedbackForm';
 import Navbar from '../components/Navbar';
@@ -6,6 +5,9 @@ import React, { Suspense } from 'react';
 import { calluser } from '@/aws_db/db'; // Ensure this is correctly imported
 import { Vortex } from '../components/ui/vortex';
 import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'; // Use for server-side redirection
+
+export const dynamic = 'force-dynamic'; // Ensure dynamic rendering
 
 
 interface UserAccount {
@@ -25,51 +27,71 @@ const fetchUserRoleByUsername = async (username: string): Promise<string | undef
 };
 
 export default async function Feedback() {
-  const cookieStore = cookies()
-  const username = JSON.parse(JSON.stringify(cookieStore.get('username')));
 
-  if (!username.value) {
-    return <p>No username provided.</p>;
-  }
-  const userId = await fetchUserIdByUsername(username.value); // Fetch user ID
+  try {
+    const cookieStore = cookies();
+    const usernameCookie = cookieStore.get('username');
+
+    if (!usernameCookie) {
+      // If the username cookie doesn't exist, redirect to the home page
+      redirect('/');
+    }
+
+    // Parse the cookie if it exists
+    const username = JSON.parse(JSON.stringify(usernameCookie));
+    
+    if (!username?.value) {
+      // If there's no valid value in the cookie, redirect to home
+      redirect('/');
+    }
+
+    if (!username.value) {
+      return <p>No username provided.</p>;
+    }
+    const userId = await fetchUserIdByUsername(username.value); // Fetch user ID
+    
+    // Explicitly ensure userId is a number
+    const parsedUserId = typeof userId === 'number' ? userId : undefined; // Ensure it's a number
   
-  // Explicitly ensure userId is a number
-  const parsedUserId = typeof userId === 'number' ? userId : undefined; // Ensure it's a number
+    if (parsedUserId === undefined) {
+      return <p>User not found.</p>;
+    }
+  
+    const userRole = await fetchUserRoleByUsername(username.value);
+    // Explicitly ensure userId is a number
+    const parsedUserRole = typeof userRole === 'string' ? userRole : undefined; // Ensure it's a number
+  
+    if (parsedUserRole === undefined) {
+      return <p>User does not have a role.</p>;
+    }
+  
+     
+    return (
+  
+      <div className="flex bg-fixed w-full h-screen overflow-hidden">
+          <Vortex
+            backgroundColor="black"
+            rangeY={800}
+            particleCount={500}
+            baseHue={120}
+            className="w-full h-screen z-0"
+          >
+            {/* Navbar */}
+            <Suspense fallback={<div>Loading...</div>}>
+              <Navbar />
+            </Suspense>
+            <div className="flex flex-col justify-center items-center h-screen lg:w-[1100px] mx-auto bg-neutral-800">
+              <FeedbackForm userId={parsedUserId}>
+                <RoomDropdown UserRole={parsedUserRole}/>
+              </FeedbackForm>
+            </div>
+          </Vortex>
+      </div>
+    );
 
-  if (parsedUserId === undefined) {
-    return <p>User not found.</p>;
+  } catch (error) {
+    // Handle any errors (e.g., JSON parsing issues)
+    console.error('Error reading cookie:', error);
+    redirect('/'); // Redirect to the home page on error
   }
-
-  const userRole = await fetchUserRoleByUsername(username.value);
-  // Explicitly ensure userId is a number
-  const parsedUserRole = typeof userRole === 'string' ? userRole : undefined; // Ensure it's a number
-
-  if (parsedUserRole === undefined) {
-    return <p>User does not have a role.</p>;
-  }
-
-   
-  return (
-
-    <div className="flex bg-fixed w-full h-screen overflow-hidden">
-        <Vortex
-          backgroundColor="black"
-          rangeY={800}
-          particleCount={500}
-          baseHue={120}
-          className="w-full h-screen z-0"
-        >
-          {/* Navbar */}
-          <Suspense fallback={<div>Loading...</div>}>
-            <Navbar />
-          </Suspense>
-          <div className="flex flex-col justify-center items-center h-screen lg:w-[1100px] mx-auto bg-neutral-800">
-            <h1 className={styles.pageHeading}>Share your feedback</h1>
-            <FeedbackForm userId={parsedUserId}>
-              <RoomDropdown UserRole={parsedUserRole}/>
-            </FeedbackForm>
-          </div>
-        </Vortex>
-    </div>
-  );
 }
