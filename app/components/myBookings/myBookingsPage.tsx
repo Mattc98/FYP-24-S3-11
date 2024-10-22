@@ -123,10 +123,64 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
         setNewTime(booking.BookingTime); // Default to current booking time
         setShowAmendModal(true); // Show the modal
     };
-   
+    const convertTo24Hour = (time: string) => {
+        const [hours, minutesPart] = time.split(':');
+        const minutes = minutesPart.slice(0, 2);
+        const period = minutesPart.slice(3); // Extract AM or PM
+        
+        let hoursIn24 = parseInt(hours);
+        
+        if (period === 'PM' && hoursIn24 !== 12) {
+            hoursIn24 += 12;
+        } else if (period === 'AM' && hoursIn24 === 12) {
+            hoursIn24 = 0; // Midnight case
+        }
+        
+        const time24 = `${hoursIn24.toString().padStart(2, '0')}:${minutes}`;
+        
+        // Log the conversion process
+        //console.log(`Converted ${time} to 24-hour format: ${time24}`);
+        
+        return time24;
+    };
+        
+    const format24Time = (timeRange: string) => {
+        //console.log(`Input time to format: ${timeRange}`);
+
+        // Extract only the start time from the time range
+        const [startTime] = timeRange.split(' - ');
+
+        // Convert the start time to 24-hour format
+        const startTime24 = convertTo24Hour(startTime);
+
+        // Log the 24-hour formatted start time
+        //console.log(`Formatted start time: ${startTime24}`);
+
+        // Find the matching time slot by comparing just the start time
+        const matchingSlot = timeSlots.some((slot) => {
+            const [slotStart] = slot.split(' - ');
+            const slotStart24 = convertTo24Hour(slotStart);
+
+            console.log(`Comparing input start (${startTime24}) with slot start (${slotStart24})`);
+
+            return slotStart24 === startTime24;
+        });
+
+        if (matchingSlot) {
+            //console.log(`Matching time slot found: ${startTime24}`);
+            return startTime24; // Return the original time range that matched
+        }
+
+        //console.log('Time not available in slots');
+        return 'Time not available in slots'; // Return an appropriate message
+    };
    // Function to handle modal submission (updating the booking)
     const handleSubmitAmend = async () => {
         if (!selectedBooking) return;
+        const new24Time = format24Time(newTime);
+        const sgNewDate = new Date(newDate).toLocaleDateString('en-CA');
+        console.log("24time ",new24Time);
+        console.log("sgNewDate ",sgNewDate);
 
         const isDuplicate = bookings.filter(
             (booking) =>
@@ -162,8 +216,8 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
                 },
                 body: JSON.stringify({
                     bookingId: selectedBooking.BookingID,
-                    newDate,
-                    newTime,
+                    sgNewDate,
+                    new24Time,
                 }),
             });
 
@@ -178,6 +232,7 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
                             : booking
                     )
                 );
+                alert(`Updated to ${formatDate(new Date(newDate))} at ${newTime}`);
                 setShowAmendModal(false); // Close the modal
             } else {
                 console.error('Failed to amend booking:', data.error);

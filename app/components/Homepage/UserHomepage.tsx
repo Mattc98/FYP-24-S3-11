@@ -127,8 +127,6 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
                 formatDate(new Date(booking.BookingDate)) === formattedDate &&
                 formatTime(booking.BookingTime) === selectedTimeSlot
         );
-
-    
         // Store the RoomIDs of the unavailable rooms
         const unAvaRoomIDs = unAvaBookings.map((booking) => booking.RoomID);
         setUnAvaRooms(unAvaRoomIDs);
@@ -136,10 +134,12 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
         // Close the date picker modal after rooms are fetched
         setShowDatePicker(false);
     };
-    
+    let unAvailableRooms:Room[] = [];
+    if(UserRole === "Director"){
+      unAvailableRooms = allRooms.filter((room) => unAvaRooms.includes(room.RoomID));
+    }
+
     const availableRooms = allRooms.filter((room) => !unAvaRooms.includes(room.RoomID));
-    const unAvailableRooms = allRooms.filter((room) => unAvaRooms.includes(room.RoomID));
-    console.log(unAvailableRooms);
 
     return (
         <div className='overflow-hidden no-scrollbar overflow-y-scroll bg-neutral-800 flex-1 ml-auto mr-auto lg:w-[1100px] h-full'>

@@ -76,7 +76,6 @@ export const HoverEffect = ({
         setOverrideSelectedRoom(null);
     };
     
-      
     const formatDate = (date: Date) => {
         return new Intl.DateTimeFormat('en-CA', {
             year: 'numeric',
@@ -86,60 +85,60 @@ export const HoverEffect = ({
     };
       
       // Helper function to convert time to 24-hour format
-      const convertTo24Hour = (time: string) => {
+    const convertTo24Hour = (time: string) => {
         const [hours, minutesPart] = time.split(':');
         const minutes = minutesPart.slice(0, 2);
         const period = minutesPart.slice(3); // Extract AM or PM
-      
+        
         let hoursIn24 = parseInt(hours);
-      
+        
         if (period === 'PM' && hoursIn24 !== 12) {
-          hoursIn24 += 12;
+            hoursIn24 += 12;
         } else if (period === 'AM' && hoursIn24 === 12) {
-          hoursIn24 = 0; // Midnight case
+            hoursIn24 = 0; // Midnight case
         }
-      
+        
         const time24 = `${hoursIn24.toString().padStart(2, '0')}:${minutes}`;
         
         // Log the conversion process
         console.log(`Converted ${time} to 24-hour format: ${time24}`);
         
         return time24;
-      };
-      
-      const formatTime = (timeRange: string) => {
+    };
+        
+    const formatTime = (timeRange: string) => {
         console.log(`Input time to format: ${timeRange}`);
-    
+
         // Extract only the start time from the time range
         const [startTime] = timeRange.split(' - ');
-    
+
         // Convert the start time to 24-hour format
         const startTime24 = convertTo24Hour(startTime);
-    
+
         // Log the 24-hour formatted start time
         console.log(`Formatted start time: ${startTime24}`);
-    
+
         // Find the matching time slot by comparing just the start time
         const matchingSlot = timeSlots.some((slot) => {
             const [slotStart] = slot.split(' - ');
             const slotStart24 = convertTo24Hour(slotStart);
-    
+
             console.log(`Comparing input start (${startTime24}) with slot start (${slotStart24})`);
-    
+
             return slotStart24 === startTime24;
         });
-    
+
         if (matchingSlot) {
             console.log(`Matching time slot found: ${startTime24}`);
             return startTime24; // Return the original time range that matched
         }
-    
+
         console.log('Time not available in slots');
         return 'Time not available in slots'; // Return an appropriate message
     };
     
     
-      const handleBooking = async () => {
+    const handleBooking = async () => {
         if (!startDate || !selectedTimeSlot) {
             alert("Please select a date and time.");
             return;
@@ -175,12 +174,12 @@ export const HoverEffect = ({
         if (isDuplicate.length !== 0) {
             const directorCode = prompt('A booking already exists at this time. Please enter the Director Code to proceed:');
             console.log("Entered Director Code:", directorCode); // Log the entered code
-    
+
             if (!directorCode) {
                 alert('Director code is invalid.');
                 return;
             }
-    
+
             if (directorCode === '123') {
                 alert('Director code is valid. Room has been overridden.');
                 handleCancelBooking(isDuplicate[0].BookingID);
@@ -195,28 +194,28 @@ export const HoverEffect = ({
         // Create room pin and log it
         const RoomPin = Math.floor(100 + Math.random() * 90).toString();
         console.log("Generated Room PIN:", RoomPin);
-    
-        // Format the date into YYYY-MM-DD format and log it
-    const formattedDate = startDate.toLocaleDateString('en-CA');
-    console.log("Formatted Booking Date:", formattedDate);
 
-    // Get the start time in 24-hour format
-    const timeIn24HourFormat = formatTime(selectedTimeSlot);
-    console.log("Time in 24-hour format:", timeIn24HourFormat);
+            // Format the date into YYYY-MM-DD format and log it
+        const formattedDate = startDate.toLocaleDateString('en-CA');
+        console.log("Formatted Booking Date:", formattedDate);
 
-    try {
-        const response = await fetch('/api/createBooking', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                RoomID: thisRoom.RoomID,
-                UserID: userId,
-                BookingDate: formattedDate,
-                BookingTime: timeIn24HourFormat, // Use the 24-hour format
-                RoomPin: RoomPin,
-            }),
+        // Get the start time in 24-hour format
+        const timeIn24HourFormat = formatTime(selectedTimeSlot);
+        console.log("Time in 24-hour format:", timeIn24HourFormat);
+
+        try {
+            const response = await fetch('/api/createBooking', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    RoomID: thisRoom.RoomID,
+                    UserID: userId,
+                    BookingDate: formattedDate,
+                    BookingTime: timeIn24HourFormat, // Use the 24-hour format
+                    RoomPin: RoomPin,
+                }),
         });
 
         // Log the response status

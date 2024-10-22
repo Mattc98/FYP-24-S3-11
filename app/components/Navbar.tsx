@@ -22,6 +22,7 @@ const Navbar= () => {
 
   const handleLogout = () => {
     deleteCookie('username');
+    deleteCookie('role');
     window.location.href = "/";
   };
 
