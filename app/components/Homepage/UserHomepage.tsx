@@ -113,21 +113,6 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
         }).format(date);
     };
 
-    // Fetch user ID by username
-    const fetchRoleByUsername = async (username: string): Promise<string | undefined> => {
-      try {
-          const response = await fetch(`/api/getUserRole?username=${encodeURIComponent(username)}`);
-          if (!response.ok) {
-              throw new Error('Failed to fetch user role');
-          }
-          const data = await response.json();
-          return data.role;
-      } catch (error) {
-          console.error('Error fetching user role:', error);
-          return undefined;
-      }
-    };
-
     const handleAvaBooking = () => {
         if (!startDate || !selectedTimeSlot) {
             alert("Please select a date and time.");
