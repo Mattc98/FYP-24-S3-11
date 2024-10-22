@@ -31,6 +31,58 @@ const FavouritesList: React.FC<FavouritesListProps> = ({ rooms, userId }) => {
     '03:00 PM - 04:00 PM',
   ];
 
+  const convertTo24Hour = (time: string) => {
+    const [hours, minutesPart] = time.split(':');
+    const minutes = minutesPart.slice(0, 2);
+    const period = minutesPart.slice(3); // Extract AM or PM
+    
+    let hoursIn24 = parseInt(hours);
+    
+    if (period === 'PM' && hoursIn24 !== 12) {
+        hoursIn24 += 12;
+    } else if (period === 'AM' && hoursIn24 === 12) {
+        hoursIn24 = 0; // Midnight case
+    }
+    
+    const time24 = `${hoursIn24.toString().padStart(2, '0')}:${minutes}`;
+    
+    // Log the conversion process
+    console.log(`Converted ${time} to 24-hour format: ${time24}`);
+    
+    return time24;
+  };
+    
+  const formatTime = (timeRange: string) => {
+    console.log(`Input time to format: ${timeRange}`);
+
+    // Extract only the start time from the time range
+    const [startTime] = timeRange.split(' - ');
+
+    // Convert the start time to 24-hour format
+    const startTime24 = convertTo24Hour(startTime);
+
+    // Log the 24-hour formatted start time
+    console.log(`Formatted start time: ${startTime24}`);
+
+    // Find the matching time slot by comparing just the start time
+    const matchingSlot = timeSlots.some((slot) => {
+        const [slotStart] = slot.split(' - ');
+        const slotStart24 = convertTo24Hour(slotStart);
+
+        console.log(`Comparing input start (${startTime24}) with slot start (${slotStart24})`);
+
+        return slotStart24 === startTime24;
+    });
+
+    if (matchingSlot) {
+        console.log(`Matching time slot found: ${startTime24}`);
+        return startTime24; // Return the original time range that matched
+    }
+
+    console.log('Time not available in slots');
+    return 'Time not available in slots'; // Return an appropriate message
+  };
+
   // Function to handle booking
   const handleBooking = async (room: Room) => {
     if (!startDate || !selectedTimeSlot) {
@@ -41,13 +93,9 @@ const FavouritesList: React.FC<FavouritesListProps> = ({ rooms, userId }) => {
     // create Room pin
     const RoomPin = Math.floor(100 + Math.random() * 90).toString(); 
     // Format the date into YYYY-MM-DD format
-    const formattedDate = startDate.toISOString().split('T')[0];
+    const formattedDate = startDate.toLocaleDateString('en-CA');
+    console.log(formattedDate);
 
-    // Here you would handle the booking logic, e.g., updating the database
-    console.log(`Booking Room: ${room.RoomName}`);
-    console.log(`Date: ${startDate}`);
-    console.log(`Time Slot: ${selectedTimeSlot}`);
-    console.log(`RoomID: ${room.RoomID}` )
     try {
       const response = await fetch('/api/createBooking', {
           method: 'POST',
@@ -58,7 +106,7 @@ const FavouritesList: React.FC<FavouritesListProps> = ({ rooms, userId }) => {
               RoomID: room.RoomID,
               UserID: userId,
               BookingDate: formattedDate,
-              BookingTime: selectedTimeSlot,
+              BookingTime: formatTime(selectedTimeSlot),
               RoomPin: RoomPin,
           }),
       });
