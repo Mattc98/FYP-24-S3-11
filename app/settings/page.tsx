@@ -4,6 +4,7 @@ import { calluser } from '@/aws_db/db';
 import ChangePassword from '@/app/components/AccountSettings/changePassword';
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'; // Use for server-side redirection
+import AdminNavbar from '../components/adminNavbar';
 
 export const dynamic = 'force-dynamic'; // Ensure dynamic rendering
 
@@ -29,6 +30,7 @@ const SettingsPage = async () => {
     try {
         const cookieStore = cookies();
         const usernameCookie = cookieStore.get('username');
+        const roleCookie = cookieStore.get('role');
     
         if (!usernameCookie) {
           // If the username cookie doesn't exist, redirect to the home page
@@ -38,6 +40,7 @@ const SettingsPage = async () => {
     
         // Parse the cookie if it exists
         const username = JSON.parse(JSON.stringify(usernameCookie));
+        const role = JSON.parse(JSON.stringify(roleCookie));
         
         if (!username?.value) {
           // If there's no valid value in the cookie, redirect to home
@@ -66,7 +69,7 @@ const SettingsPage = async () => {
         return (
             <div className="bg-neutral-900 min-h-screen flex-col items-center">
                 <Suspense fallback={<div>Loading...</div>}>
-                    <Navbar />
+                    {role === 'Admin' ? <Navbar /> : <AdminNavbar />}
                 </Suspense>
                 <h1 className='p-7 mx-4 lg:text-3xl md:text-2xl sm:text-2xl font-mono item-center justify-center bg-neutral-800 w-[1100px] flex-1 ml-auto mr-auto'>
                     Account Information  

@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
 import { calluser } from '@/aws_db/db'; 
+import { NextResponse } from 'next/server';
 
 interface UserAccount {
     UserID: number;
@@ -43,6 +43,19 @@ export async function POST(req: Request) {
     const { Username, Password, Email, Role} = await req.json();
 
     try {
+
+	// Check if Username or Email already exists
+        const checkDuplicateQuery = `
+            SELECT * FROM userAccount 
+            WHERE Username = '${Username}' OR Email = '${Email}'`;
+
+        const duplicateResult = await calluser(checkDuplicateQuery) as UserAccount[];
+
+        if (duplicateResult.length > 0) {
+            return NextResponse.json({ error: 'Username or Email already exists' }, { status: 400 });
+            
+        }
+
         // Get the highest existing UserID
         const getMaxUserIDQuery = `SELECT MAX(UserID) as maxID FROM userAccount WHERE Role = '${Role}'`;
         const result = await calluser(getMaxUserIDQuery) as MaxIDResult[];

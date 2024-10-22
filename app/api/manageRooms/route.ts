@@ -59,14 +59,30 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
     try {
         const { RoomID, RoomName, Pax, Type, Status, imagename } = await request.json();
-        const query = `UPDATE Room SET RoomName = '${RoomName}', Pax = ${Pax}, Type = '${Type}', Status = '${Status}', imagename = '${imagename}' WHERE RoomID = ${RoomID}`;
-        await calluser(query);
+
+        // Log received values for debugging
+        console.log('Received values:', { RoomID, RoomName, Pax, Type, Status, imagename });
+
+        const query = `
+            UPDATE Room 
+            SET RoomName = '${RoomName}', 
+                Pax = ${Pax}, 
+                Type = '${Type}', 
+                Status = '${Status}', 
+                imagename = '${imagename}' 
+            WHERE RoomID = ${RoomID}
+        `;
+
+        console.log('Executing query:', query); // Log the SQL query
+
+        await calluser(query); // Make sure this function is correct and executes the query
         return NextResponse.json({ message: 'Room updated successfully' });
     } catch (error) {
         console.error('Error updating room:', error);
         return NextResponse.json({ message: 'Error updating room' }, { status: 500 });
     }
 }
+
 
 // Delete a room (DELETE)
 export async function DELETE(request: Request) {

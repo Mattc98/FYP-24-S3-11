@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import RoleInput from './RoleInput'; // Use RoleInput for selecting roles
 
 interface RoleDropdownProps {
@@ -13,7 +13,28 @@ const RoleDropdown: React.FC<RoleDropdownProps> = ({ isOpen, onClose, addUser })
   const [newEmail, setNewEmail] = useState('');
   const [newRole, setNewRole] = useState('User'); // Default role
 
+  // State for error messages
+  const [error, setError] = useState<string | null>(null);
+
+  // Reset form fields and error whenever the modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setNewUsername('');
+      setNewPassword('');
+      setNewEmail('');
+      setNewRole('User'); // Reset to default role if necessary
+      setError(null); // Clear error messages
+    }
+  }, [isOpen]);
+
   const handleAddUser = () => {
+    // Simple validation check
+    if (!newUsername || !newPassword || !newEmail || !newRole) {
+      setError('All fields are required.');
+      return;
+    }
+
+    // If validation passes, proceed to add user
     addUser({ username: newUsername, password: newPassword, email: newEmail, role: newRole });
     onClose();
   };
@@ -22,8 +43,12 @@ const RoleDropdown: React.FC<RoleDropdownProps> = ({ isOpen, onClose, addUser })
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-gray-400 p-6 rounded shadow-lg w-1/3">
+      <div className="bg-neutral-700 p-6 rounded shadow-lg w-1/3">
         <h2 className="text-2xl font-semibold mb-4">Add New User</h2>
+
+        {/* Display error message */}
+        {error && <p className="text-red-500 mb-4">{error}</p>}
+
         <div className="mb-2">
           <label className="block font-medium">Username</label>
           <input
@@ -59,7 +84,7 @@ const RoleDropdown: React.FC<RoleDropdownProps> = ({ isOpen, onClose, addUser })
             className="w-full"
           />
         </div>
-        
+
         <div className="flex space-x-4">
           <button
             onClick={handleAddUser}

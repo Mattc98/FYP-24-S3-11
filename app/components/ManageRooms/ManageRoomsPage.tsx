@@ -34,7 +34,8 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
     const [feedback, setFeedback] = useState<Feedback[]>([]);
     const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
     const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null);
-    const [users, setUsers] = useState<UserAccount[]>([]); // State to store users
+    const [, setUsers] = useState<UserAccount[]>([]); // State to store users
+
 
     // Fetch users when the component mounts
     useEffect(() => {
@@ -47,7 +48,6 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
         };
         fetchUsers();
     }, []);
-    
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -89,18 +89,29 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
 
     const handleEditRoom = async (roomId: number) => {
         if (editRoom) {
+            console.log('Editing room with ID:', roomId, 'Values:', editRoom); // Log current values
+
             const response = await fetch('/api/manageRooms', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ ...editRoom, RoomID: roomId }),
+                body: JSON.stringify({ 
+                    ...editRoom, 
+                    RoomID: roomId 
+                }),
             });
 
             if (response.ok) {
-                setRooms(rooms.map(room => (room.RoomID === roomId ? { ...editRoom } : room)));
+                // Update rooms list state
+                setRooms(rooms.map(room => 
+                    room.RoomID === roomId ? { ...room, ...editRoom } : room
+                ));
                 setEditRoom(null);
                 setIsEditModalOpen(false);
+            } else {
+                const errorData = await response.json();
+                console.error('Failed to update room:', errorData.message);
             }
         }
     };
@@ -128,10 +139,9 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
             setIsFeedbackModalOpen(true);
         }
     };
-    
 
     return (
-        <div className="min-h-screen bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white p-6">
+        <div className="min-h-screen bg-neutral-800 text-white p-6">
             <h1 className="text-3xl font-semibold mb-6 text-white">Manage Rooms</h1>
 
             {/* Add Room Button */}
@@ -145,7 +155,7 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
             {/* Rooms Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {rooms.map((room) => (
-                    <div key={room.RoomID} className="bg-gray-800 rounded-lg text-white p-4 shadow-lg">
+                    <div key={room.RoomID} className="bg-neutral-900 rounded-lg text-white p-4 shadow-lg">
                         {room.imagename && (
                             <img
                                 src={"/images/" + room.imagename}
@@ -187,43 +197,53 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
             {/* Add Room Modal */}
             {isAddModalOpen && (
                 <div className="fixed inset-0 bg-gray-900 bg-opacity-80 flex items-center justify-center z-50">
-                    <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-1/3 text-white">
+                    <div className="bg-neutral-700 p-6 rounded-lg shadow-lg w-1/3 text-white">
                         <h2 className="text-xl font-semibold mb-4">Add New Room</h2>
+                        <label className="block font-medium">Room Name</label>
                         <input
                             type="text"
-                            placeholder="Room Name"
                             value={newRoomName}
                             onChange={(e) => setNewRoomName(e.target.value)}
-                            className="border p-2 mr-2 mb-2 w-full text-black"
+                            className="border p-2 mr-2 mb-2 w-full rounded text-black"
                         />
+                        <label className="block font-medium">Pax</label>
                         <input
                             type="number"
-                            placeholder="Pax"
                             value={newPax}
-                            onChange={(e) => setNewPax(e.target.value)}
-                            className="border p-2 mr-2 mb-2 w-full text-black"
+                            onChange={(e) => {
+                                const value = Math.max(0, Number(e.target.value)); // Ensure the value is non-negative
+                                setNewPax(value);
+                            }}
+                            min="0" // Set minimum value to 0
+                            className="border p-2 mr-2 mb-2 w-full rounded text-black"
                         />
-                        <input
-                            type="text"
-                            placeholder="Type"
+                        <label className="block font-medium">Type</label>
+                        <select
                             value={newType}
                             onChange={(e) => setNewType(e.target.value)}
-                            className="border p-2 mr-2 mb-2 w-full text-black"
-                        />
-                        <input
-                            type="text"
-                            placeholder="Status"
+                            className="border p-2 mr-2 mb-2 w-full rounded text-black"
+                        >
+                            <option value="" disabled>Select Type</option>
+                            <option value="User">User</option>
+                            <option value="Director">Director</option>
+                        </select>
+                        <label className="block font-medium">Status</label>
+                        <select
                             value={newStatus}
                             onChange={(e) => setNewStatus(e.target.value)}
-                            className="border p-2 mr-2 mb-2 w-full text-black"
-                        />
+                            className="border p-2 mr-2 mb-2 w-full rounded text-black"
+                        >
+                            <option value="" disabled>Select Status</option>
+                            <option value="Available">Available</option>
+                            <option value="Unavailable">Unavailable</option>
+                        </select>
+                        <label className="block font-medium">Room Image</label>
                         <input
                             type="file"
                             accept="image/*"
                             onChange={(e) => handleFileChange(e)}
-                            className="border p-2 mr-2 mb-2 w-full text-white"
+                            className="border p-2 mr-2 mb-2 w-full rounded text-white"
                         />
-
                         <button
                             className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600"
                             onClick={handleAddRoom}
@@ -231,10 +251,10 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
                             Add Room
                         </button>
                         <button
-                            className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 ml-2"
+                            className="bg-red-500 text-white py-2 px-4 rounded-lg ml-2 hover:bg-red-600"
                             onClick={() => setIsAddModalOpen(false)}
                         >
-                            Close
+                            Cancel
                         </button>
                     </div>
                 </div>
@@ -243,68 +263,68 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
             {/* Edit Room Modal */}
             {isEditModalOpen && editRoom && (
                 <div className="fixed inset-0 bg-gray-900 bg-opacity-80 flex items-center justify-center z-50">
-                    <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-1/3 text-white">
+                    <div className="bg-neutral-700 p-6 rounded-lg shadow-lg w-1/3 text-white">
                         <h2 className="text-xl font-semibold mb-4">Edit Room</h2>
+                        <label className="block font-medium">Room Name</label>
                         <input
                             type="text"
-                            placeholder="Room Name"
                             value={editRoom.RoomName}
                             onChange={(e) => setEditRoom({ ...editRoom, RoomName: e.target.value })}
-                            className="border p-2 mr-2 mb-2 w-full text-black"
+                            className="border p-2 mr-2 mb-2 w-full rounded text-black"
                         />
+                        <label className="block font-medium">Pax</label>
                         <input
                             type="number"
-                            placeholder="Pax"
                             value={editRoom.Pax}
                             onChange={(e) => setEditRoom({ ...editRoom, Pax: Number(e.target.value) })}
-                            className="border p-2 mr-2 mb-2 w-full text-black"
+                            className="border p-2 mr-2 mb-2 w-full rounded text-black"
                         />
-                        <input
-                            type="text"
-                            placeholder="Type"
+                        <label className="block font-medium">Type</label>
+                        <select
                             value={editRoom.Type}
                             onChange={(e) => setEditRoom({ ...editRoom, Type: e.target.value })}
-                            className="border p-2 mr-2 mb-2 w-full text-black"
-                        />
-                        <input
-                            type="text"
-                            placeholder="Status"
+                            className="border p-2 mr-2 mb-2 w-full rounded text-black"
+                        >
+                            <option value="User">User</option>
+                            <option value="Director">Director</option>
+                        </select>
+                        <label className="block font-medium">Status</label>
+                        <select
                             value={editRoom.Status}
                             onChange={(e) => setEditRoom({ ...editRoom, Status: e.target.value })}
-                            className="border p-2 mr-2 mb-2 w-full text-black"
-                        />
+                            className="border p-2 mr-2 mb-2 w-full rounded text-black"
+                        >
+                            <option value="Available">Available</option>
+                            <option value="Unavailable">Unavailable</option>
+                        </select>
                         <button
                             className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
                             onClick={() => handleEditRoom(editRoom.RoomID)}
                         >
-                            Save Changes
+                            Update Room
                         </button>
                         <button
-                            className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 ml-2"
+                            className="bg-red-500 text-white py-2 px-4 rounded-lg ml-2 hover:bg-red-600"
                             onClick={() => setIsEditModalOpen(false)}
                         >
-                            Close
+                            Cancel
                         </button>
                     </div>
                 </div>
             )}
 
-           {/* Feedback Modal */}
-           {isFeedbackModalOpen && (
+            {/* Feedback Modal */}
+            {isFeedbackModalOpen && (
                 <div className="fixed inset-0 bg-gray-900 bg-opacity-80 flex items-center justify-center z-50">
-                    <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-1/3 text-white">
-                        <h2 className="text-xl font-semibold mb-4">Feedback for Room ID: {selectedRoomId}</h2>
-                        <div className="max-h-64 overflow-y-auto mb-4">
-                            {feedback.map((item) => {
-                                const user = users.find(user => user.UserID === item.UserID);
-                                return (
-                                    <div key={item.UserID} className="border-b border-gray-700 py-2">
-                                        <p className="font-bold">User: {user ? user.Username : 'Unknown'}</p>
-                                        <p>{item.Feedback}</p>
-                                    </div>
-                                );
-                            })}
-                        </div>
+                    <div className="bg-neutral-700 p-6 rounded-lg shadow-lg w-1/3 text-white">
+                        <h2 className="text-xl font-semibold mb-4">Feedback for Room {selectedRoomId}</h2>
+                        <ul>
+                            {feedback.map((fb) => (
+                                <li key={fb.UserID} className="mb-2">
+                                    <strong>User {fb.UserID}:</strong> {fb.Feedback}
+                                </li>
+                            ))}
+                        </ul>
                         <button
                             className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600"
                             onClick={() => setIsFeedbackModalOpen(false)}
