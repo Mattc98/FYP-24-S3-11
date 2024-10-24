@@ -2,7 +2,7 @@ import { calluser } from '@/aws_db/db';
 import React, { Suspense } from 'react';
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'; // Use for server-side redirection
-import AdminHome from "../components/Homepage/AdminHomepage";
+import AdminHome from "../components/Homepage/AdminHomeClient";
 
 interface userAccount{
     UserID: number;
