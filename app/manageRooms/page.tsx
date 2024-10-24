@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import { calluser } from '@/aws_db/db';
-import ManageRoomsPage from '../components/ManageRooms/ManageRoomsPage';
+import ManageRoomsPage from '../components/ManageRooms/ManageRoomsClient';
 import AdminNavbar from '../components/adminNavbar';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';

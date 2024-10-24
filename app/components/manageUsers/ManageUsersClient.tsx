@@ -1,7 +1,6 @@
 'use client'; // Marks this component as a Client Component
-import React, { useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import RoleDropdown from './RoleDropdown'; // Ensure you import RoleDropdown correctly
-
 
 interface UserAccount {
   UserID: number;
@@ -14,62 +13,47 @@ interface UserAccount {
   IsLocked: boolean;
 }
 
-const ManageUsersPage = () => {
-  const [manageUsers, setManageUsers] = useState<UserAccount[]>([]);
+interface ManageUsersPageProps {
+  users: UserAccount[]; // Receive users as a prop from the server component
+}
+
+const ManageUsersClient: React.FC<ManageUsersPageProps> = ({ users }) => {
+  const [manageUsers, setManageUsers] = useState<UserAccount[]>(users); // Initialize state with fetched users
   const [editUsername, setEditUsername] = useState<string>('');
+  const [editRole, setEditRole] = useState<string>(''); // State for the role
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
-
-  // State for modal visibility
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  // Fetch users when the component mounts
   useEffect(() => {
-    const fetchManageUsers = async () => {
-      setLoading(true); // Start loading
-      try {
-        const response = await fetch('/api/manageUsers'); // Adjust API endpoint if necessary
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        setManageUsers(data); // Set fetched users to manageUsers state
-      } catch (error) {
-        console.error('Error fetching users:', error);
-      } finally {
-        setLoading(false); // Stop loading
-      }
-    };
-
-    fetchManageUsers();
-  }, []);
+    setManageUsers(users); // Update users when the prop changes
+    setLoading(false); // Set loading to false once users are fetched
+  }, [users]);
 
   const unlockUser = async (userID: number) => {
     try {
-      const response = await fetch('api/unlockUser',{
+      const response = await fetch('api/unlockUser', {
         method: 'PUT',
         headers: {
-        'Content-Type': 'application/json',
-      },
-      body:JSON.stringify({
-        UserID: userID,
-        FailLogin: 0,
-        IsLocked: 0,
-      })
-    });
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          UserID: userID,
+          FailLogin: 0,
+          IsLocked: false, // Assuming IsLocked is a boolean
+        }),
+      });
 
-    if (response.ok) {
-      // Handle successful response if needed
-      console.log("User unlocked successfully");
-      alert("User has been unlocked. Do remember to inform them that their account is unlocked.")
-
-    } else {
-      console.log("Failed to unlock user");
+      if (response.ok) {
+        console.log("User unlocked successfully");
+        alert("User has been unlocked. Do remember to inform them that their account is unlocked.");
+      } else {
+        console.log("Failed to unlock user");
+      }
+    } catch (error) {
+      console.error("Error unlocking user:", error);
     }
-  } catch (error) {
-    console.error("Error unlocking user:", error);
-  }
-};
+  };
 
   // Handle edit button click
   const handleEdit = async (userID: number) => {
@@ -79,17 +63,17 @@ const ManageUsersPage = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ id: userID, newUsername: editUsername }), // Send ID and new username
+        body: JSON.stringify({ id: userID, newUsername: editUsername, newRole: editRole }), // Send ID, new username, and new role
       });
 
       if (response.ok) {
-        // Update the user list in the state without refreshing the page
         setManageUsers((prevUsers) =>
           prevUsers.map((user) =>
-            user.UserID === userID ? { ...user, Username: editUsername } : user
+            user.UserID === userID ? { ...user, Username: editUsername, Role: editRole } : user
           )
         );
         setEditUsername(''); // Clear the input
+        setEditRole(''); // Clear the role
         setCurrentUserId(null); // Reset current user ID
         alert('User successfully updated!'); // Show success message
       }
@@ -100,9 +84,10 @@ const ManageUsersPage = () => {
   };
 
   // Function to initiate editing
-  const initiateEdit = (userID: number, username: string) => {
+  const initiateEdit = (userID: number, username: string, role: string) => {
     setCurrentUserId(userID); // Set the current user ID
     setEditUsername(username); // Pre-fill the input with the existing username
+    setEditRole(role); // Pre-fill the input with the existing role
   };
 
   // Function to handle user termination
@@ -117,7 +102,6 @@ const ManageUsersPage = () => {
       });
 
       if (response.ok) {
-        // Remove the user from the list
         setManageUsers((prevUsers) => prevUsers.filter((user) => user.UserID !== userID));
         alert('User successfully terminated!'); // Show success message
       }
@@ -131,8 +115,9 @@ const ManageUsersPage = () => {
   const cancelEdit = () => {
     setCurrentUserId(null); // Reset current user ID
     setEditUsername(''); // Clear the edit username input
+    setEditRole(''); // Clear the edit role input
   };
-  
+
   const addUser = async (userData: { username: string; password: string; email: string; role: string }) => {
     try {
       const response = await fetch('/api/manageUsers', {
@@ -148,7 +133,7 @@ const ManageUsersPage = () => {
           ProfilePicture: '/images/profile-icon.png', // Default profile picture
         }),
       });
-  
+
       if (response.ok) {
         const newUser = await response.json(); // Assuming the API returns the created user
         setManageUsers((prevUsers) => [...prevUsers, newUser]); // Add new user to the list
@@ -167,10 +152,9 @@ const ManageUsersPage = () => {
       alert('Error creating user. Please try again.');
     }
   };
-  
 
   return (
-    <div className="min-h-screen  bg-neutral-800  text-white">
+    <div className="min-h-screen bg-neutral-800 text-white">
       <div className="container mx-auto p-4">
         <h1 className="text-3xl font-bold mb-4 text-white">Manage Users</h1>
 
@@ -210,9 +194,10 @@ const ManageUsersPage = () => {
                       <p className="font-semibold">Role:</p>
                       <input
                         type="text"
-                        value={user.Role}
+                        value={currentUserId === user.UserID ? editRole : user.Role}
+                        onChange={(e) => setEditRole(e.target.value)} // Update role during edit
                         className="border border-gray-300 p-1 rounded w-48 text-black"
-                        readOnly
+                        readOnly={currentUserId !== user.UserID}
                       />
                     </div>
                     <div className="flex space-x-2">
@@ -233,7 +218,7 @@ const ManageUsersPage = () => {
                         </>
                       ) : (
                         <button
-                          onClick={() => initiateEdit(user.UserID, user.Username)}
+                          onClick={() => initiateEdit(user.UserID, user.Username, user.Role)}
                           className="bg-green-500 text-white px-2 py-1 rounded"
                         >
                           Edit
@@ -272,4 +257,4 @@ const ManageUsersPage = () => {
   );
 };
 
-export default ManageUsersPage;
+export default ManageUsersClient;

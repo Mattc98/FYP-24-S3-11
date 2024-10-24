@@ -21,7 +21,7 @@ interface UserAccount {
     Role: string;
 }
 
-const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
+const ManageRoomsClient = ({ rooms: initialRooms }: { rooms: Room[] }) => {
     const [rooms, setRooms] = useState<Room[]>(initialRooms);
     const [newRoomName, setNewRoomName] = useState<string>('');
     const [newPax, setNewPax] = useState<number | string>('');
@@ -338,4 +338,4 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
     );
 };
 
-export default ManageRoomsPage;
+export default ManageRoomsClient;
