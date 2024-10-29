@@ -12,6 +12,7 @@ interface Room {
     Type: string;
     Status: string;
     imagename: string;
+    BGP: string;
 }
 
 // Fetch all rooms

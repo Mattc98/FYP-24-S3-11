@@ -7,7 +7,8 @@ interface Room {
     Pax: number;
     Type: string;
     Status: string;
-    imagename: string; // This should be the image URL or path
+    imagename: string;
+    BGP: string;
 }
 
 interface Feedback {
@@ -60,7 +61,24 @@ const ManageRoomsClient = ({ rooms: initialRooms }: { rooms: Room[] }) => {
         }
     };
 
+    // utils/generatePin.js
+
+    const generateMasterPin = () => {
+        const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+        let pin = "";
+    
+        for (let i = 0; i < 10; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        pin += characters[randomIndex];
+        }
+    
+        return pin;
+    };
+    
+
     const handleAddRoom = async () => {
+        const pin = generateMasterPin();
+
         const response = await fetch('/api/manageRooms', {
             method: 'POST',
             headers: {
@@ -72,6 +90,7 @@ const ManageRoomsClient = ({ rooms: initialRooms }: { rooms: Room[] }) => {
                 Type: newType,
                 Status: newStatus,
                 imagename: newImageName,
+                BGP: pin,
             }),
         });
 
@@ -167,6 +186,7 @@ const ManageRoomsClient = ({ rooms: initialRooms }: { rooms: Room[] }) => {
                         <p className="text-sm">Pax: {room.Pax}</p>
                         <p className="text-sm">Type: {room.Type}</p>
                         <p className="text-sm">Status: {room.Status}</p>
+                        <p className="text-sm">Master Pin: {room.BGP}</p>
                         <div className="mt-4">
                             <button
                                 className="bg-blue-500 text-white py-1 px-3 rounded-lg mr-2 hover:bg-blue-600"
