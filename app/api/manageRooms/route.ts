@@ -28,7 +28,7 @@ export async function GET() {
 // Add a new room (POST)
 export async function POST(request: Request) {
     try {
-        const { RoomName, Pax, Type, Status, imagename } = await request.json();
+        const { RoomName, Pax, Type, Status, imagename, BGP } = await request.json(); // Extract BGP
 
         // Extract the base64 string and the file extension from the imagename
         const base64Data = imagename.split(',')[1];
@@ -41,11 +41,18 @@ export async function POST(request: Request) {
         fs.writeFileSync(imagePath, base64Data, 'base64');
 
         // Use a transaction to ensure data integrity
-        const query = `INSERT INTO Room (RoomName, Pax, Type, Status, imagename) VALUES ('${RoomName}', ${Pax}, '${Type}', '${Status}', '${RoomName}.${extension}')`; // Store the filename
+        const query = `
+            INSERT INTO Room (RoomName, Pax, Type, Status, imagename, BGP) 
+            VALUES ('${RoomName}', ${Pax}, '${Type}', '${Status}', '${RoomName}.${extension}', '${BGP}')
+        `; // Store the filename and the BGP
         await calluser(query); // Use parameterized queries to prevent SQL injection
 
         // Get the last inserted RoomID
-        const querySelect = `SELECT RoomID, RoomName, Pax, Type, Status, imagename FROM Room WHERE RoomName = '${RoomName}'`;
+        const querySelect = `
+            SELECT RoomID, RoomName, Pax, Type, Status, imagename, BGP 
+            FROM Room 
+            WHERE RoomName = '${RoomName}'
+        `;
         const newRoom = await calluser(querySelect) as Room[]; // Get the new room details
 
         return NextResponse.json(newRoom[0]); // Return the newly created room object

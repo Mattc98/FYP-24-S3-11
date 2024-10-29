@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import { calluser } from '@/aws_db/db';
-import ManageRoomsPage from '../components/ManageRooms/ManageRoomsClient';
+import ManageRoomsPage from '../components/ManageRooms/ManageRoomsPage';
 import AdminNavbar from '../components/adminNavbar';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
@@ -12,6 +12,7 @@ interface Room {
     Type: string;
     Status: string;
     imagename: string;
+    BGP: string;
 }
 
 // Fetch all rooms
