@@ -68,8 +68,8 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
         let pin = "";
     
         for (let i = 0; i < 10; i++) {
-        const randomIndex = Math.floor(Math.random() * characters.length);
-        pin += characters[randomIndex];
+            const randomIndex = Math.floor(Math.random() * characters.length);
+            pin += characters[randomIndex];
         }
     
         return pin;
