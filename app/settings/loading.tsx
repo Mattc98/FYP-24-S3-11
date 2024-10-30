@@ -4,7 +4,6 @@ export default function Loading() {
     return(
         <div className="bg-neutral-900 min-h-screen flex-col items-center">
             <div className="flex-1 ml-auto mr-auto min-h-screen">
-                <Navbar />
                 <div className="flex flex-col justify-center items-center h-screen lg:w-[1100px] mx-auto bg-neutral-800">
                     <div role="status">
                         <svg aria-hidden="true" className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-cyan-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -17,5 +16,4 @@ export default function Loading() {
             </div>
         </div>
     )
-
 }
