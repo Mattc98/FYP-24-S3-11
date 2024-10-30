@@ -2,37 +2,39 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation'; // Import usePathname to get the current route
+import { usePathname } from 'next/navigation';
 
-
-const Navbar= () => {
-  // State to manage dropdown visibility
+const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State for mobile menu
-
-  const pathname = usePathname(); // Get the current path
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   const handleProfileClick = () => {
     setIsDropdownOpen((prev) => !prev);
   };
 
-  const deleteCookie = (cookieName: string) => {
+  const deleteCookie = (cookieName:string) => {
     document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
   };
 
   const handleLogout = () => {
     deleteCookie('username');
     deleteCookie('role');
-    window.location.href = "/";
+    window.location.href = "/Login";
   };
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen((prev) => !prev);
   };
 
+  const handleLinkClick = (url: string) => (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    window.location.href = url;
+  };
+  
+
   return (
     <div className="flex-1 ml-auto mr-auto lg:w-[1100px] p-4 bg-neutral-800 text-white">
-      {/* Hamburger icon for mobile */}
       <div className="sm:hidden">
         <button
           onClick={toggleMobileMenu}
@@ -55,58 +57,37 @@ const Navbar= () => {
         </button>
       </div>
 
-      {/* Navigation Menu */}
       <nav className="hidden sm:flex font-sans bold pt-9px flex-1 ml-auto mr-auto rounded-full w-[550px] bg-neutral-900 py-5 shadow-md text-xl">
         <ul className="flex justify-center space-x-8 max-w-7xl mx-auto">
           <li>
-            <Link
-              className={`${
-                pathname === '/UserHomepage' ? 'text-cyan-400' : 'text-gray-300'
-              } transition duration-300 ease-in-out hover:text-cyan-400 hover`}
-              href="/UserHomepage"
-            >
+            <Link href="/UserHomepage" onClick={handleLinkClick('/UserHomepage')} className={`${pathname === '/UserHomepage' ? 'text-cyan-400' : 'text-gray-300'} transition duration-300 ease-in-out hover:text-cyan-400 hover`}>
               Home
             </Link>
           </li>
           <li>
-            <Link
-              className={`${
-                pathname === '/myBookings' ? 'text-cyan-400' : 'text-gray-300'
-              } transition duration-300 ease-in-out hover:text-cyan-400 hover`}
-              href="/myBookings"
-            >
+            <Link href="/myBookings" onClick={handleLinkClick('/myBookings')} className={`${pathname === '/myBookings' ? 'text-cyan-400' : 'text-gray-300'} transition duration-300 ease-in-out hover:text-cyan-400 hover`}>
               Bookings
             </Link>
           </li>
           <li>
-            <Link
-              className={`${
-                pathname === '/feedback' ? 'text-cyan-400' : 'text-gray-300'
-              } transition duration-300 ease-in-out hover:text-cyan-400 hover`}
-              href="/feedback"
-            >
+            <Link href="/feedback" onClick={handleLinkClick('/feedback')} className={`${pathname === '/feedback' ? 'text-cyan-400' : 'text-gray-300'} transition duration-300 ease-in-out hover:text-cyan-400 hover`}>
               Feedback
             </Link>
           </li>
           <li>
-            <Link
-              className={`${
-                pathname === '/FavouritesPage' ? 'text-cyan-400' : 'text-gray-300'
-              } transition duration-300 ease-in-out hover:text-cyan-400 hover`}
-              href="/FavouritesPage"
-            >
+            <Link href="/FavouritesPage" onClick={handleLinkClick('/FavouritesPage')} className={`${pathname === '/FavouritesPage' ? 'text-cyan-400' : 'text-gray-300'} transition duration-300 ease-in-out hover:text-cyan-400 hover`}>
               Favourites
             </Link>
           </li>
           <li>
             <div className="relative w-[30px]">
               <Image
-                src="/images/profile-icon.png" // Replace with actual image
+                src="/images/profile-icon.png"
                 alt="Profile"
                 width={48}
                 height={48}
                 className="rounded-full cursor-pointer ring-2 ring-gray-700 transition duration-300 transform hover:scale-105 hover:ring-gray-500"
-                onClick={handleProfileClick} // Toggle dropdown on click
+                onClick={handleProfileClick}
               />
               {isDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-neutral-900 rounded-lg shadow-lg py-2 z-50">
@@ -129,60 +110,34 @@ const Navbar= () => {
         <nav className="sm:hidden bg-neutral-900 py-2 px-4 flex-1 mr-auto">
           <ul className="space-y-2">
             <li>
-              <Link
-                className={`block ${
-                  pathname === '/UserHomepage' ? 'text-cyan-400 font-semibold' : 'text-gray-300'
-                } hover:text-white transition duration-300`}
-                href="/UserHomepage"
-              >
+              <Link href="/UserHomepage" onClick={handleLinkClick('/UserHomepage')} className={`${pathname === '/UserHomepage' ? 'text-cyan-400 font-semibold' : 'text-gray-300'} hover:text-white transition duration-300`}>
                 Home
               </Link>
             </li>
             <li>
-              <Link
-                className={`block ${
-                  pathname === '/myBookings' ? 'text-cyan-400 font-semibold' : 'text-gray-300'
-                } hover:text-white transition duration-300`}
-                href="/myBookings"
-              >
+              <Link href="/myBookings" onClick={handleLinkClick('/myBookings')} className={`${pathname === '/myBookings' ? 'text-cyan-400 font-semibold' : 'text-gray-300'} hover:text-white transition duration-300`}>
                 Bookings
               </Link>
             </li>
             <li>
-              <Link
-                className={`block ${
-                  pathname === '/feedback' ? 'text-cyan-400 font-semibold' : 'text-gray-300'
-                } hover:text-white transition duration-300`}
-                href="/feedback"
-              >
+              <Link href="/feedback" onClick={handleLinkClick('/feedback')} className={`${pathname === '/feedback' ? 'text-cyan-400 font-semibold' : 'text-gray-300'} hover:text-white transition duration-300`}>
                 Feedback
               </Link>
             </li>
             <li>
-              <Link
-                className={`block ${
-                  pathname === '/FavouritesPage' ? 'text-cyan-400 font-semibold' : 'text-gray-300'
-                } hover:text-white transition duration-300`}
-                href="/FavouritesPage"
-              >
+              <Link href="/FavouritesPage" onClick={handleLinkClick('/FavouritesPage')} className={`${pathname === '/FavouritesPage' ? 'text-cyan-400 font-semibold' : 'text-gray-300'} hover:text-white transition duration-300`}>
                 Favourites
               </Link>
             </li>
             <li>
-              <Link
-                className="block text-gray-300 hover:text-white transition duration-300"
-                href="/settings"
-              >
+              <Link href="/settings" onClick={handleLinkClick('/settings')} className="block text-gray-300 hover:text-white transition duration-300">
                 Settings
               </Link>
             </li>
             <li>
-              <Link
-                className="block text-gray-300 hover:text-white transition duration-300"
-                href="/"
-              >
+              <button onClick={handleLogout} className="block w-full text-left px-4 py-2 text-gray-300 hover:bg-red-600 hover:text-white transition duration-300">
                 Logout
-              </Link>
+              </button>
             </li>
           </ul>
         </nav>

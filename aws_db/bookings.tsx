@@ -1,6 +1,6 @@
 import mysql from 'mysql2/promise';
 
-export async function createBookingInDB(RoomID: number, UserID: number, BookingDate: string, BookingTime: string, RoomPin: string) {
+export async function createBookingInDB(RoomID: number, UserID: number, BookingDate: string, BookingTime: string, RoomPin: string, BGP:string) {
     try {
         const db = await mysql.createConnection({
             host: process.env.MYSQL_HOST,
@@ -10,8 +10,8 @@ export async function createBookingInDB(RoomID: number, UserID: number, BookingD
             password: process.env.MYSQL_PASSWORD,
         });
 
-        const query = `INSERT INTO Booking (RoomID, UserID, BookingDate, BookingTime, RoomPin) VALUES (?, ?, ?, ?, ?)`;
-        const [result] = await db.execute(query, [RoomID, UserID, BookingDate, BookingTime, RoomPin]);
+        const query = `INSERT INTO Booking (RoomID, UserID, BookingDate, BookingTime, RoomPin, BGP) VALUES (?, ?, ?, ?, ?, ?)`;
+        const [result] = await db.execute(query, [RoomID, UserID, BookingDate, BookingTime, RoomPin, BGP]);
 
         await db.end();
         return result;

@@ -14,6 +14,7 @@ interface Room {
   Type: string;
   Status: string;
   imagename: string;
+  BGP: string;
 }
 //allRooms = allRooms.filter(room => room.RoomID == unAvaBookings[0].RoomID)
 interface userAccount{
@@ -36,6 +37,7 @@ interface Bookings {
   BookingTime: string;
   RoomPin: number;
   BiometricPassword: number;
+  BGP: string;
 }
 
 async function fetchRoom() {
