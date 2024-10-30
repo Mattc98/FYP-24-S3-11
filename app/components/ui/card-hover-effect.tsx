@@ -60,6 +60,7 @@ export const HoverEffect = ({
     const [selectedRoom, setSelectedRoom] = useState<Room | null>(null); // Modal control
     const [selectedOverrideRoom, setOverrideSelectedRoom] = useState<Room | null>(null); // Modal control
     const [isFavorite, setIsFavorite] = useState(false);
+    const [userName, setName] = useState('');
 
     
     const handleOverrideRoomClick = (room: Room) => {
@@ -136,24 +137,35 @@ export const HoverEffect = ({
         console.log('Time not available in slots');
         return 'Time not available in slots'; // Return an appropriate message
     };
+
+    useEffect(() => {
+        // Fetch director name from the server-side API route
+        const fetchName = async () => {
+            try {
+                const response = await fetch('/api/getName');
+                const data = await response.json();
+                setName(data.username || '');
+            } catch (error) {
+                console.error('Error fetching name:', error);
+            }
+        };
+
+        fetchName();
+    }, []);
     
     
     const handleBooking = async () => {
+        if (!userName) {
+            console.error('Username is missing in cookies');
+            return;
+        }
+
         if (!startDate || !selectedTimeSlot) {
             alert("Please select a date and time.");
             return;
         }
     
-        let thisRoom = null;
-    
-        if (selectedRoom) {
-            thisRoom = selectedRoom;
-        } else if (selectedOverrideRoom) {
-            thisRoom = selectedOverrideRoom;
-        }
-    
-        // Log the room information
-        console.log("Selected Room:", thisRoom);
+        const thisRoom = selectedRoom || selectedOverrideRoom;
     
         if (!thisRoom) {
             alert("Please select a room.");
@@ -168,41 +180,60 @@ export const HoverEffect = ({
                 booking.RoomID === thisRoom.RoomID
         );
     
-        // Log the result of the duplicate check
-        console.log("Duplicate Bookings Found:", isDuplicate);
-    
         if (isDuplicate.length !== 0) {
             const directorCode = prompt('A booking already exists at this time. Please enter the Director Code to proceed:');
-            console.log("Entered Director Code:", directorCode); // Log the entered code
-
-            if (!directorCode) {
-                alert('Director code is invalid.');
-                return;
-            }
-
-            if (directorCode === '123') {
-                alert('Director code is valid. Room has been overridden.');
-                handleCancelBooking(isDuplicate[0].BookingID);
-                closeModal();
-                return;
-            } else {
+    
+            if (!directorCode || directorCode !== '123') {
                 alert('Invalid Director Code. Booking not overridden.');
                 return;
             }
+    
+            alert('Director code is valid. Room has been overridden.');
+            handleCancelBooking(isDuplicate[0].BookingID);
+    
+            // Fetch user email based on UserID from the booking
+            try {
+                const userResponse = await fetch(`/api/getEmailById?userId=${isDuplicate[0].UserID}`);
+                const userData = await userResponse.json();
+    
+                if (userResponse.ok && userData.email) {
+                    // Send notification email to the original user
+                    const notificationResponse = await fetch('/api/sendNotificationEmail', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            email: userData.email,
+                            roomName: thisRoom.RoomName,
+                            bookingDate: formatDate(new Date(startDate)),
+                            bookingTime: selectedTimeSlot,
+                            directorName: userName,
+                        }),
+                    });
+    
+                    if (notificationResponse.ok) {
+                        console.log('Notification email sent successfully');
+                    } else {
+                        console.error('Failed to send notification email');
+                    }
+                } else {
+                    console.error('Failed to retrieve user email');
+                }
+            } catch (error) {
+                console.error('Error retrieving user email or sending notification email:', error);
+            }
+    
+            closeModal();
+            return;
         }
     
-        // Create room pin and log it
+        // Create room pin and format date and time
         const RoomPin = Math.floor(100 + Math.random() * 90).toString();
-        console.log("Generated Room PIN:", RoomPin);
-
-            // Format the date into YYYY-MM-DD format and log it
         const formattedDate = startDate.toLocaleDateString('en-CA');
-        console.log("Formatted Booking Date:", formattedDate);
-
-        // Get the start time in 24-hour format
         const timeIn24HourFormat = formatTime(selectedTimeSlot);
-        console.log("Time in 24-hour format:", timeIn24HourFormat);
-
+    
+        // Create a new booking
         try {
             const response = await fetch('/api/createBooking', {
                 method: 'POST',
@@ -213,29 +244,25 @@ export const HoverEffect = ({
                     RoomID: thisRoom.RoomID,
                     UserID: userId,
                     BookingDate: formattedDate,
-                    BookingTime: timeIn24HourFormat, // Use the 24-hour format
+                    BookingTime: timeIn24HourFormat,
                     RoomPin: RoomPin,
                 }),
-        });
-
-        // Log the response status
-        console.log("API Response Status:", response.status);
-
-        if (response.ok) {
-            alert(`Room: ${thisRoom.RoomName} on ${formatDate(new Date(startDate))} at ${selectedTimeSlot} has been booked!`);
-            closeModal();
-        } else {
-            alert('Failed to create booking.');
-            const errorData = await response.json();
-            console.log('Error response data:', errorData); // Log any error data from the response
-        }
-    } catch (error) {
-        console.error('Error creating booking:', error);
-        alert('An error occurred. Please try again.');
-    }
-};
+            });
     
-
+            if (response.ok) {
+                alert(`Room: ${thisRoom.RoomName} on ${formatDate(new Date(startDate))} at ${selectedTimeSlot} has been booked!`);
+                closeModal();
+            } else {
+                alert('Failed to create booking.');
+                const errorData = await response.json();
+                console.log('Error response data:', errorData);
+            }
+        } catch (error) {
+            console.error('Error creating booking:', error);
+            alert('An error occurred. Please try again.');
+        }
+    };
+    
     const handleFavorite = async (room: Room) => {
         try {
             const response = await fetch('/api/updateFavourites', {
