@@ -1,5 +1,3 @@
-import Navbar from "../components/Navbar";
-
 export default function Loading() {
     return(
         <div className="bg-neutral-900 min-h-screen flex-col items-center">
