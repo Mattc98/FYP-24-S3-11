@@ -25,9 +25,12 @@ export default async function Home() {
   const userAccounts = await fetchuser();
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-gray-800 to-black text-white">
-      
+    <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-neutral-900 to-neutral-800 text-white">
+      <div className="font-bold text-lg">
+        <a href="/">AuthBook</a>
+      </div>
       <div className="relative flex flex-col items-center w-full">
+        
           <div className="mb-8">
             <Image
               src="/images/transparent_image.png" // Replace with your actual image path
