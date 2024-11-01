@@ -153,7 +153,7 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
         </p>
       )}
       <footer className="mt-8 text-center text-sm text-gray-500">
-       © 2024 FYP-24-S3-11. All rights reserved.
+       © 2024 AuthBook. All rights reserved.
      </footer>
     </div>
   );
