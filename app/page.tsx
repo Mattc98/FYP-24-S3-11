@@ -66,10 +66,10 @@ const LandingPage = () => {
         </p>
         <div className="flex justify-center space-x-4">
           <a
-            href="/Login"
+            href="mailto:fyp24s311@gmail.com"
             className="bg-white text-black px-5 py-2 font-medium rounded hover:bg-gray-200"
           >
-            Get Started
+            Contact Us
           </a>
         </div>
       </main>
@@ -131,7 +131,7 @@ const LandingPage = () => {
       </div>
       <footer className="bottom-5 text-gray-500 p-10 flex">
         {/* Footer content */}
-        © 2024 FYP-24-S3-11. All rights reserved.
+        © 2024 AuthBook. All rights reserved.
       </footer> 
     </div>
     
