@@ -16,6 +16,15 @@ const RoleDropdown: React.FC<RoleDropdownProps> = ({ isOpen, onClose, addUser })
   // State for error messages
   const [error, setError] = useState<string | null>(null);
 
+  // Password validation criteria
+  const passwordRequirements = {
+    minLength: 8,
+    hasNumber: /\d/,
+    hasUpperCase: /[A-Z]/,
+    hasLowerCase: /[a-z]/,
+    hasSpecialChar: /[!@#$%^&*(),.?":{}|<>]/ // Checks for at least one special character
+  };
+
   // Reset form fields and error whenever the modal opens
   useEffect(() => {
     if (isOpen) {
@@ -31,6 +40,16 @@ const RoleDropdown: React.FC<RoleDropdownProps> = ({ isOpen, onClose, addUser })
     // Simple validation check
     if (!newUsername || !newPassword || !newEmail || !newRole) {
       setError('All fields are required.');
+      return;
+    }
+
+    // Password validation check
+    if (newPassword.length < passwordRequirements.minLength ||
+        !passwordRequirements.hasNumber.test(newPassword) ||
+        !passwordRequirements.hasUpperCase.test(newPassword) ||
+        !passwordRequirements.hasLowerCase.test(newPassword) ||
+        !passwordRequirements.hasSpecialChar.test(newPassword)) {
+      setError('Password must be at least 8 characters, include a number, an uppercase letter, a lowercase letter, and a special character.');
       return;
     }
 

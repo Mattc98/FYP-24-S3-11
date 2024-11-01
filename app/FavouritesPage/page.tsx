@@ -8,11 +8,13 @@ import { redirect } from 'next/navigation'; // Use for server-side redirection
 
 export const dynamic = 'force-dynamic'; // Ensure dynamic rendering
 
-
-interface UserAccount {
+interface userAccount{
   UserID: number;
   Username: string;
+  Password: string;
+  Role: "User" | "Admin" | "Director";
 }
+
 
 interface Room {
   RoomID: number;
@@ -21,10 +23,27 @@ interface Room {
   imagename: string; // Image filename or URL
 }
 
+
+interface Bookings {
+  BookingID: number;
+  RoomID: number;
+  UserID: string;
+  BookingDate: string;
+  BookingTime: string;
+  RoomPin: number;
+  BiometricPassword: number;
+}
+
+// Fetch user ID by username
+const fetchUserRoleByUsername = async (username: string): Promise<string | undefined> => {
+  const response = await calluser(`SELECT Role FROM userAccount WHERE Username = '${username}'`);
+  return (response as userAccount[])[0]?.Role;
+};
+
 // Fetch user ID by username
 const fetchUserIdByUsername = async (username: string): Promise<number | undefined> => {
   const response = await calluser(`SELECT UserID FROM userAccount WHERE Username = '${username}'`);
-  return (response as UserAccount[])[0]?.UserID;
+  return (response as userAccount[])[0]?.UserID;
 };
 
 // Fetch rooms based on user ID
@@ -36,6 +55,11 @@ const fetchUserRooms = async (userId: number): Promise<Room[]> => {
     WHERE f.UserID = ${userId}
   `);
   return (response as Room[]);
+};
+
+const fetchAllBookings = async (): Promise<Bookings[]> => {
+  const response = await calluser("SELECT * FROM Booking");
+  return JSON.parse(JSON.stringify(response));
 };
 
 // Main Favourites page component
@@ -61,6 +85,15 @@ const FavouritesPage = async () => {
     if (!username.value) {
       return <p>No username provided.</p>;
     }
+
+    
+    const UserRole = await fetchUserRoleByUsername(username.value);
+    // Explicitly ensure userId is a number
+    const parsedUserRole = typeof UserRole === 'string' ? UserRole : undefined; // Ensure it's a number
+  
+    if (parsedUserRole === undefined) {
+      return <p>User does not have a role.</p>;
+    }
   
     const userId = await fetchUserIdByUsername(username.value);
     // Explicitly ensure userId is a number
@@ -71,6 +104,10 @@ const FavouritesPage = async () => {
     }
   
     const rooms = await fetchUserRooms(parsedUserId);
+
+    const allMyBookings = await fetchAllBookings();
+
+
   
     return (
         <div className="flex w-full h-screen overflow-hidden">
@@ -84,7 +121,7 @@ const FavouritesPage = async () => {
             <div  className="overflow-y-scroll no-scrollbar h-screen bg-neutral-800 flex-1 ml-auto mr-auto lg:w-[1100px] shadow-xl shadow-black-500/50 ">
               <Navbar />
               {rooms.length > 0 ? (
-                <FavouritesList rooms={rooms} userId={parsedUserId} />
+                <FavouritesList rooms={rooms} userId={parsedUserId} userRole={parsedUserRole} allBookings={allMyBookings}/>
               ) : (
                 <p className="text-gray-400">No rooms found for this user.</p>
               )}

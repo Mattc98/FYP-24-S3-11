@@ -60,6 +60,23 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
     const [selectedBooking, setSelectedBooking] = useState<MyBooking | null>(null); // The booking to amend
     const [newDate, setNewDate] = useState(''); // The new date
     const [newTime, setNewTime] = useState(''); // The new time slot
+    const [directorName, setDirectorName] = useState('');
+
+    useEffect(() => {
+        // Fetch director's name if user is a director
+        if (userRole === 'Director') {
+            const fetchDirectorName = async () => {
+                try {
+                    const response = await fetch('/api/getName');
+                    const data = await response.json();
+                    setDirectorName(data.username || '');
+                } catch (error) {
+                    console.error('Error fetching director name:', error);
+                }
+            };
+            fetchDirectorName();
+        }
+    }, [userRole]);
 
     useEffect(() => {
         const getMyBookings = () => {
@@ -174,73 +191,130 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
         //console.log('Time not available in slots');
         return 'Time not available in slots'; // Return an appropriate message
     };
-   // Function to handle modal submission (updating the booking)
+   
     const handleSubmitAmend = async () => {
         if (!selectedBooking) return;
+    
+        // Extract new booking details
         const new24Time = format24Time(newTime);
         const sgNewDate = new Date(newDate).toLocaleDateString('en-CA');
-        console.log("24time ",new24Time);
-        console.log("sgNewDate ",sgNewDate);
-
+    
+        // Fetch the current user ID (who is making the amendment)
+        let userId;
+        try {
+            const userResponse = await fetch('/api/getUserId');
+            const userData = await userResponse.json();
+            if (userData.success) {
+                userId = userData.userId;
+            } else {
+                alert('Unable to proceed: User ID not found.');
+                return;
+            }
+        } catch (error) {
+            alert('Error retrieving user ID.');
+            return;
+        }
+    
+        // Step 1: Check if there is a duplicate booking at the new date/time
         const isDuplicate = bookings.filter(
             (booking) =>
                 formatDate(new Date(booking.BookingDate)) === formatDate(new Date(newDate)) &&
-                formatTime(booking.BookingTime) === formatTime(newTime) && booking.RoomID === selectedBooking.RoomID
+                formatTime(booking.BookingTime) === formatTime(newTime) &&
+                booking.RoomID === selectedBooking.RoomID
         );
-
-        if (isDuplicate.length != 0) {
+    
+        let overrideOccurred = false;
+    
+        if (isDuplicate.length !== 0) {
+            // Step 2: If there is a conflict and user is a Director, override is allowed
             if (userRole === 'Director') {
-                const directorCode = prompt('A booking already exists at this time. Please enter the Director Code to proceed:');
-                if (!directorCode) {
-                    alert('Director code is invalid.');
+                const directorCode = prompt('A booking already exists at this time. Enter the Director Code to proceed:');
+                if (!directorCode || directorCode !== '123') {
+                    alert('Invalid Director Code. Booking not overridden.');
                     return;
                 }
-                if (directorCode === '123') {
-                    alert('Director code is valid. Room as been overrided.');
-                    handleCancelBooking(isDuplicate[0].BookingID);
-                    setShowAmendModal(false); // Close the modal after overriding
+    
+                alert('Director code is valid. Room has been overridden.');
+                overrideOccurred = true;
+                
+    
+                // Step 3: Create a new booking with the updated information
+                const overrideResponse = await fetch('/api/overrideBooking', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        bookingId: isDuplicate[0].BookingID, // Use the ID of the duplicate (original) booking
+                        sgNewDate,
+                        new24Time,
+                        newUserId: userId,
+                    }),
+                });
+    
+                const overrideData = await overrideResponse.json();
+                if (!overrideData.success) {
+                    alert('Failed to create new booking.');
                     return;
-                }       
-                // You could add further validation for the director code here if needed
+                }
+    
+                // Optional: Notify the original user about the booking override
+                try {
+                    const userResponse = await fetch(`/api/getEmailById?userId=${isDuplicate[0].UserID}`);
+                    const userData = await userResponse.json();
+                    if (userResponse.ok && userData.email) {
+                        await fetch('/api/sendNotificationEmail', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                email: userData.email,
+                                roomName: selectedBooking.RoomName,
+                                bookingDate: sgNewDate,
+                                bookingTime: newTime,
+                                directorName: username,
+                            }),
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error sending notification email:', error);
+                }
             } else {
                 alert('A booking already exists at this time. Please choose a different time slot.');
                 return;
             }
         }
-
-        try {
-            const response = await fetch('/api/amendBooking', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    bookingId: selectedBooking.BookingID,
-                    sgNewDate,
-                    new24Time,
-                }),
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                // Update the booking in the state
-                setMyBookings(prevBookings =>
-                    prevBookings.map(booking =>
-                        booking.BookingID === selectedBooking.BookingID
-                            ? { ...booking, BookingDate: newDate, BookingTime: newTime }
-                            : booking
-                    )
-                );
-                alert(`Updated to ${formatDate(new Date(newDate))} at ${newTime}`);
-                setShowAmendModal(false); // Close the modal
-            } else {
-                console.error('Failed to amend booking:', data.error);
+    
+        // Step 4: Delete the old booking if an override occurred
+        if (overrideOccurred) {
+            try {
+                const deleteResponse = await fetch('/api/deleteOldBooking', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ bookingId: selectedBooking.BookingID }),
+                });
+    
+                const deleteData = await deleteResponse.json();
+    
+                if (deleteData.success) {
+                    alert('Old booking deleted successfully');
+                    setMyBookings((prevBookings) =>
+                        prevBookings.filter((booking) => booking.BookingID !== selectedBooking.BookingID)
+                    );
+                } else {
+                    console.error('Failed to delete old booking:', deleteData.error);
+                }
+            } catch (error) {
+                console.error('Error deleting old booking:', error);
             }
-        } catch (error) {
-            console.error('Error amending booking:', error);
         }
+    
+        setShowAmendModal(false); // Close the modal after completion
     };
+      
     
     const formatDate = (date: Date) => {
         return new Intl.DateTimeFormat('en-CA', {
