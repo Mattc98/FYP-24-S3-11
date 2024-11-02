@@ -60,7 +60,7 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
   
     if (user) {
       if (user.IsLocked) {
-        setMessage('Account is locked. Please contact administrator');
+        toast.error('Account is locked. Please contact administrator');
         setIsLocked(true);
         return;
       }

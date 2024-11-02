@@ -166,12 +166,12 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
                     <div className="mb-2">
                       <label className="block font-semibold mb-2">Date:</label>
                         <ReactDatePicker
-                        selected={startDate}
-                        onChange={(date) => setStartDate(date)}
-                        className="border rounded-md p-2 w-full text-white bg-neutral-800"
-                        placeholderText="Select a date"
-                        minDate={new Date()}
-                        onKeyDown={(e) => e.preventDefault()}
+                          selected={startDate}
+                          onChange={(date) => setStartDate(date)}
+                          className="border rounded-md p-2 w-full text-white bg-neutral-800"
+                          placeholderText="Select a date"
+                          minDate={new Date()}
+                          onKeyDown={(e) => e.preventDefault()}
                         />
                     </div>
 
