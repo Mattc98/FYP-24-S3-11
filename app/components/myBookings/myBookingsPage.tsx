@@ -81,14 +81,14 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
     useEffect(() => {
         const getMyBookings = () => {
             const currentDate = new Date();
-
+    
             const userBookings = bookings
                 .filter(booking => booking.UserID == userid && new Date(booking.BookingDate) >= currentDate)
                 .map(booking => {
                     const room = rooms.find(room => room.RoomID == booking.RoomID);
                     if (room) {
                         return {
-                            BookingID: booking.BookingID,  // Add BookingID here
+                            BookingID: booking.BookingID,
                             RoomID: room.RoomID,
                             RoomName: room.RoomName,
                             Pax: room.Pax,
@@ -98,16 +98,18 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
                             imagename: room.imagename
                         };
                     }
-                    return "Not this room";
-                });
-            
+                    return null; // Return null instead of "Not this room"
+                })
+                .filter(booking => booking !== null) // Remove any null values from the array
+                .sort((a, b) => new Date(a.BookingDate).getTime() - new Date(b.BookingDate).getTime()); // Sort by BookingDate
+    
             setMyBookings(userBookings as MyBooking[]);
         };
-
-
+    
         getMyBookings();
-        
+    
     }, [bookings, rooms, userid]);
+    
 
     // Function to handle booking cancellation
     const handleCancelBooking = async (bookingId: number) => {
@@ -133,13 +135,14 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
         }
     };
 
-     // Function to handle booking amendment
-     const handleAmendBooking = (booking: MyBooking) => {
+    // Function to handle booking amendment
+    const handleAmendBooking = (booking: MyBooking) => {
         setSelectedBooking(booking); // Set the booking to amend
         setNewDate(booking.BookingDate); // Default to current booking date
         setNewTime(booking.BookingTime); // Default to current booking time
         setShowAmendModal(true); // Show the modal
     };
+
     const convertTo24Hour = (time: string) => {
         const [hours, minutesPart] = time.split(':');
         const minutes = minutesPart.slice(0, 2);

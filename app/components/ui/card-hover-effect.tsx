@@ -21,6 +21,7 @@ interface Room {
     Type: string;
     Status: string;
     imagename: string;
+    BGP: string;
 }
 
 interface Bookings {
@@ -31,6 +32,7 @@ interface Bookings {
   BookingTime: string;
   RoomPin: number;
   BiometricPassword: number;
+  BGP: string;
 }
 
 export const HoverEffect = ({
@@ -69,7 +71,7 @@ export const HoverEffect = ({
     };
 
     const handleRoomClick = (room: Room) => {
-      setSelectedRoom(room); 
+      setSelectedRoom(room);
     };
 
     const closeModal = () => {
@@ -280,6 +282,7 @@ export const HoverEffect = ({
                     BookingDate: formattedDate,
                     BookingTime: timeIn24HourFormat,
                     RoomPin: RoomPin,
+                    BGP: thisRoom.BGP,
                 }),
             });
     
@@ -566,6 +569,7 @@ export const Card = ({
     </div>
   );
 };
+
 export const CardTitle = ({
   className,
   children,
@@ -579,6 +583,7 @@ export const CardTitle = ({
     </h4>
   );
 };
+
 export const CardDescription = ({
   className,
   children,

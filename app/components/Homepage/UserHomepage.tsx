@@ -21,6 +21,7 @@ interface Room {
     Type: string;
     Status: string;
     imagename: string;
+    BGP: string;
 }
 
 interface Bookings {
@@ -31,7 +32,8 @@ interface Bookings {
     BookingTime: string;
     RoomPin: number;
     BiometricPassword: number;
-  }
+    BGP: string;
+}
 
 const timeSlots = [
     '09:00 AM - 10:00 AM',
@@ -67,7 +69,7 @@ export const projects = [
         "A technology company that focuses on building products that advance Facebook's mission of bringing the world closer together.",
       link: "https://meta.com",
     },
-  ];
+];
 
 const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, FavRooms, allBookings }) => {
     const [startDate, setStartDate] = useState<Date | null>(null);       // For Date Picker
@@ -134,6 +136,7 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
         // Close the date picker modal after rooms are fetched
         setShowDatePicker(false);
     };
+
     let unAvailableRooms:Room[] = [];
     if(UserRole === "Director"){
       unAvailableRooms = allRooms.filter((room) => unAvaRooms.includes(room.RoomID));

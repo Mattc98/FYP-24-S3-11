@@ -112,6 +112,10 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
     };
 
     const handleEditRoom = async (roomId: number) => {
+        if (!newRoomName || !newPax || !newType || !newStatus || !newImageName) {
+            alert("Please fill in all fields.");
+            return; // Stop execution if any field is missing
+        }
         if (editRoom) {
             console.log('Editing room with ID:', roomId, 'Values:', editRoom); // Log current values
 
