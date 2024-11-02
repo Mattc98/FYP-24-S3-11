@@ -4,6 +4,7 @@ import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css'; 
 import Image from 'next/image';
 import Navbar from '../Navbar';
+import { toast, Toaster } from 'sonner';
 
 interface ClientBookingsProps {
     bookings: Bookings[];
@@ -186,6 +187,7 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
         const new24Time = format24Time(newTime);
         const sgNewDate = new Date(newDate).toLocaleDateString('en-CA');
     
+
         // Step 1: Check if there is a duplicate booking at the new date/time
         const isDuplicate = bookings.filter(
             (booking) =>
@@ -201,11 +203,11 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
             if (userRole === 'Director') {
                 const directorCode = prompt('A booking already exists at this time. Enter the Director Code to proceed:');
                 if (!directorCode || directorCode !== '123') {
-                    alert('Invalid Director Code. Booking not overridden.');
+                    toast.error('Invalid Director Code. Booking not overridden.');
                     return;
                 }
     
-                alert('Director code is valid. Room has been overridden.');
+                toast.success('Director code is valid. Room has been overridden.');
                 overrideOccurred = true;
                 
     
@@ -270,7 +272,7 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
                 });
         
                 if (response.ok) {
-                    alert(`Room: ${selectedBooking.RoomName} on ${formatDate(new Date(sgNewDate))} at ${newTime} has been booked!`);
+                    toast.success(`Room: ${selectedBooking.RoomName} on ${formatDate(new Date(sgNewDate))} at ${newTime} has been booked!`);
                 } else {
                     alert('Failed to create booking.');
                     const errorData = await response.json();
@@ -437,6 +439,7 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
                 </div>
             </div>
         )}
+        <Toaster richColors/>
     </div>
     );
 };

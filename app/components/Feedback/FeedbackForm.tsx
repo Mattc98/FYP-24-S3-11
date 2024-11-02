@@ -5,6 +5,7 @@ import { useState, useRef, ReactNode, Suspense } from 'react';
 import styles from './Feedback.module.css';
 import { submitFeedback, Feedback } from './SubmitFeedback';
 
+
 interface FeedbackFormProps {
     children: ReactNode;
     userId: number | null; // Change to allow null value
@@ -54,7 +55,7 @@ function FeedbackFormContent({ children, userId }: FeedbackFormProps) {
             setIsSubmitting(false);
         }
     };
-
+ 
     // Display loading state while user ID is null
     if (userId === null) {
         return <div>Loading...</div>;

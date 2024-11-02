@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import { toast, Toaster } from 'sonner';
 
 interface Room {
     RoomID: number;
@@ -78,7 +79,7 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
 
     const handleAddRoom = async () => {
         if (!newRoomName || !newPax || !newType || !newStatus || !newImageName) {
-            alert("Please fill in all fields.");
+            toast.error("Please fill in all fields.");
             return; // Stop execution if any field is missing
         }
     
@@ -108,12 +109,13 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
             setNewStatus('');
             setNewImageName('');
             setIsAddModalOpen(false);
+            toast.success('Successfully added new room');
         }
     };
 
     const handleEditRoom = async (roomId: number) => {
         if (!newRoomName || !newPax || !newType || !newStatus || !newImageName) {
-            alert("Please fill in all fields.");
+            toast.error("Please fill in all fields.");
             return; // Stop execution if any field is missing
         }
         if (editRoom) {
@@ -137,6 +139,7 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
                 ));
                 setEditRoom(null);
                 setIsEditModalOpen(false);
+                toast.success('Successfully updated room details');
             } else {
                 const errorData = await response.json();
                 console.error('Failed to update room:', errorData.message);
@@ -155,6 +158,7 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
 
         if (response.ok) {
             setRooms((prevRooms) => prevRooms.filter((room) => room.RoomID !== roomId));
+            toast.success('Successfully deleted room');
         }
     };
 
@@ -363,6 +367,7 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
                     </div>
                 </div>
             )}
+            <Toaster richColors/>
         </div>
     );
 };

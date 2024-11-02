@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css'; 
 import TimeSlotDropdown from './TimeSlotDropdown'; // Ensure this path is correct
+import { toast, Toaster } from 'sonner';
 
 
 interface Room {
@@ -76,7 +77,6 @@ const FavouritesList: React.FC<FavouritesListProps> = ({ rooms, userId, userRole
     
     const time24 = `${hoursIn24.toString().padStart(2, '0')}:${minutes}:00`;
     
-    
     return time24;
   };
     
@@ -143,11 +143,11 @@ const handleBooking = async (room: Room) => {
         const directorCode = prompt('A booking already exists at this time. Please enter the Director Code to proceed:');
 
         if (!directorCode || directorCode !== '123') {
-            alert('Invalid Director Code. Booking not overridden.');
+            toast.error('Invalid Director Code. Booking not overridden.');
             return;
         }
 
-        alert('Director code is valid. Room has been overridden.');
+        toast.success('Director code is valid. Room has been overridden.');
 
         // Update only the UserID for the conflicting booking
         try {
@@ -200,7 +200,7 @@ const handleBooking = async (room: Room) => {
             return;
         }
       }else{
-        alert("Room has already been booked");
+        toast.error("Room has already been booked");
       }
       return; // Exit after handling the override
     }else{
@@ -222,7 +222,7 @@ const handleBooking = async (room: Room) => {
         });
 
         if (response.ok) {
-            alert(`Room: ${room.RoomName} on ${formattedDate} at ${selectedTimeSlot} has been booked!`);
+            toast.success(`Room: ${room.RoomName} on ${formattedDate} at ${selectedTimeSlot} has been booked!`);
         } else {
             alert('Failed to create booking.');
             const errorData = await response.json();
@@ -277,6 +277,7 @@ const handleBooking = async (room: Room) => {
           </li>
         ))}
       </ul>
+      <Toaster richColors/>
     </div>
   );
 };

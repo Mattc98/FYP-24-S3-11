@@ -1,6 +1,7 @@
 'use client'; // Marks this component as a Client Component
 import React, { useEffect, useState } from 'react';
 import RoleDropdown from './RoleDropdown'; // Ensure you import RoleDropdown correctly
+import { toast, Toaster } from 'sonner';
 
 interface UserAccount {
   UserID: number;
@@ -45,8 +46,7 @@ const ManageUsersClient: React.FC<ManageUsersPageProps> = ({ users }) => {
       });
 
       if (response.ok) {
-        console.log("User unlocked successfully");
-        alert("User has been unlocked. Do remember to inform them that their account is unlocked.");
+        toast.success("User has been unlocked. Do remember to inform them that their account is unlocked.");
       } else {
         console.log("Failed to unlock user");
       }
@@ -75,7 +75,7 @@ const ManageUsersClient: React.FC<ManageUsersPageProps> = ({ users }) => {
         setEditUsername(''); // Clear the input
         setEditRole(''); // Clear the role
         setCurrentUserId(null); // Reset current user ID
-        alert('User successfully updated!'); // Show success message
+        toast.success('User successfully updated!'); // Show success message
       }
     } catch (error) {
       alert('Error updating user'); // Show error message
@@ -103,7 +103,7 @@ const ManageUsersClient: React.FC<ManageUsersPageProps> = ({ users }) => {
 
       if (response.ok) {
         setManageUsers((prevUsers) => prevUsers.filter((user) => user.UserID !== userID));
-        alert('User successfully terminated!'); // Show success message
+        toast.success('User successfully terminated!'); // Show success message
       }
     } catch (error) {
       alert('Error terminating user'); // Show error message
@@ -138,13 +138,13 @@ const ManageUsersClient: React.FC<ManageUsersPageProps> = ({ users }) => {
         const newUser = await response.json(); // Assuming the API returns the created user
         setManageUsers((prevUsers) => [...prevUsers, newUser]); // Add new user to the list
         setIsModalOpen(false); // Close the modal
-        alert('User successfully created!'); // Show success message
+        toast.success('User successfully created!'); // Show success message
       } else {
         const errorData = await response.json();
         if (errorData.error === 'Username or Email already exists') {
-          alert('Error: Username or Email already exists.');
+          toast.error('Error: Username or Email already exists.');
         } else {
-          alert('Error creating user. Please try again.');
+          toast.error('Error creating user. Please try again.');
         }
       }
     } catch (error) {
@@ -245,6 +245,7 @@ const ManageUsersClient: React.FC<ManageUsersPageProps> = ({ users }) => {
             )}
           </div>
         )}
+        <Toaster richColors/>
       </div>
 
       {/* Modal for Adding User */}

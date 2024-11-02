@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
+import { toast, Toaster } from 'sonner';
 
 const timeSlots = [
   '09:00 AM - 10:00 AM',
@@ -163,14 +164,14 @@ export const HoverEffect = ({
         }
     
         if (!startDate || !selectedTimeSlot) {
-            alert("Please select a date and time.");
+            toast.error("Please select a date and time.");
             return;
         }
     
         const thisRoom = selectedRoom || selectedOverrideRoom;
     
         if (!thisRoom) {
-            alert("Please select a room.");
+            toast.error("Please select a room.");
             return;
         }
     
@@ -203,11 +204,11 @@ export const HoverEffect = ({
             const directorCode = prompt('A booking already exists at this time. Please enter the Director Code to proceed:');
     
             if (!directorCode || directorCode !== '123') {
-                alert('Invalid Director Code. Booking not overridden.');
+                toast.error('Invalid Director Code. Booking not overridden.');
                 return;
             }
     
-            alert('Director code is valid. Room has been overridden.');
+            toast.success('Director code is valid. Room has been overridden.');
     
             // Update only the UserID for the conflicting booking
             try {
@@ -261,6 +262,7 @@ export const HoverEffect = ({
             }
     
             closeModal();
+            window.location.href = "/UserHomepage";
             return;
         }
     
@@ -287,7 +289,7 @@ export const HoverEffect = ({
             });
     
             if (response.ok) {
-                alert(`Room: ${thisRoom.RoomName} on ${formatDate(new Date(startDate))} at ${selectedTimeSlot} has been booked!`);
+                toast.success(`Room: ${thisRoom.RoomName} on ${formatDate(new Date(startDate))} at ${selectedTimeSlot} has been booked!`);
                 closeModal();
             } else {
                 alert('Failed to create booking.');
@@ -298,6 +300,8 @@ export const HoverEffect = ({
             console.error('Error creating booking:', error);
             alert('An error occurred. Please try again.');
         }
+
+
     };
         
     
@@ -545,6 +549,7 @@ export const HoverEffect = ({
                     </div>
                 </div>
             )}
+            <Toaster richColors/>
     </div>
   );
 };

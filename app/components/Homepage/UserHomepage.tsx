@@ -5,6 +5,7 @@ import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { HoverEffect } from "../ui/card-hover-effect";
 import Navbar from '../Navbar';
+import { toast, Toaster } from 'sonner';
 
 interface UserHomeProps {
     allRooms: Room[];
@@ -117,7 +118,7 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
 
     const handleAvaBooking = () => {
         if (!startDate || !selectedTimeSlot) {
-            alert("Please select a date and time.");
+            toast.error("Please select a date and time.");
             return;
         }
     
@@ -200,6 +201,7 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
                     </button>
                     </div>
                 )}
+                <Toaster richColors/>
             </div>
 
       
