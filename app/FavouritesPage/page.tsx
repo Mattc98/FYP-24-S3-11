@@ -21,6 +21,7 @@ interface Room {
   RoomName: string;
   Pax: number;
   imagename: string; // Image filename or URL
+  BGP: string;
 }
 
 
@@ -31,7 +32,7 @@ interface Bookings {
   BookingDate: string;
   BookingTime: string;
   RoomPin: number;
-  BiometricPassword: number;
+  BGP: string;
 }
 
 // Fetch user ID by username
@@ -49,7 +50,7 @@ const fetchUserIdByUsername = async (username: string): Promise<number | undefin
 // Fetch rooms based on user ID
 const fetchUserRooms = async (userId: number): Promise<Room[]> => {
   const response = await calluser(`
-    SELECT r.RoomID, r.RoomName, r.Pax, r.imagename
+    SELECT r.RoomID, r.RoomName, r.Pax, r.imagename, r.BGP
     FROM Favourite f 
     JOIN Room r ON f.RoomID = r.RoomID 
     WHERE f.UserID = ${userId}

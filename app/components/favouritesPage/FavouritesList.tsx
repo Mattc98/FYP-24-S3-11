@@ -10,6 +10,7 @@ interface Room {
   RoomName: string;
   Pax: number;
   imagename: string; // Image filename or URL
+  BGP: string;
 }
 
 
@@ -20,7 +21,7 @@ interface Bookings {
   BookingDate: string;
   BookingTime: string;
   RoomPin: number;
-  BiometricPassword: number;
+  BGP: string;
 }
 
 interface FavouritesListProps {
@@ -216,6 +217,7 @@ const handleBooking = async (room: Room) => {
               BookingDate: formattedDate,
               BookingTime: formatTime(selectedTimeSlot),
               RoomPin: RoomPin,
+              BGP: room.BGP,
           }),
         });
 
