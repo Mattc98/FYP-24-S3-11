@@ -1,8 +1,8 @@
 'use client';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import styles from './LoginForm.module.css';
 import { setCookie } from "cookies-next";
+import { toast, Toaster } from 'sonner';
 
 interface UserAccount {
   UserID: number;
@@ -20,7 +20,6 @@ interface ClientLoginFormProps {
 const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
   const [selectedRole, setSelectedRole] = useState("User");
   const [isLocked, setIsLocked] = useState(false); // Assuming you have isLocked state
   const router = useRouter();
@@ -72,7 +71,7 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
             (selectedRole === "User" && (user.Role === "User" || user.Role === "Director"))) {
           
           // Successful login
-          setMessage(`${user.Role} Login Successful`);
+          toast.success('Successfully logged in');
           
           // Reset FailLogin count on successful login
           await updateUserAccount({ ...user, FailLogin: 0, IsLocked: false });
@@ -87,7 +86,7 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
           router.push(homepageRedirect[user.Role]);
         } else {
           // Access denied if role doesn't match the account type
-          setMessage('Access Denied');
+          toast.error('Access Denied')
         }
       } else {
         // Increment FailLogin count
@@ -100,15 +99,15 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
         user.IsLocked = isLocked;
   
         if (isLocked) {
-          setMessage('Account locked due to multiple failed attempts. Please contact administrator.');
+          toast.error('Account locked due to multiple failed attempts. Please contact administrator.');
           setIsLocked(true);
           return;
         } else {
-          setMessage(`Invalid username or password. Attempts remaining: ${3 - newFailLogin}`);
+          toast.error(`Invalid username or password. Attempts remaining: ${3 - newFailLogin}`);
         }
       }
     } else {
-      setMessage('Invalid username or password');
+      toast.error('Invalid username or password');
     }
   };
   
@@ -166,15 +165,7 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
               Sign In
             </button>
           </form>
-          {message && (
-            <p
-              className={`text-center mt-4 ${
-                message.includes("Login Successful") ? "text-green-500" : "text-red-500"
-              }`}
-            >
-              {message}
-            </p>
-          )}
+          <Toaster richColors/>
         </div>
     </div>
   );
