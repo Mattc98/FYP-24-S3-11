@@ -20,7 +20,7 @@ interface Bookings {
     BookingDate: string;
     BookingTime: string;
     RoomPin: number;
-    BiometricPassword: number;
+    BGP: string;
 }
 
 interface Room {
@@ -41,6 +41,7 @@ interface MyBooking {
     BookingTime: string;
     Type: string;
     imagename: string;
+    BGP: string;
 }
 
 // Time slots for the dropdown
@@ -58,42 +59,41 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
     const [myBookings, setMyBookings] = useState<MyBooking[]>([]);
     const [showAmendModal, setShowAmendModal] = useState(false); // To control modal visibility
     const [selectedBooking, setSelectedBooking] = useState<MyBooking | null>(null); // The booking to amend
-    const [newDate, setNewDate] = useState(''); // The new date
+    const [newDate, setNewDate] = useState<Date | null>(null);
     const [newTime, setNewTime] = useState(''); // The new time slot
 
+    const getMyBookings = () => {
+        const currentDate = new Date();
+
+        const userBookings = bookings
+            .filter(booking => booking.UserID == userid && new Date(booking.BookingDate) >= currentDate)
+            .map(booking => {
+                const room = rooms.find(room => room.RoomID == booking.RoomID);
+                if (room) {
+                    return {
+                        BookingID: booking.BookingID,
+                        RoomID: room.RoomID,
+                        RoomName: room.RoomName,
+                        Pax: room.Pax,
+                        BookingDate: booking.BookingDate,
+                        BookingTime: booking.BookingTime,
+                        Type: room.Type,
+                        imagename: room.imagename,
+                        BGP: booking.BGP,
+                    };
+                }
+                return null; // Return null instead of "Not this room"
+            })
+            .filter(booking => booking !== null) // Remove any null values from the array
+            .sort((a, b) => new Date(a.BookingDate).getTime() - new Date(b.BookingDate).getTime()); // Sort by BookingDate
+
+        setMyBookings(userBookings as MyBooking[]);
+    };
+
     useEffect(() => {
-        const getMyBookings = () => {
-            const currentDate = new Date();
-    
-            const userBookings = bookings
-                .filter(booking => booking.UserID == userid && new Date(booking.BookingDate) >= currentDate)
-                .map(booking => {
-                    const room = rooms.find(room => room.RoomID == booking.RoomID);
-                    if (room) {
-                        return {
-                            BookingID: booking.BookingID,
-                            RoomID: room.RoomID,
-                            RoomName: room.RoomName,
-                            Pax: room.Pax,
-                            BookingDate: booking.BookingDate,
-                            BookingTime: booking.BookingTime,
-                            Type: room.Type,
-                            imagename: room.imagename
-                        };
-                    }
-                    return null; // Return null instead of "Not this room"
-                })
-                .filter(booking => booking !== null) // Remove any null values from the array
-                .sort((a, b) => new Date(a.BookingDate).getTime() - new Date(b.BookingDate).getTime()); // Sort by BookingDate
-    
-            setMyBookings(userBookings as MyBooking[]);
-        };
-    
         getMyBookings();
-    
     }, [bookings, rooms, userid]);
     
-
     // Function to handle booking cancellation
     const handleCancelBooking = async (bookingId: number) => {
         try {
@@ -121,7 +121,7 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
     // Function to handle booking amendment
     const handleAmendBooking = (booking: MyBooking) => {
         setSelectedBooking(booking); // Set the booking to amend
-        setNewDate(booking.BookingDate); // Default to current booking date
+        setNewDate(new Date(booking.BookingDate)); // Default to current booking date
         setNewTime(booking.BookingTime); // Default to current booking time
         setShowAmendModal(true); // Show the modal
     };
@@ -139,7 +139,7 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
             hoursIn24 = 0; // Midnight case
         }
         
-        const time24 = `${hoursIn24.toString().padStart(2, '0')}:${minutes}`;
+        const time24 = `${hoursIn24.toString().padStart(2, '0')}:${minutes}:00`;
         
         // Log the conversion process
         //console.log(`Converted ${time} to 24-hour format: ${time24}`);
@@ -177,81 +177,142 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
         //console.log('Time not available in slots');
         return 'Time not available in slots'; // Return an appropriate message
     };
-    
-   // Function to handle modal submission (updating the booking)
+   
     const handleSubmitAmend = async () => {
         if (!selectedBooking) return;
+        if (!newDate) return;
+    
+        // Extract new booking details
         const new24Time = format24Time(newTime);
         const sgNewDate = new Date(newDate).toLocaleDateString('en-CA');
-        console.log("24time ",new24Time);
-        console.log("sgNewDate ",sgNewDate);
-
+    
+        // Step 1: Check if there is a duplicate booking at the new date/time
         const isDuplicate = bookings.filter(
             (booking) =>
-                formatDate(new Date(booking.BookingDate)) === formatDate(new Date(newDate)) &&
-                formatTime(booking.BookingTime) === formatTime(newTime) && booking.RoomID === selectedBooking.RoomID
+                formatDate(new Date(booking.BookingDate)) === formatDate(new Date(sgNewDate)) &&
+                formatTime(booking.BookingTime) === formatTime(new24Time) &&
+                booking.RoomID === selectedBooking.RoomID
         );
+    
+        let overrideOccurred = false;
 
         if (isDuplicate.length != 0) {
+            // Step 2: If there is a conflict and user is a Director, override is allowed
             if (userRole === 'Director') {
-                const directorCode = prompt('A booking already exists at this time. Please enter the Director Code to proceed:');
-                if (!directorCode) {
-                    alert('Director code is invalid.');
+                const directorCode = prompt('A booking already exists at this time. Enter the Director Code to proceed:');
+                if (!directorCode || directorCode !== '123') {
+                    alert('Invalid Director Code. Booking not overridden.');
                     return;
                 }
-                if (directorCode === '123') {
-                    alert('Director code is valid. Room as been overrided.');
-                    handleCancelBooking(isDuplicate[0].BookingID);
-                    setShowAmendModal(false); // Close the modal after overriding
+    
+                alert('Director code is valid. Room has been overridden.');
+                overrideOccurred = true;
+                
+    
+                // Step 3: Create a new booking with the updated information
+                const overrideResponse = await fetch('/api/overrideBooking', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        bookingId: isDuplicate[0].BookingID, // Use the ID of the duplicate (original) booking
+                        sgNewDate,
+                        new24Time,
+                        newUserId: userid,
+                    }),
+                });
+    
+                const overrideData = await overrideResponse.json();
+                if (!overrideData.success) {
+                    alert('Failed to create new booking.');
                     return;
-                }       
-                // You could add further validation for the director code here if needed
+                }
+    
+                // Optional: Notify the original user about the booking override
+                try {
+                    const userResponse = await fetch(`/api/getEmailById?userId=${isDuplicate[0].UserID}`);
+                    const userData = await userResponse.json();
+                    if (userResponse.ok && userData.email) {
+                        await fetch('/api/sendNotificationEmail', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                email: userData.email,
+                                roomName: selectedBooking.RoomName,
+                                bookingDate: sgNewDate,
+                                bookingTime: newTime,
+                                directorName: username,
+                            }),
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error sending notification email:', error);
+                }
             } else {
                 alert('A booking already exists at this time. Please choose a different time slot.');
                 return;
             }
-        }
-
-        try {
-            const response = await fetch('/api/amendBooking', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    bookingId: selectedBooking.BookingID,
-                    sgNewDate,
-                    new24Time,
-                }),
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                // Update the booking in the state
-                setMyBookings(prevBookings =>
-                    prevBookings.map(booking =>
-                        booking.BookingID === selectedBooking.BookingID
-                            ? { ...booking, BookingDate: newDate, BookingTime: newTime }
-                            : booking
-                    )
-                );
-                alert(`Updated to ${formatDate(new Date(newDate))} at ${newTime}`);
-                setShowAmendModal(false); // Close the modal
-            } else {
-                console.error('Failed to amend booking:', data.error);
+        }else{
+            try {
+                const response = await fetch('/api/amendBooking', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        bookingId: selectedBooking.BookingID,
+                        sgNewDate: formatDate(new Date(sgNewDate)),
+                        new24Time: formatTime(new24Time),
+                    }),
+                });
+        
+                if (response.ok) {
+                    alert(`Room: ${selectedBooking.RoomName} on ${formatDate(new Date(sgNewDate))} at ${newTime} has been booked!`);
+                } else {
+                    alert('Failed to create booking.');
+                    const errorData = await response.json();
+                    console.log('Error response data:', errorData);
+                }
+            } catch (error) {
+                console.error('Error creating booking:', error);
+                alert('An error occurred. Please try again.');
             }
-        } catch (error) {
-            console.error('Error amending booking:', error);
         }
-    };
     
+        // Step 4: Delete the old booking if an override occurred
+        if (overrideOccurred) {
+            try {
+                const deleteResponse = await fetch('/api/deleteOldBooking', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ bookingId: selectedBooking.BookingID }),
+                });
+    
+                const deleteData = await deleteResponse.json();
+    
+                if (deleteData.success) {
+                    setMyBookings((prevBookings) =>
+                        prevBookings.filter((booking) => booking.BookingID !== selectedBooking.BookingID)
+                    );
+                } else {
+                    console.error('Failed to delete old booking:', deleteData.error);
+                }
+            } catch (error) {
+                console.error('Error deleting old booking:', error);
+            }
+        }
+        
+        setShowAmendModal(false); // Close the modal after completion
+        window.location.href = "/myBookings";
+    };
+      
     const formatDate = (date: Date) => {
-        return new Intl.DateTimeFormat('en-CA', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-        }).format(date);
+        return date.toLocaleDateString('en-CA')
     };
 
     const formatTime = (time: string) => {
@@ -273,8 +334,18 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
       return 'Time not available in slots';
     };
 
+    const handleDateChange = (date: Date | null) => {
+        if (date) {
+          // Create a date string in ISO format for Singapore timezone
+          const singaporeDate = new Date(date.toLocaleString("en-US", { timeZone: "Asia/Singapore" }));
+          setNewDate(singaporeDate); // Store the date
+        } else {
+          setNewDate(null);
+        }
+      };
+
     return (
-        <div className="pb-6 overflow-hidden no-scrollbar col-span-1 overflow-y-scroll bg-neutral-800 flex-1 ml-auto mr-auto lg:w-[1100px] h-screen">
+        <div className=" text-white pb-6 overflow-hidden no-scrollbar col-span-1 overflow-y-scroll bg-neutral-800 flex-1 ml-auto mr-auto lg:w-[1100px] h-screen">
             <Navbar />
 
             <h2 className="text-center text-2xl font-semibold pb-6">Here are your upcoming bookings</h2>
@@ -327,7 +398,7 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
                         <label className="block font-semibold mb-2">Select New Date</label>
                         <ReactDatePicker
                             selected={newDate ? new Date(newDate) : null}
-                            onChange={(date) => setNewDate(date ? date.toISOString().split('T')[0] : '')}
+                            onChange={handleDateChange}
                             dateFormat="yyyy-MM-dd"
                             className="border rounded-md p-2 w-full text-white bg-neutral-800"
                             placeholderText="Select a date"

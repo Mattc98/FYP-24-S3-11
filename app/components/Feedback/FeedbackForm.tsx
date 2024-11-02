@@ -78,6 +78,7 @@ function FeedbackFormContent({ children, userId }: FeedbackFormProps) {
                         onChange={(e) => setFeedback(e.target.value)}
                         placeholder="Leave your feedback here"
                         className={styles.textarea}
+                        required
                     ></textarea>
                 </div>
                 <button type="submit" className={styles.button} disabled={isSubmitting}>

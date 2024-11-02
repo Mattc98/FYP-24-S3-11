@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css'; 
 import TimeSlotDropdown from './TimeSlotDropdown'; // Ensure this path is correct
@@ -10,17 +10,32 @@ interface Room {
   RoomName: string;
   Pax: number;
   imagename: string; // Image filename or URL
+  BGP: string;
+}
+
+
+interface Bookings {
+  BookingID: number;
+  RoomID: number;
+  UserID: string;
+  BookingDate: string;
+  BookingTime: string;
+  RoomPin: number;
+  BGP: string;
 }
 
 interface FavouritesListProps {
   rooms: Room[];
   userId: number;
+  userRole:string;
+  allBookings: Bookings[];
 }
 
-const FavouritesList: React.FC<FavouritesListProps> = ({ rooms, userId }) => {
+const FavouritesList: React.FC<FavouritesListProps> = ({ rooms, userId, userRole, allBookings }) => {
   
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>(''); 
+  const [userName, setName] = useState('');
 
   const timeSlots = [
     '09:00 AM - 10:00 AM',
@@ -30,6 +45,21 @@ const FavouritesList: React.FC<FavouritesListProps> = ({ rooms, userId }) => {
     '02:00 PM - 03:00 PM',
     '03:00 PM - 04:00 PM',
   ];
+
+  useEffect(() => {
+    // Fetch director name from the server-side API route
+    const fetchName = async () => {
+        try {
+            const response = await fetch('/api/getName');
+            const data = await response.json();
+            setName(data.username || '');
+        } catch (error) {
+            console.error('Error fetching name:', error);
+        }
+    };
+
+    fetchName();
+  }, []);
 
   const convertTo24Hour = (time: string) => {
     const [hours, minutesPart] = time.split(':');
@@ -44,16 +74,13 @@ const FavouritesList: React.FC<FavouritesListProps> = ({ rooms, userId }) => {
         hoursIn24 = 0; // Midnight case
     }
     
-    const time24 = `${hoursIn24.toString().padStart(2, '0')}:${minutes}`;
+    const time24 = `${hoursIn24.toString().padStart(2, '0')}:${minutes}:00`;
     
-    // Log the conversion process
-    console.log(`Converted ${time} to 24-hour format: ${time24}`);
     
     return time24;
   };
     
   const formatTime = (timeRange: string) => {
-    console.log(`Input time to format: ${timeRange}`);
 
     // Extract only the start time from the time range
     const [startTime] = timeRange.split(' - ');
@@ -83,21 +110,103 @@ const FavouritesList: React.FC<FavouritesListProps> = ({ rooms, userId }) => {
     return 'Time not available in slots'; // Return an appropriate message
   };
 
-  // Function to handle booking
-  const handleBooking = async (room: Room) => {
-    if (!startDate || !selectedTimeSlot) {
+  const formatDate = (date: Date) => {
+    return new Intl.DateTimeFormat('en-CA', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    }).format(date);
+};
+
+// Function to handle booking
+const handleBooking = async (room: Room) => {
+  if (!startDate || !selectedTimeSlot) {
       alert("Please select a date and time slot.");
       return;
-    }
+  }
 
-    // create Room pin
-    const RoomPin = Math.floor(100 + Math.random() * 90).toString(); 
-    // Format the date into YYYY-MM-DD format
-    const formattedDate = startDate.toLocaleDateString('en-CA');
-    console.log(formattedDate);
+  // Create Room pin and format the date
+  const RoomPin = Math.floor(100 + Math.random() * 90).toString(); 
+  const formattedDate = startDate.toLocaleDateString('en-CA');
 
-    try {
-      const response = await fetch('/api/createBooking', {
+  const isDuplicate = allBookings.filter(
+    (booking) =>
+        formatDate(new Date(booking.BookingDate)) === formatDate(new Date(startDate)) &&
+        formatTime(booking.BookingTime) === formatTime(selectedTimeSlot) &&
+        booking.RoomID === room.RoomID
+  );
+
+
+  if (isDuplicate.length !== 0) {
+      if (userRole === 'Director'){
+        
+        const directorCode = prompt('A booking already exists at this time. Please enter the Director Code to proceed:');
+
+        if (!directorCode || directorCode !== '123') {
+            alert('Invalid Director Code. Booking not overridden.');
+            return;
+        }
+
+        alert('Director code is valid. Room has been overridden.');
+
+        // Update only the UserID for the conflicting booking
+        try {
+            const updateResponse = await fetch('/api/updateUserID', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    bookingId: isDuplicate[0].BookingID,
+                    newUserId: userId,
+                }),
+            });
+
+            const updateData = await updateResponse.json();
+            if (!updateResponse.ok || !updateData.success) {
+                console.error('Failed to update UserID:', updateData.error);
+                alert('Failed to override booking.');
+                return;
+            }
+
+            // Send notification to the original user
+            try {
+                const userResponse = await fetch(`/api/getEmailById?userId=${isDuplicate[0].UserID}`);
+                const userData = await userResponse.json();
+
+                if (userResponse.ok && userData.email) {
+                    await fetch('/api/sendNotificationEmail', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            email: userData.email,
+                            roomName: room.RoomName,
+                            bookingDate: formattedDate,
+                            bookingTime: selectedTimeSlot,
+                            directorName: userName,
+                        }),
+                    });
+                } else {
+                    console.error('Failed to retrieve user email');
+                }
+            } catch (error) {
+                console.error('Error retrieving user email or sending notification email:', error);
+            }
+        } catch (error) {
+            console.error('Error updating UserID for override:', error);
+            alert('An error occurred while overriding the booking.');
+            return;
+        }
+      }else{
+        alert("Room has already been booked");
+      }
+      return; // Exit after handling the override
+    }else{
+      // Proceed to create a new booking if no conflict
+      try {
+        const response = await fetch('/api/createBooking', {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',
@@ -108,25 +217,29 @@ const FavouritesList: React.FC<FavouritesListProps> = ({ rooms, userId }) => {
               BookingDate: formattedDate,
               BookingTime: formatTime(selectedTimeSlot),
               RoomPin: RoomPin,
+              BGP: room.BGP,
           }),
-      });
+        });
 
-
-      if (response.ok) {
-                alert(`Room: ${room.RoomName} on ${formattedDate} at ${selectedTimeSlot} has been booked!`);
-            } else {
-                alert('Failed to create booking.');
-            }
-        } catch (error) {
-            console.error('Error creating booking:', error);
-            alert('An error occurred. Please try again.');
+        if (response.ok) {
+            alert(`Room: ${room.RoomName} on ${formattedDate} at ${selectedTimeSlot} has been booked!`);
+        } else {
+            alert('Failed to create booking.');
+            const errorData = await response.json();
+            console.log('Error response data:', errorData);
         }
+      } catch (error) {
+          console.error('Error creating booking:', error);
+          alert('An error occurred. Please try again.');
+      }
+    };
   }
+
 
   return (
     
-    <div className='bg-neutral-800 flex-1 ml-auto mr-auto w-[70%] h-screen'>
-      <h2 className="text-2xl font-bold text-white">Your Favourite Rooms</h2>
+    <div className='bg-neutral-800 flex-1 ml-auto mr-auto w-[70%] h-screen text-white'>
+      <h2 className="text-2xl font-bold ">Your Favourite Rooms</h2>
       <ul className="space-y-8">
         {rooms.map((room) => (
           <li key={room.RoomID} className="bg-neutral-900 p-6 rounded-lg shadow-xl shadow-black-500/50">
@@ -142,6 +255,7 @@ const FavouritesList: React.FC<FavouritesListProps> = ({ rooms, userId }) => {
                 </div>
               )}
               <div className="flex flex-col justify-between w-1/7">
+                <label className="text-xl block font-semibold mb-2">Date:</label>
                 <ReactDatePicker
                   selected={startDate}
                   onChange={(date) => setStartDate(date)}

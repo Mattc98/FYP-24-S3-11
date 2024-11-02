@@ -26,7 +26,7 @@ const RoomDropdown: React.FC<userRoleProps> = async ({ UserRole }) => {
   const rooms = await fetchRoomData();
 
   return (
-    <select name="rooms" id="rooms" style={{ color: 'black' }}>
+    <select name="rooms" id="rooms" style={{ color: 'black' }} required>
       <option value="">Select a room</option>
       {rooms.filter((room) => UserRole === "Director" || room.Type === "User")
         .map((room) => (

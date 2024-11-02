@@ -15,7 +15,7 @@ interface Bookings {
     BookingDate: string;
     BookingTime: string;
     RoomPin: number;
-    BiometricPassword: number;
+    BGP: string;
 }
 
 interface Room {
@@ -25,6 +25,7 @@ interface Room {
     Type: string;
     Status: string;
     imagename: string;
+    BGP: string;
 }
 
 const fetchAllBookings = async (): Promise<Bookings[]> => {

@@ -1,84 +1,88 @@
 
   
-  .inputField {
-    @apply  bg-gray-200 border border-gray-300 p-2 rounded mb-4 w-full text-black;
 
-  }
-  
-  .submitButton {
-    background-color: #969696;
-    color: rgb(0, 0, 0);
-    padding: 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    width: 50%;
-    position: relative;
-    left: 25%;
-  }
+.submitButton {
+  background-color: #969696;
+  color: rgb(0, 0, 0);
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 50%;
+  position: relative;
+  left: 25%;
+}
 
-  .submitButton:hover {
-    background-color:  #b3b3b3;
-    color: rgb(0, 0, 0);
-    padding: 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    width: 50%;
-    position: relative;
-    left: 25%;
-  }
+.submitButton:hover {
+  background-color:  #b3b3b3;
+  color: rgb(0, 0, 0);
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 50%;
+  position: relative;
+  left: 25%;
+}
 
-  .switchButton1 {
-    background-color: #969696;
-    color: rgb(0, 0, 0);
-    padding: 5px;
-    border-radius: 10px;
-    cursor: pointer;
-    width: 25%;
-    position: relative;
-    left: 20%;
+.buttonContainer {
+  display: flex;
+  gap: 10px;
+}
 
-  }
+.switchButton {
+  background-color: #969696;
+  color: rgb(0, 0, 0);
+  padding: 5px;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 100px; /* Adjust width as needed */
+  transition: background-color 0.3s;
+}
+
+.selected {
+  background-color: #a3a3a3; /* Tailwind's neutral-400 */
+  color: white;
+}
+
 
 .switchButton1:hover {
-    background-color:  #b3b3b3;
-    color: rgb(0, 0, 0);
-    padding: 5px;
-    border-radius: 10px;
-    cursor: pointer;
-    width: 25%;
-    position: relative;
-    left: 20%;
-
-  }
+  background-color:  #b3b3b3;
+  color: rgb(0, 0, 0);
+  padding: 5px;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 25%;
+  position: relative;
+  left: 20%;
+}
 
   
 
 .switchButton2 {
-    background-color: #969696;
-    color: rgb(0, 0, 0);
-    padding: 5px;
-    border-radius: 10px;
-    cursor: pointer;
-    width: 25%;
-    position: relative;
-    left: 30%;
-    margin-bottom: 5%;
-  }
+  background-color: #969696;
+  color: rgb(0, 0, 0);
+  padding: 5px;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 25%;
+  position: relative;
+  left: 30%;
+  margin-bottom: 5%;
+}
 
 .switchButton2:hover {
-    background-color: #b3b3b3;
-    color: rgb(0, 0, 0);
-    padding: 5px;
-    border-radius: 10px;
-    cursor: pointer;
-    width: 25%;
-    position: relative;
-    left: 30%;
-    margin-bottom: 5%;
-  }
+  background-color: #b3b3b3;
+  color: rgb(0, 0, 0);
+  padding: 5px;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 25%;
+  position: relative;
+  left: 30%;
+  margin-bottom: 5%;
+}
 
 
-  
-  .message {
-    @apply mb-4;
-  }
+
+.message {
+  @apply mb-4;
+}

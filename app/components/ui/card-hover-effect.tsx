@@ -161,7 +161,7 @@ export const HoverEffect = ({
             console.error('Username is missing in cookies');
             return;
         }
-
+    
         if (!startDate || !selectedTimeSlot) {
             alert("Please select a date and time.");
             return;
@@ -171,6 +171,23 @@ export const HoverEffect = ({
     
         if (!thisRoom) {
             alert("Please select a room.");
+            return;
+        }
+    
+        let userId;
+        try {
+            const userResponse = await fetch('/api/getUserId');
+            const userData = await userResponse.json();
+            if (userData.success) {
+                userId = userData.userId;
+            } else {
+                console.error('Failed to retrieve user ID');
+                alert('Unable to proceed: User ID not found.');
+                return;
+            }
+        } catch (error) {
+            console.error('Error fetching user ID:', error);
+            alert('Unable to proceed: Error retrieving user ID.');
             return;
         }
     
@@ -191,39 +208,56 @@ export const HoverEffect = ({
             }
     
             alert('Director code is valid. Room has been overridden.');
-            handleCancelBooking(isDuplicate[0].BookingID);
     
-            // Fetch user email based on UserID from the booking
+            // Update only the UserID for the conflicting booking
             try {
-                const userResponse = await fetch(`/api/getEmailById?userId=${isDuplicate[0].UserID}`);
-                const userData = await userResponse.json();
+                const updateResponse = await fetch('/api/updateUserID', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        bookingId: isDuplicate[0].BookingID,
+                        newUserId: userId,
+                    }),
+                });
     
-                if (userResponse.ok && userData.email) {
-                    // Send notification email to the original user
-                    const notificationResponse = await fetch('/api/sendNotificationEmail', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            email: userData.email,
-                            roomName: thisRoom.RoomName,
-                            bookingDate: formatDate(new Date(startDate)),
-                            bookingTime: selectedTimeSlot,
-                            directorName: userName,
-                        }),
-                    });
+                const updateData = await updateResponse.json();
+                if (!updateResponse.ok || !updateData.success) {
+                    console.error('Failed to update UserID:', updateData.error);
+                    alert('Failed to override booking.');
+                    return;
+                }
     
-                    if (notificationResponse.ok) {
-                        console.log('Notification email sent successfully');
+                // Notify the original user of the overridden booking
+                try {
+                    const userResponse = await fetch(`/api/getEmailById?userId=${isDuplicate[0].UserID}`);
+                    const userData = await userResponse.json();
+    
+                    if (userResponse.ok && userData.email) {
+                        await fetch('/api/sendNotificationEmail', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                email: userData.email,
+                                roomName: thisRoom.RoomName,
+                                bookingDate: formatDate(new Date(startDate)),
+                                bookingTime: selectedTimeSlot,
+                                directorName: userName,
+                            }),
+                        });
                     } else {
-                        console.error('Failed to send notification email');
+                        console.error('Failed to retrieve user email');
                     }
-                } else {
-                    console.error('Failed to retrieve user email');
+                } catch (error) {
+                    console.error('Error retrieving user email or sending notification email:', error);
                 }
             } catch (error) {
-                console.error('Error retrieving user email or sending notification email:', error);
+                console.error('Error updating UserID for override:', error);
+                alert('An error occurred while overriding the booking.');
+                return;
             }
     
             closeModal();
@@ -235,7 +269,7 @@ export const HoverEffect = ({
         const formattedDate = startDate.toLocaleDateString('en-CA');
         const timeIn24HourFormat = formatTime(selectedTimeSlot);
     
-        // Create a new booking
+        // Create a new booking if no duplicate was found
         try {
             const response = await fetch('/api/createBooking', {
                 method: 'POST',
@@ -265,6 +299,7 @@ export const HoverEffect = ({
             alert('An error occurred. Please try again.');
         }
     };
+        
     
     const handleFavorite = async (room: Room) => {
         try {
@@ -288,29 +323,6 @@ export const HoverEffect = ({
             console.error('Error updating favorites:', error);
         }
     };
-
-    // Function to handle booking cancellation
-    const handleCancelBooking = async (bookingId: number) => {
-      try {
-          const response = await fetch('/api/deleteBooking', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ bookingId }),
-          });
-
-          const data = await response.json();
-
-          if (data.success) {
-              // Do nothing
-          } else {
-              console.error('Failed to cancel booking:', data.error);
-          }
-      } catch (error) {
-          console.error('Error canceling booking:', error);
-      }
-  };
 
     // Update favorite state when selectedRoom changes
     useEffect(() => {

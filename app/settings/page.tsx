@@ -67,7 +67,7 @@ const SettingsPage = async () => {
 
         
         return (
-            <div className="bg-neutral-900 min-h-screen flex-col items-center">
+            <div className="bg-neutral-900 min-h-screen flex-col items-center text-white">
                 <Suspense fallback={<div>Loading...</div>}>
                     {role.value === 'User' ? <Navbar /> : <AdminNavbar />}
                 </Suspense>
