@@ -238,8 +238,8 @@ const handleBooking = async (room: Room) => {
 
   return (
     
-    <div className='bg-neutral-800 flex-1 ml-auto mr-auto w-[70%] h-screen'>
-      <h2 className="text-2xl font-bold text-white">Your Favourite Rooms</h2>
+    <div className='bg-neutral-800 flex-1 ml-auto mr-auto w-[70%] h-screen text-white'>
+      <h2 className="text-2xl font-bold ">Your Favourite Rooms</h2>
       <ul className="space-y-8">
         {rooms.map((room) => (
           <li key={room.RoomID} className="bg-neutral-900 p-6 rounded-lg shadow-xl shadow-black-500/50">
@@ -255,6 +255,7 @@ const handleBooking = async (room: Room) => {
                 </div>
               )}
               <div className="flex flex-col justify-between w-1/7">
+                <label className="text-xl block font-semibold mb-2">Date:</label>
                 <ReactDatePicker
                   selected={startDate}
                   onChange={(date) => setStartDate(date)}

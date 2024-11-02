@@ -25,24 +25,28 @@ export default async function Home() {
   const userAccounts = await fetchuser();
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-neutral-900 to-neutral-800 text-white">
-      <div className="font-bold text-lg">
-        <a href="/">AuthBook</a>
-      </div>
-      <div className="relative flex flex-col items-center w-full">
-        
-          <div className="mb-8">
+    <div className="flex flex-col min-h-screen bg-gradient-to-b from-neutral-900 to-neutral-800">
+      <main className="flex-grow text-white flex flex-col justify-between">
+        <div className="font-bold text-3xl px-14 pt-14">
+          <a href="/">AuthBook</a>
+        </div>
+        <div className="relative flex flex-grow lg:flex-row flex-col justify-center items-center">
+          <div className="flex justify-center items-center h-full">
             <Image
               src="/images/transparent_image.png" // Replace with your actual image path
               alt="Company Logo"
-              width={600}
-              height={600}
-              className="object-contain h-100 w-100" // Logo styled to fit nicely
+              width={700}
+              height={700}
+              className="object-contain max-h-full max-w-full" // Logo styled to fit nicely
             />
           </div>
-          <h2 className="text-4xl font-bold text-white text-center mb-6">Sign In</h2>
           <LoginForm userAccount={userAccounts}/>
-      </div>
-    </main>
+        </div>
+      </main>
+      <footer className="pb-8 text-center text-sm text-gray-500">
+        © 2024 AuthBook. All rights reserved.
+      </footer>
+    </div>
+
   );
 }

@@ -160,10 +160,11 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
                 {/* Date Picker - Shows only when icon is clicked */}
                 {showDatePicker && (
                     <div
-                    className="absolute bg-neutral-900 mt-8 p-7 rounded-lg shadow-lg z-50 border border-white dark:border-white/[0.2]"
+                    className="text-white absolute bg-neutral-900 mt-8 p-7 rounded-lg shadow-lg z-50 border border-white dark:border-white/[0.2]"
                     style={{ top: "50%", left: "50%", transform: "translateX(-50%)" }} // Adjust position here
                     >
                     <div className="mb-2">
+                      <label className="block font-semibold mb-2">Date:</label>
                         <ReactDatePicker
                         selected={startDate}
                         onChange={(date) => setStartDate(date)}
