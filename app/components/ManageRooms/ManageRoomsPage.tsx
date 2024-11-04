@@ -121,7 +121,7 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
         if (editRoom) {
             console.log('Editing room with ID:', roomId, 'Values:', editRoom); // Log current values
 
-            const response = await fetch('/api/manageRooms', {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/manageRooms`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -148,7 +148,7 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
     };
 
     const handleDeleteRoom = async (roomId: number) => {
-        const response = await fetch('/api/manageRooms', {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/manageRooms`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
