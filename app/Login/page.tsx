@@ -11,7 +11,7 @@ interface UserAccount {
   IsLocked: boolean;
 }
 
-async function fetchuser(): Promise<UserAccount[]> {
+async function fetchuser() {
   try {
     const response = await calluser("SELECT * FROM userAccount");
     return JSON.parse(JSON.stringify(response));
@@ -22,7 +22,7 @@ async function fetchuser(): Promise<UserAccount[]> {
 }
 
 export default async function Home() {
-  const userAccounts = await fetchuser();
+  const userAccounts: UserAccount[] = await fetchuser();
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-neutral-900 to-neutral-800">
