@@ -1,4 +1,0 @@
-[[redirects]]
-from = "/api/manageRooms"
-to = "/.netlify/functions/manageRooms"
-status = 200

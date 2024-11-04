@@ -90,6 +90,8 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
         });
     };
 
+    
+    
 
     const handleAddRoom = async () => {
         if (!newRoomName || !newPax || !newType || !newStatus || !newImageName) {
