@@ -35,7 +35,7 @@ export async function POST(request: Request) {
         const extension = imagename.split(';')[0].split('/')[1];
 
         // Define the path to save the image
-        const imagePath = path.join(process.cwd(), 'public', 'images', `${RoomName}.${extension}`);
+        const imagePath = path.join(process.cwd(),'images', `${imagename}.${extension}`);
 
         // Write the image file to the specified path
         fs.writeFileSync(imagePath, base64Data, 'base64');
@@ -43,7 +43,7 @@ export async function POST(request: Request) {
         // Use a transaction to ensure data integrity
         const query = `
             INSERT INTO Room (RoomName, Pax, Type, Status, imagename, BGP) 
-            VALUES ('${RoomName}', ${Pax}, '${Type}', '${Status}', '${RoomName}.${extension}', '${BGP}')
+            VALUES ('${RoomName}', ${Pax}, '${Type}', '${Status}', '${imagename}.${extension}', '${BGP}')
         `; // Store the filename and the BGP
         await calluser(query); // Use parameterized queries to prevent SQL injection
 
