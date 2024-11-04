@@ -24,13 +24,10 @@ exports.handler = async (event, context) => {
             body: JSON.stringify(rows),
         };
     } catch (error) {
-        console.error('Error fetching user data:', error);
+        console.error(error);
         return {
             statusCode: 500,
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-            },
-            body: JSON.stringify({ message: 'Error fetching user data', error: error.message }),
+            body: JSON.stringify({ message: 'Failed to fetch user data' }),
         };
     }
 };

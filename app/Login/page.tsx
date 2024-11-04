@@ -1,5 +1,6 @@
 import LoginForm from "../components/LoginForm/LoginFormClient";
 import Image from 'next/image';
+import { calluser } from '@/aws_db/db';
 
 interface UserAccount {
   UserID: number;
@@ -11,24 +12,15 @@ interface UserAccount {
 }
 
 async function fetchuser() {
-  if (typeof window === "undefined") {
-    // Skip fetch during static generation
-    return [];
-  }
-
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/fetchUser`);
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const data = await response.json();
-    return data;
+      const response = await fetch(`/api/fetchUser`);
+      const data = await response.json();
+      return data;
   } catch (error) {
-    console.error('Failed to fetch user data:', error);
-    return [];
+      console.error(error);
+      throw new Error('Failed to fetch user data.');
   }
 }
-
 
 
 export default async function Home() {
