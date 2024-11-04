@@ -26,7 +26,7 @@ export async function GET() {
 }
 
 // Add a new room (POST)
-/*
+
 export async function POST(request: Request) {
     try {
         const { RoomName, Pax, Type, Status, imagename, BGP } = await request.json(); // Extract BGP
@@ -59,10 +59,9 @@ export async function POST(request: Request) {
         return NextResponse.json(newRoom[0]); // Return the newly created room object
     } catch (error) {
         console.error('Error adding room:', error);
-        return NextResponse.json({ message: 'Error adding room' }, { status: 500 });
+        return NextResponse.json({ message: 'Error adding room',  details: (error as Error).message }, { status: 500 });
     }
 }
-*/
 
 // Update a room (PUT)
 export async function PUT(request: Request) {
@@ -91,19 +90,6 @@ export async function PUT(request: Request) {
         return NextResponse.json({ message: 'Error updating room' }, { status: 500 });
     }
 }
-
-export async function POST(request: Request) {
-    try {
-        const { RoomName, Pax, Type, Status, imagename, BGP } = await request.json();
-        // Temporarily skip database and file operations to isolate the issue
-        
-        return NextResponse.json({ RoomName, Pax, Type, Status, imagename, BGP });
-    } catch (error) {
-        console.error('Error adding room:', error);
-        return NextResponse.json({ message: 'Error adding room', details: (error as Error).message }, { status: 500 });
-    }
-}
-
 
 
 // Delete a room (DELETE)
