@@ -97,21 +97,7 @@ export async function DELETE(request: Request) {
     try {
         const { RoomID } = await request.json();
 
-        // First, fetch the room details to get the imagename
-        const querySelect = `SELECT imagename FROM Room WHERE RoomID = ${RoomID}`;
-        const room = await calluser(querySelect) as Room[];
-
-        if (room.length === 0) {
-            return NextResponse.json({ message: 'Room not found' }, { status: 404 });
-        }
-
-        const imageName = room[0].imagename;
-        const imagePath = path.join(process.cwd(), 'public', 'images', imageName);
-
-        // Delete the image file if it exists
-        if (fs.existsSync(imagePath)) {
-            fs.unlinkSync(imagePath); // Remove the image file
-        }
+        
 
         // Now, delete the room from the database
         const query = `DELETE FROM Room WHERE RoomID = ${RoomID}`;
