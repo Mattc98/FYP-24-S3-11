@@ -18,6 +18,7 @@ interface ClientLoginFormProps {
 }
 
 const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
+  console.log(userAccount);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [selectedRole, setSelectedRole] = useState("User");

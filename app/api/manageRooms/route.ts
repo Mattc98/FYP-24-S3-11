@@ -26,7 +26,6 @@ export async function GET() {
 }
 
 // Add a new room (POST)
-
 export async function POST(request: Request) {
     try {
         const { RoomName, Pax, Type, Status, imagename, BGP } = await request.json(); // Extract BGP
