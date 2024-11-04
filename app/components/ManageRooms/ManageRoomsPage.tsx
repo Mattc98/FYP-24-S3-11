@@ -51,7 +51,7 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
         fetchUsers();
     }, []);
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    /*const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
             const reader = new FileReader();
@@ -60,7 +60,7 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
             };
             reader.readAsDataURL(file);
         }
-    };
+    };*/
 
     // utils/generatePin.js
 

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { calluser } from '@/aws_db/db';
-import fs from 'fs';
-import path from 'path';
+//import fs from 'fs';
+//import path from 'path';
 
 interface Room {
     RoomID: number;
