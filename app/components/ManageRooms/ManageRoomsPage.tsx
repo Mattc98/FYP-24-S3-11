@@ -72,9 +72,25 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
             const randomIndex = Math.floor(Math.random() * characters.length);
             pin += characters[randomIndex];
         }
-    
+        
+        
         return pin;
     };
+
+    const handleGeneratePin = () => {
+        const newPin = generateMasterPin();
+        setEditRoom((prev: Room | null) => {
+            if (prev) {
+                return {
+                    ...prev,
+                    BGP: newPin,
+                };
+            }
+            return null; // Return null if prev is null
+        });
+    };
+
+    
     
 
     const handleAddRoom = async () => {
@@ -114,14 +130,10 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
     };
 
     const handleEditRoom = async (roomId: number) => {
-        if (!newRoomName || !newPax || !newType || !newStatus || !newImageName) {
-            toast.error("Please fill in all fields.");
-            return; // Stop execution if any field is missing
-        }
         if (editRoom) {
             console.log('Editing room with ID:', roomId, 'Values:', editRoom); // Log current values
 
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/manageRooms`, {
+            const response = await fetch(`/api/manageRooms`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -131,6 +143,7 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
                     RoomID: roomId 
                 }),
             });
+            
 
             if (response.ok) {
                 // Update rooms list state
@@ -330,6 +343,22 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
                             <option value="Available">Available</option>
                             <option value="Unavailable">Unavailable</option>
                         </select>
+
+                        <label className="block font-medium">Master Pin</label>
+                        <div className="relative mb-2">
+                        <input
+                            type="text"
+                            value={editRoom.BGP}
+                            readOnly
+                            className="border p-2 pr-16 w-full rounded text-black"
+                            />
+                        <button
+                        className="absolute right-0 top-0 bottom-0 bg-green-500 text-white py-0 px-2 rounded-lg hover:bg-green-400"
+                        onClick={handleGeneratePin}
+                        >
+                        Generate Pin
+                        </button>
+                        </div>
                         <button
                             className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
                             onClick={() => handleEditRoom(editRoom.RoomID)}

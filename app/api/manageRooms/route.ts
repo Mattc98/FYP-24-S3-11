@@ -66,10 +66,10 @@ export async function POST(request: Request) {
 // Update a room (PUT)
 export async function PUT(request: Request) {
     try {
-        const { RoomID, RoomName, Pax, Type, Status, imagename } = await request.json();
+        const { RoomID, RoomName, Pax, Type, Status,BGP, imagename } = await request.json();
 
         // Log received values for debugging
-        console.log('Received values:', { RoomID, RoomName, Pax, Type, Status, imagename });
+        console.log('Received values:', { RoomID, RoomName, Pax, Type, Status, BGP, imagename });
 
         const query = `
             UPDATE Room 
@@ -77,6 +77,7 @@ export async function PUT(request: Request) {
                 Pax = ${Pax}, 
                 Type = '${Type}', 
                 Status = '${Status}', 
+                BGP = '${BGP}', 
                 imagename = '${imagename}' 
             WHERE RoomID = ${RoomID}
         `;
