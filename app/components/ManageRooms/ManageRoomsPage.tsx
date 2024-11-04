@@ -85,7 +85,7 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
     
         const pin = generateMasterPin();
 
-        const response = await fetch('/api/manageRooms', {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/manageRooms`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
