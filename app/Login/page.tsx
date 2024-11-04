@@ -13,13 +13,15 @@ interface UserAccount {
 
 async function fetchuser() {
   try {
-    const response = await calluser("SELECT * FROM userAccount");
-    return JSON.parse(JSON.stringify(response));
+      const response = await fetch(`/api/fetchUser`);
+      const data = await response.json();
+      return data;
   } catch (error) {
-    console.error(error);
-    throw new Error('Failed to fetch user data.');
+      console.error(error);
+      throw new Error('Failed to fetch user data.');
   }
 }
+
 
 export default async function Home() {
   const userAccounts: UserAccount[] = await fetchuser();
