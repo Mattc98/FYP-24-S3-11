@@ -35,7 +35,7 @@ export async function POST(request: Request) {
         const extension = imagename.split(';')[0].split('/')[1];
 
         // Define the path to save the image
-        const imagePath = path.join(process.cwd(),'images', `${imagename}.${extension}`);
+        const imagePath = path.join(process.cwd(), 'public', 'images', `${imagename}.${extension}`);
 
         // Write the image file to the specified path
         fs.writeFileSync(imagePath, base64Data, 'base64');
