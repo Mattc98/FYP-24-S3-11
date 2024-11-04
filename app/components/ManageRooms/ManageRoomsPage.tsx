@@ -29,7 +29,7 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
     const [newPax, setNewPax] = useState<number | string>('');
     const [newType, setNewType] = useState<string>('');
     const [newStatus, setNewStatus] = useState<string>('');
-    const [newImageName, setNewImageName] = useState<string>('');
+    //const [newImageName, setNewImageName] = useState<string>('');
     const [editRoom, setEditRoom] = useState<Room | null>(null);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -94,7 +94,7 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
     
 
     const handleAddRoom = async () => {
-        if (!newRoomName || !newPax || !newType || !newStatus || !newImageName) {
+        if (!newRoomName || !newPax || !newType || !newStatus) {
             toast.error("Please fill in all fields.");
             return; // Stop execution if any field is missing
         }
@@ -111,7 +111,7 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
                 Pax: Number(newPax),
                 Type: newType,
                 Status: newStatus,
-                imagename: newImageName,
+                //imagename: newImageName,
                 BGP: pin,
             }),
         });
@@ -123,7 +123,7 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
             setNewPax('');
             setNewType('');
             setNewStatus('');
-            setNewImageName('');
+            //setNewImageName('');
             setIsAddModalOpen(false);
             toast.success('Successfully added new room');
         }
