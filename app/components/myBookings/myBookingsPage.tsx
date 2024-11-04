@@ -266,8 +266,8 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
                     },
                     body: JSON.stringify({
                         bookingId: selectedBooking.BookingID,
-                        sgNewDate: formatDate(new Date(sgNewDate)),
-                        new24Time: formatTime(new24Time),
+                        sgNewDate: sgNewDate,
+                        new24Time: new24Time,
                     }),
                 });
         
