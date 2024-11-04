@@ -51,7 +51,7 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
         fetchUsers();
     }, []);
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    /*const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
             const reader = new FileReader();
@@ -60,7 +60,7 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
             };
             reader.readAsDataURL(file);
         }
-    };
+    };*/
 
     // utils/generatePin.js
 
@@ -283,13 +283,6 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
                             <option value="Available">Available</option>
                             <option value="Unavailable">Unavailable</option>
                         </select>
-                        <label className="block font-medium">Room Image</label>
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => handleFileChange(e)}
-                            className="border p-2 mr-2 mb-2 w-full rounded text-white"
-                        />
                         <button
                             className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600"
                             onClick={handleAddRoom}
