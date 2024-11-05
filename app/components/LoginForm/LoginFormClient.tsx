@@ -1,5 +1,6 @@
 'use client';
-import React, { useState } from 'react';
+import type React from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { setCookie } from "cookies-next";
 import { toast, Toaster } from 'sonner';
@@ -14,16 +15,18 @@ interface UserAccount {
 }
 
 interface ClientLoginFormProps {
-  userAccount: UserAccount[];
+  userList: UserAccount[];
 }
 
-const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
-  console.log(userAccount);
+const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userList }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [selectedRole, setSelectedRole] = useState("User");
   const [isLocked, setIsLocked] = useState(false); // Assuming you have isLocked state
   const router = useRouter();
+  
+  console.log("userlist", userList);
+
 
   const homepageRedirect = {
     Admin: '/admin',
@@ -56,10 +59,10 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(userAccount);
     console.log(lowercaseUsername);
+    if(userList == null ){return;}
 
-    const user = userAccount.find(user => user.Username.toLowerCase() === lowercaseUsername);
+    const user = userList.find(user => user.Username.toLowerCase() === lowercaseUsername);
   
     if (user) {
       if (user.IsLocked) {
@@ -117,7 +120,6 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
   
   const handleRoleChange = (role:string) => {
     setSelectedRole(role);
-
   };
 
 

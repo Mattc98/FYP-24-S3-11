@@ -34,7 +34,7 @@ export default async function Feedback() {
 
     if (!usernameCookie) {
       // If the username cookie doesn't exist, redirect to the home page
-      redirect('/');
+      redirect('/login');
     }
 
     // Parse the cookie if it exists
@@ -42,7 +42,7 @@ export default async function Feedback() {
     
     if (!username?.value) {
       // If there's no valid value in the cookie, redirect to home
-      redirect('/');
+      redirect('/login');
     }
 
     if (!username.value) {
@@ -92,6 +92,6 @@ export default async function Feedback() {
   } catch (error) {
     // Handle any errors (e.g., JSON parsing issues)
     console.error('Error reading cookie:', error);
-    redirect('/'); // Redirect to the home page on error
+    redirect('/login'); // Redirect to the home page on error
   }
 }
