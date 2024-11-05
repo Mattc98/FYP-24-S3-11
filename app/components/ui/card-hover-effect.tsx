@@ -372,7 +372,7 @@ export const HoverEffect = ({
             <Card>
                 <CardTitle>{item.RoomName}</CardTitle>
                 <Image
-                    src={"/images/" + item.imagename}
+                    src={item.imagename}
                     alt={item.RoomName}
                     width={300}
                     height={200}
@@ -412,7 +412,7 @@ export const HoverEffect = ({
                 <Card>
                     <CardTitle>{room.RoomName}</CardTitle>
                     <Image
-                        src={"/images/" + room.imagename}
+                        src={room.imagename}
                         alt={room.RoomName}
                         width={300}
                         height={200}
@@ -461,7 +461,7 @@ export const HoverEffect = ({
                             </button>
                         </div>
                         <Image
-                            src={"/images/" + selectedRoom.imagename}
+                            src={selectedRoom.imagename}
                             alt={selectedRoom.RoomName}
                             width={300}
                             height={200}
@@ -524,7 +524,7 @@ export const HoverEffect = ({
                             </button>
                         </div>
                         <Image
-                            src={"/images/" + selectedOverrideRoom.imagename}
+                            src={selectedOverrideRoom.imagename}
                             alt={selectedOverrideRoom.RoomName}
                             width={300}
                             height={200}

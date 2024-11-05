@@ -131,7 +131,7 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
         const minutes = minutesPart.slice(0, 2);
         const period = minutesPart.slice(3); // Extract AM or PM
         
-        let hoursIn24 = parseInt(hours);
+        let hoursIn24 = Number.parseInt(hours);
         
         if (period === 'PM' && hoursIn24 !== 12) {
             hoursIn24 += 12;
@@ -318,12 +318,12 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
 
     const formatTime = (time: string) => {
       const [hours] = time.split(':');
-      const formattedHours = parseInt(hours);
+      const formattedHours = Number.parseInt(hours);
   
       const formattedTime = timeSlots.find((slot) => {
           const [startTime] = slot.split(' - ');
           const [startHour] = startTime.split(':');
-          const startHourFormatted = parseInt(startHour);
+          const startHourFormatted = Number.parseInt(startHour);
   
           return startHourFormatted === (formattedHours % 12 || 12);
       });
@@ -359,7 +359,7 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
                         <div key={index} className="flex-1 ml-auto mr-auto lg:w-[65%] bg-gradient-to-r from-neutral-500 via-neutral-700 to-neutral-800 rounded-lg overflow-hidden shadow-lg">
                             <div className="flex items-center p-4">
                                 <Image
-                                    src={"/images/" + booking.imagename}
+                                    src={booking.imagename}
                                     alt={booking.RoomName}
                                     width={300}
                                     height={200}

@@ -1,6 +1,8 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { toast, Toaster } from 'sonner';
+import { UploadButton } from '@/utils/uploadthing';
+import Image from 'next/image';
 
 interface Room {
     RoomID: number;
@@ -24,12 +26,12 @@ interface UserAccount {
 }
 
 const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
+    const [imageUrl, setImageUrl] = useState<string>('');
     const [rooms, setRooms] = useState<Room[]>(initialRooms);
     const [newRoomName, setNewRoomName] = useState<string>('');
     const [newPax, setNewPax] = useState<number | string>('');
     const [newType, setNewType] = useState<string>('');
     const [newStatus, setNewStatus] = useState<string>('');
-    //const [newImageName, setNewImageName] = useState<string>('');
     const [editRoom, setEditRoom] = useState<Room | null>(null);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -51,19 +53,6 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
         fetchUsers();
     }, []);
 
-    /*const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setNewImageName(reader.result as string); // Set the Base64 string
-            };
-            reader.readAsDataURL(file);
-        }
-    };*/
-
-    // utils/generatePin.js
-
     const generateMasterPin = () => {
         const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
         let pin = "";
@@ -72,8 +61,6 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
             const randomIndex = Math.floor(Math.random() * characters.length);
             pin += characters[randomIndex];
         }
-        
-        
         return pin;
     };
 
@@ -91,7 +78,7 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
     };
 
     const handleAddRoom = async () => {
-        if (!newRoomName || !newPax || !newType || !newStatus) {
+        if (!newRoomName || !newPax || !newType || !newStatus || !imageUrl) {
             toast.error("Please fill in all fields.");
             return; // Stop execution if any field is missing
         }
@@ -108,7 +95,7 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
                 Pax: Number(newPax),
                 Type: newType,
                 Status: newStatus,
-                //imagename: newImageName,
+                imagename: imageUrl,
                 BGP: pin,
             }),
         });
@@ -120,7 +107,7 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
             setNewPax('');
             setNewType('');
             setNewStatus('');
-            //setNewImageName('');
+            setImageUrl('');
             setIsAddModalOpen(false);
             toast.success('Successfully added new room');
         }
@@ -199,9 +186,11 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
                 {rooms.map((room) => (
                     <div key={room.RoomID} className="bg-neutral-900 rounded-lg text-white p-4 shadow-lg">
                         {room.imagename && (
-                            <img
-                                src={"/images/" + room.imagename}
+                            <Image
+                                src={room.imagename}  // Use the saved URL here
                                 alt={room.RoomName}
+                                width={500}
+                                height={500}
                                 className="w-full h-48 object-cover rounded-lg mb-4"
                             />
                         )}
@@ -280,6 +269,23 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
                             <option value="Available">Available</option>
                             <option value="Unavailable">Unavailable</option>
                         </select>
+                        <label className="block font-medium">Room Image</label>
+                        <UploadButton endpoint="imageUploader"
+                        onClientUploadComplete={(res) => {
+                            // Do something with the response
+                            console.log("Files: ", res);
+                            setImageUrl(res[0].url)
+                            console.log(res[0].url);
+
+                        }}
+                        onUploadError={(error: Error) => {
+                            // Do something with the error.
+                            alert(`ERROR! ${error.message}`);
+                        }}/>
+
+                        {imageUrl.length ? (<div>
+                            <Image src={imageUrl} alt='myimage' width={500} height={500} />
+                        </div>) : null}
                         <button
                             className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600"
                             onClick={handleAddRoom}
