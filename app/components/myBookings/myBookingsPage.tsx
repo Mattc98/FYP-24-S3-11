@@ -55,7 +55,6 @@ const timeSlots = [
   '03:00 PM - 04:00 PM',
 ];
 
-
 const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, username, userid, userRole }) => {
     const [myBookings, setMyBookings] = useState<MyBooking[]>([]);
     const [showAmendModal, setShowAmendModal] = useState(false); // To control modal visibility
