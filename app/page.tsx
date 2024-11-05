@@ -50,7 +50,7 @@ const LandingPage = () => {
         <nav className="space-x-6">
           <a href="#features" className="hover:text-gray-400">Features</a>
           <a href="#pricing" className="hover:text-gray-400">Pricing</a>
-          <a href="/login" className="bg-white text-black px-5 py-2 font-medium rounded hover:bg-gray-200">Login</a>
+          <a href="/login-page" className="bg-white text-black px-5 py-2 font-medium rounded hover:bg-gray-200">Login</a>
         </nav>
       </header>
 
