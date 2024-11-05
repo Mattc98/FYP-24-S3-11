@@ -1,4 +1,3 @@
-'use client';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { setCookie } from "cookies-next";
@@ -18,12 +17,15 @@ interface ClientLoginFormProps {
 }
 
 const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
-  console.log(userAccount);
+  const [currentUsers, setCurrentUsers] = useState<UserAccount[]>(userAccount); // Use currentUsers to manage local state
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [selectedRole, setSelectedRole] = useState("User");
-  const [isLocked, setIsLocked] = useState(false); // Assuming you have isLocked state
+  const [isLocked, setIsLocked] = useState(false);
   const router = useRouter();
+
+
+  console.log(currentUsers);
 
   const homepageRedirect = {
     Admin: '/AdminHomepage',
@@ -56,11 +58,11 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(userAccount);
-    console.log(lowercaseUsername);
+    
+    // Use currentUsers instead of userAccount for lookups
+    const userIndex = currentUsers.findIndex(user => user.Username.toLowerCase() === lowercaseUsername);
+    const user = userIndex !== -1 ? currentUsers[userIndex] : null;
 
-    const user = userAccount.find(user => user.Username.toLowerCase() === lowercaseUsername);
-  
     if (user) {
       if (user.IsLocked) {
         toast.error('Account is locked. Please contact administrator');
@@ -69,42 +71,37 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
       }
   
       if (user.Password === password) {
-        // Check if the role matches for successful login
         if ((selectedRole === "Admin" && user.Role === "Admin") || 
             (selectedRole === "User" && (user.Role === "User" || user.Role === "Director"))) {
           
-          // Successful login
           toast.success('Successfully logged in');
-          
-          // Reset FailLogin count on successful login
           await updateUserAccount({ ...user, FailLogin: 0, IsLocked: false });
-  
-          // Update local user account state
-          user.FailLogin = 0;
-          user.IsLocked = false;
+
+          // Update currentUsers with the reset FailLogin count and IsLocked status
+          setCurrentUsers(prevUsers =>
+            prevUsers.map((u, i) => i === userIndex ? { ...u, FailLogin: 0, IsLocked: false } : u)
+          );
 
           setCookie('username', username);
           setCookie('role', selectedRole);
 
           router.push(homepageRedirect[user.Role]);
         } else {
-          // Access denied if role doesn't match the account type
-          toast.error('Access Denied')
+          toast.error('Access Denied');
         }
       } else {
-        // Increment FailLogin count
         const newFailLogin = user.FailLogin + 1;
         const isLocked = newFailLogin >= 3;
         await updateUserAccount({ ...user, FailLogin: newFailLogin, IsLocked: isLocked });
-  
-        // Update local user account state
-        user.FailLogin = newFailLogin;
-        user.IsLocked = isLocked;
-  
+
+        // Update currentUsers with the new FailLogin count and IsLocked status if needed
+        setCurrentUsers(prevUsers =>
+          prevUsers.map((u, i) => i === userIndex ? { ...u, FailLogin: newFailLogin, IsLocked: isLocked } : u)
+        );
+
         if (isLocked) {
           toast.error('Account locked due to multiple failed attempts. Please contact administrator.');
           setIsLocked(true);
-          return;
         } else {
           toast.error(`Invalid username or password. Attempts remaining: ${3 - newFailLogin}`);
         }
@@ -113,13 +110,10 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
       toast.error('Invalid username or password');
     }
   };
-  
-  
-  const handleRoleChange = (role:string) => {
+
+  const handleRoleChange = (role: string) => {
     setSelectedRole(role);
-
   };
-
 
   return (
     <div className='sm:w-[600px] w-full p-10 mx-10'>
@@ -141,35 +135,35 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
         >
           Admin
         </button>
-        </div>
-        <div className="w-full">
-          <form onSubmit={handleSubmit} className="flex flex-col items-center">
-            <input
-              type="text"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              className="bg-transparent border border-gray-300 p-2 rounded mb-4 w-full text-white placeholder-gray-300"
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="bg-transparent border border-gray-300 p-2 rounded mb-4 w-full text-white placeholder-gray-300"
-            />
-             <button
-              type="submit"
-              className="bg-gray-300 text-black p-2 rounded w-full mt-2 disabled:bg-blue-300"
-              disabled={isLocked}
-            >
-              Sign In
-            </button>
-          </form>
-          <Toaster richColors/>
-        </div>
+      </div>
+      <div className="w-full">
+        <form onSubmit={handleSubmit} className="flex flex-col items-center">
+          <input
+            type="text"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+            className="bg-transparent border border-gray-300 p-2 rounded mb-4 w-full text-white placeholder-gray-300"
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="bg-transparent border border-gray-300 p-2 rounded mb-4 w-full text-white placeholder-gray-300"
+          />
+          <button
+            type="submit"
+            className="bg-gray-300 text-black p-2 rounded w-full mt-2 disabled:bg-blue-300"
+            disabled={isLocked}
+          >
+            Sign In
+          </button>
+        </form>
+        <Toaster richColors />
+      </div>
     </div>
   );
 };
