@@ -8,7 +8,7 @@ import { redirect } from 'next/navigation'; // Use for server-side redirection
 export const dynamic = 'force-dynamic'; // Ensure dynamic rendering
 
 
-interface Bookings {
+interface BookingDetails {
     BookingID: number;
     RoomID: number;
     UserID: string;
@@ -28,7 +28,7 @@ interface Room {
     BGP: string;
 }
 
-const fetchAllBookings = async (): Promise<Bookings[]> => {
+const fetchAllBookings = async (): Promise<BookingDetails[]> => {
       const response = await calluser("SELECT * FROM Booking");
       return JSON.parse(JSON.stringify(response));
 };
@@ -65,7 +65,7 @@ const myBookings = async () => {
 
     if (!usernameCookie) {
       // If the username cookie doesn't exist, redirect to the home page
-      redirect('/');
+      redirect('/login');
     }
 
     // Parse the cookie if it exists
@@ -73,7 +73,7 @@ const myBookings = async () => {
     
     if (!username?.value) {
       // If there's no valid value in the cookie, redirect to home
-      redirect('/');
+      redirect('/login');
     }
 
     // get all bookings and rooms from db
@@ -124,7 +124,7 @@ const myBookings = async () => {
   } catch (error) {
     // Handle any errors (e.g., JSON parsing issues)
     console.error('Error reading cookie:', error);
-    redirect('/'); // Redirect to the home page on error
+    redirect('/login'); // Redirect to the home page on error
   }
 }
 

@@ -5,6 +5,7 @@ import AdminNavbar from '../components/adminNavbar';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
+export const dynamic = 'force-dynamic'; // Ensure dynamic rendering
 interface Room {
     RoomID: number;
     RoomName: string;
@@ -32,7 +33,7 @@ const ManageRooms = async () => {
 
     if (!usernameCookie) {
       // If the username cookie doesn't exist, redirect to the home page
-      redirect('/Login');
+      redirect('/login-page');
     }
 
     // Parse the cookie if it exists
@@ -40,7 +41,7 @@ const ManageRooms = async () => {
     
     if (!username?.value) {
       // If there's no valid value in the cookie, redirect to home
-      redirect('/Login');
+      redirect('/login-page');
     }
 
     if (!username.value) {

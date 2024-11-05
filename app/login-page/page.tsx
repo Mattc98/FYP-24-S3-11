@@ -1,6 +1,8 @@
 import LoginForm from "../components/LoginForm/LoginFormClient";
 import Image from 'next/image';
-import { calluser } from '@/aws_db/db';
+import { getUserList } from "../data-access/users";
+
+export const dynamic = 'force-dynamic'
 
 interface UserAccount {
   UserID: number;
@@ -11,20 +13,8 @@ interface UserAccount {
   IsLocked: boolean;
 }
 
-// Fetch all users from the database
-const fetchUser = async (): Promise<UserAccount[]> => {
-  try {
-    const response = await calluser("SELECT * FROM userAccount");
-    return JSON.parse(JSON.stringify(response)); // Ensure proper formatting
-  } catch (error) {
-    console.error('Error fetching users:', error);
-    return [];
-  }
-};
-
-export default async function Home() {
-  const allUsers = await fetchUser();
-  console.log(allUsers);
+const Login = async () => {
+  const userList:UserAccount[] = await getUserList();
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-neutral-900 to-neutral-800">
@@ -42,7 +32,7 @@ export default async function Home() {
               className="object-contain max-h-full max-w-full" // Logo styled to fit nicely
             />
           </div>
-          <LoginForm userAccount={allUsers}/>
+          <LoginForm userList={userList}/>
         </div>
       </main>
       <footer className="pb-8 text-center text-sm text-gray-500">
@@ -52,3 +42,5 @@ export default async function Home() {
 
   );
 }
+
+export default Login;

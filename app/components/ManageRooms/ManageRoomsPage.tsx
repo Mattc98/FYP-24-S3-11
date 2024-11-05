@@ -84,9 +84,6 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
         });
     };
 
-    
-    
-
     const handleAddRoom = async () => {
         if (!newRoomName || !newPax || !newType || !newStatus || !imageUrl) {
             toast.error("Please fill in all fields.");
@@ -95,7 +92,7 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
     
         const pin = generateMasterPin();
 
-        const response = await fetch(`/api/manageRooms`, {
+        const response = await fetch('/api/manageRooms', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -127,7 +124,7 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
         if (editRoom) {
             console.log('Editing room with ID:', roomId, 'Values:', editRoom); // Log current values
 
-            const response = await fetch(`/api/manageRooms`, {
+            const response = await fetch('/api/manageRooms', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -155,7 +152,7 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
     };
 
     const handleDeleteRoom = async (roomId: number) => {
-        const response = await fetch(`/api/manageRooms`, {
+        const response = await fetch('/api/manageRooms', {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
