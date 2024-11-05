@@ -8,11 +8,11 @@ const AdminHomepage = () => {
     const router = useRouter();
 
     const redirectUsers = () => {
-        router.push(`/ManageUsersPage`);
+        router.push(`/manage-users`);
     };
 
     const redirectRooms = () => {
-        router.push(`/manageRooms`);
+        router.push(`/manage-rooms`);
     };
     
     return (

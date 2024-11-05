@@ -81,7 +81,7 @@ const fetchUserIdByUsername = async (username: string): Promise<number | undefin
   return (response as userAccount[])[0]?.UserID;
 };
 
-export default async function UserHomepage() {
+export default async function Dashboard() {
   const allRooms: Room[] = await fetchRoom();
   const userFavs: userFav[] = await fetchFavs();
   const allBookings: Bookings[] = await fetchBookings();
@@ -92,7 +92,7 @@ export default async function UserHomepage() {
 
     if (!usernameCookie) {
       // If the username cookie doesn't exist, redirect to the home page
-      redirect('/');
+      redirect('/login');
     }
 
     // Parse the cookie if it exists
@@ -100,7 +100,7 @@ export default async function UserHomepage() {
     
     if (!username?.value) {
       // If there's no valid value in the cookie, redirect to home
-      redirect('/');
+      redirect('/login');
     }
 
     if (!username.value) {
@@ -124,7 +124,7 @@ export default async function UserHomepage() {
     }
     
     const userFavoriteRooms = userFavs
-    .filter((fav) => fav.UserID == parsedUserId) // Filter based on userID
+    .filter((fav) => fav.UserID === parsedUserId) // Filter based on userID
     .map((fav) => fav.RoomID); // Extract RoomID from filtered results
     
     return (
