@@ -46,6 +46,7 @@ const ManageUsersPage = async () => {
 
   // Fetch all users
   const allUsers = await fetchUser();
+  console.log(allUsers);
 
   return (
     <div>
