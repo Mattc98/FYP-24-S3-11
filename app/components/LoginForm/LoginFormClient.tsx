@@ -13,8 +13,20 @@ interface UserAccount {
   IsLocked: boolean;
 }
 
+
+interface User {
+  UserID: number;
+  Username: string;
+  Password: string;
+  Email: string;
+  Role: string; // Assuming users have roles
+  ProfilePicture: string; // Assuming there's a profile picture URL
+  FailLogin: number;
+  IsLocked: boolean;
+}
+
 interface ClientLoginFormProps {
-  userAccount: UserAccount[];
+  userAccount: User[];
 }
 
 const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {

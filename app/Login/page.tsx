@@ -11,8 +11,20 @@ interface UserAccount {
   IsLocked: boolean;
 }
 
+
+interface User {
+  UserID: number;
+  Username: string;
+  Password: string;
+  Email: string;
+  Role: string; // Assuming users have roles
+  ProfilePicture: string; // Assuming there's a profile picture URL
+  FailLogin: number;
+  IsLocked: boolean;
+}
+
 // Fetch all users from the database
-const fetchUser = async (): Promise<UserAccount[]> => {
+const fetchUser = async (): Promise<User[]> => {
   try {
     const response = await calluser("SELECT * FROM userAccount");
     return JSON.parse(JSON.stringify(response)); // Ensure proper formatting
