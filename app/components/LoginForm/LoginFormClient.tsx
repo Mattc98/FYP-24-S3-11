@@ -24,8 +24,6 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userList }) => {
   const [selectedRole, setSelectedRole] = useState("User");
   const [isLocked, setIsLocked] = useState(false); // Assuming you have isLocked state
   const router = useRouter();
-  
-  console.log("userlist", userList);
 
 
   const homepageRedirect = {
