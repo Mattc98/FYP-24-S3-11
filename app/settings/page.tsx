@@ -34,7 +34,7 @@ const SettingsPage = async () => {
     
         if (!usernameCookie) {
           // If the username cookie doesn't exist, redirect to the home page
-          redirect('/login');
+          redirect('/login-page');
         }
     
         // Parse the cookie if it exists
@@ -43,7 +43,7 @@ const SettingsPage = async () => {
         
         if (!username?.value) {
           // If there's no valid value in the cookie, redirect to home
-          redirect('/login');
+          redirect('/login-page');
         }
     
         let userInfo: UserAccount | null = null;
@@ -120,7 +120,7 @@ const SettingsPage = async () => {
       } catch (error) {
         // Handle any errors (e.g., JSON parsing issues)
         console.error('Error reading cookie:', error);
-        redirect('/login'); // Redirect to the home page on error
+        redirect('/login-page'); // Redirect to the home page on error
       }
 
 

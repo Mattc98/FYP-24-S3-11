@@ -72,7 +72,7 @@ const FavouritesPage = async () => {
 
     if (!usernameCookie) {
       // If the username cookie doesn't exist, redirect to the home page
-      redirect('/login');
+      redirect('/login-page');
     }
 
     // Parse the cookie if it exists
@@ -80,7 +80,7 @@ const FavouritesPage = async () => {
     
     if (!username?.value) {
       // If there's no valid value in the cookie, redirect to home
-      redirect('/login');
+      redirect('/login-page');
     }
 
     if (!username.value) {

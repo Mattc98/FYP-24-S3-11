@@ -21,7 +21,7 @@ const Navbar = () => {
   const handleLogout = () => {
     deleteCookie('username');
     deleteCookie('role');
-    window.location.href = "/login";
+    window.location.href = "/login-page";
   };
 
   const toggleMobileMenu = () => {

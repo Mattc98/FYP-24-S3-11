@@ -30,7 +30,7 @@ export default async function AdminHomepage() {
 
     if (!usernameCookie) {
       // If the username cookie doesn't exist, redirect to the home page
-      redirect('/login');
+      redirect('/login-page');
     }
 
     // Parse the cookie if it exists
@@ -38,7 +38,7 @@ export default async function AdminHomepage() {
     
     if (!username?.value) {
       // If there's no valid value in the cookie, redirect to home
-      redirect('/login');
+      redirect('/login-page');
     }
 
     if (!username.value) {
