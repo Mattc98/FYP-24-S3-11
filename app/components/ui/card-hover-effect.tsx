@@ -2,8 +2,7 @@ import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import Image from 'next/image';
-import type React from 'react';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import { toast, Toaster } from 'sonner';
 
@@ -373,7 +372,7 @@ export const HoverEffect = ({
             <Card>
                 <CardTitle>{item.RoomName}</CardTitle>
                 <Image
-                    src={item.imagename}
+                    src={"/images/" + item.imagename}
                     alt={item.RoomName}
                     width={300}
                     height={200}
@@ -413,7 +412,7 @@ export const HoverEffect = ({
                 <Card>
                     <CardTitle>{room.RoomName}</CardTitle>
                     <Image
-                        src={room.imagename}
+                        src={"/images/" + room.imagename}
                         alt={room.RoomName}
                         width={300}
                         height={200}
@@ -462,7 +461,7 @@ export const HoverEffect = ({
                             </button>
                         </div>
                         <Image
-                            src={selectedRoom.imagename}
+                            src={"/images/" + selectedRoom.imagename}
                             alt={selectedRoom.RoomName}
                             width={300}
                             height={200}
@@ -525,7 +524,7 @@ export const HoverEffect = ({
                             </button>
                         </div>
                         <Image
-                            src={selectedOverrideRoom.imagename}
+                            src={"/images/" + selectedOverrideRoom.imagename}
                             alt={selectedOverrideRoom.RoomName}
                             width={300}
                             height={200}

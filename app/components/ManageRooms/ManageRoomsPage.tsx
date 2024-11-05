@@ -1,6 +1,4 @@
 'use client';
-import { UploadButton } from '@/utils/uploadthing';
-import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { toast, Toaster } from 'sonner';
 
@@ -26,7 +24,6 @@ interface UserAccount {
 }
 
 const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
-    const [imageUrl, setImageUrl] = useState<string>('');
     const [rooms, setRooms] = useState<Room[]>(initialRooms);
     const [newRoomName, setNewRoomName] = useState<string>('');
     const [newPax, setNewPax] = useState<number | string>('');
@@ -54,6 +51,18 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
         fetchUsers();
     }, []);
 
+    /*const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setNewImageName(reader.result as string); // Set the Base64 string
+            };
+            reader.readAsDataURL(file);
+        }
+    };*/
+
+    // utils/generatePin.js
 
     const generateMasterPin = () => {
         const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
@@ -82,7 +91,7 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
     };
 
     const handleAddRoom = async () => {
-        if (!newRoomName || !newPax || !newType || !newStatus || !imageUrl) {
+        if (!newRoomName || !newPax || !newType || !newStatus) {
             toast.error("Please fill in all fields.");
             return; // Stop execution if any field is missing
         }
@@ -99,7 +108,7 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
                 Pax: Number(newPax),
                 Type: newType,
                 Status: newStatus,
-                imagename: imageUrl,
+                //imagename: newImageName,
                 BGP: pin,
             }),
         });
@@ -111,7 +120,7 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
             setNewPax('');
             setNewType('');
             setNewStatus('');
-            setImageUrl('');
+            //setNewImageName('');
             setIsAddModalOpen(false);
             toast.success('Successfully added new room');
         }
@@ -190,15 +199,12 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
                 {rooms.map((room) => (
                     <div key={room.RoomID} className="bg-neutral-900 rounded-lg text-white p-4 shadow-lg">
                         {room.imagename && (
-                            <Image
-                            src={room.imagename}  // Use the saved URL here
-                            alt={room.RoomName}
-                            width={500}
-                            height={500}
-                            className="w-full h-48 object-cover rounded-lg mb-4"
+                            <img
+                                src={"/images/" + room.imagename}
+                                alt={room.RoomName}
+                                className="w-full h-48 object-cover rounded-lg mb-4"
                             />
                         )}
-                        
                         <h2 className="text-xl font-bold">{room.RoomName}</h2>
                         <p className="text-sm">Pax: {room.Pax}</p>
                         <p className="text-sm">Type: {room.Type}</p>
@@ -274,23 +280,6 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
                             <option value="Available">Available</option>
                             <option value="Unavailable">Unavailable</option>
                         </select>
-                        <label className="block font-medium">Room Image</label>
-                        <UploadButton endpoint="imageUploader"
-                        onClientUploadComplete={(res) => {
-                            // Do something with the response
-                            console.log("Files: ", res);
-                            setImageUrl(res[0].url)
-                            console.log(res[0].url);
-
-                          }}
-                          onUploadError={(error: Error) => {
-                            // Do something with the error.
-                            alert(`ERROR! ${error.message}`);
-                          }}/>
-
-                          {imageUrl.length ? (<div>
-                            <Image src={imageUrl} alt='myimage' width={500} height={500} />
-                          </div>) : null}
                         <button
                             className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600"
                             onClick={handleAddRoom}
