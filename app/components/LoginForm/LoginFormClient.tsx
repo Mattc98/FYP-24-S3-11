@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { setCookie } from "cookies-next";
 import { toast, Toaster } from 'sonner';
@@ -27,6 +27,11 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
   const [selectedRole, setSelectedRole] = useState("User");
   const [isLocked, setIsLocked] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    setCurrentUsers(userAccount); // Update users when the prop changes
+    
+  }, [userAccount]);
 
 
   console.log(currentUsers);
