@@ -26,7 +26,7 @@ const fetchUser = async (): Promise<User[]> => {
   }
 };
 
-export default async function Home() {
+export default async function Login() {
   const allUsers = await fetchUser();
   console.log(allUsers);
 
