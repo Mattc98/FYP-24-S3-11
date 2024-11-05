@@ -1,5 +1,5 @@
 import React from 'react'
-import bookings from '../components/myBookings/myBookingsPage'
+import Bookings from '../components/myBookings/myBookingsPage'
 import { calluser } from '@/aws_db/db';
 import { Vortex } from "../components/ui/vortex";
 import { cookies } from 'next/headers'
@@ -8,7 +8,7 @@ import { redirect } from 'next/navigation'; // Use for server-side redirection
 export const dynamic = 'force-dynamic'; // Ensure dynamic rendering
 
 
-interface bookings {
+interface BookingDetails {
     BookingID: number;
     RoomID: number;
     UserID: string;
@@ -28,7 +28,7 @@ interface Room {
     BGP: string;
 }
 
-const fetchAllBookings = async (): Promise<bookings[]> => {
+const fetchAllBookings = async (): Promise<BookingDetails[]> => {
       const response = await calluser("SELECT * FROM Booking");
       return JSON.parse(JSON.stringify(response));
 };
@@ -108,7 +108,7 @@ const myBookings = async () => {
            className="w-full h-screen"
          >
             <div className='min-h-screen flex-1 ml-auto mr-auto pb-9'>
-              <bookings
+              <Bookings
                   bookings={allBookings}
                   rooms={allRooms}
                   userid={JSON.stringify(userId)}
