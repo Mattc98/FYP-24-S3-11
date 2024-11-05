@@ -20,7 +20,7 @@ const Navbar = () => {
   const handleLogout = () => {
     deleteCookie('username');
     deleteCookie('role');
-    window.location.href = "/Login";
+    window.location.href = "/login";
   };
 
   const toggleMobileMenu = () => {
@@ -60,12 +60,12 @@ const Navbar = () => {
       <nav className="hidden sm:flex font-sans bold pt-9px flex-1 ml-auto mr-auto rounded-full w-[550px] bg-neutral-900 py-5 shadow-md text-xl">
         <ul className="flex justify-center space-x-8 max-w-7xl mx-auto">
           <li>
-            <Link href="/UserHomepage" onClick={handleLinkClick('/UserHomepage')} className={`${pathname === '/UserHomepage' ? 'text-cyan-400' : 'text-gray-300'} transition duration-300 ease-in-out hover:text-cyan-400 hover`}>
+            <Link href="/dashboard" onClick={handleLinkClick('/dashboard')} className={`${pathname === '/dashboard' ? 'text-cyan-400' : 'text-gray-300'} transition duration-300 ease-in-out hover:text-cyan-400 hover`}>
               Home
             </Link>
           </li>
           <li>
-            <Link href="/myBookings" onClick={handleLinkClick('/myBookings')} className={`${pathname === '/myBookings' ? 'text-cyan-400' : 'text-gray-300'} transition duration-300 ease-in-out hover:text-cyan-400 hover`}>
+            <Link href="/bookings" onClick={handleLinkClick('/bookings')} className={`${pathname === '/bookings' ? 'text-cyan-400' : 'text-gray-300'} transition duration-300 ease-in-out hover:text-cyan-400 hover`}>
               Bookings
             </Link>
           </li>
@@ -75,7 +75,7 @@ const Navbar = () => {
             </Link>
           </li>
           <li>
-            <Link href="/FavouritesPage" onClick={handleLinkClick('/FavouritesPage')} className={`${pathname === '/FavouritesPage' ? 'text-cyan-400' : 'text-gray-300'} transition duration-300 ease-in-out hover:text-cyan-400 hover`}>
+            <Link href="/favourites" onClick={handleLinkClick('/favourites')} className={`${pathname === '/favourites' ? 'text-cyan-400' : 'text-gray-300'} transition duration-300 ease-in-out hover:text-cyan-400 hover`}>
               Favourites
             </Link>
           </li>
@@ -110,12 +110,12 @@ const Navbar = () => {
         <nav className="sm:hidden bg-neutral-900 py-2 px-4 flex-1 mr-auto">
           <ul className="space-y-2">
             <li>
-              <Link href="/UserHomepage" onClick={handleLinkClick('/UserHomepage')} className={`${pathname === '/UserHomepage' ? 'text-cyan-400 font-semibold' : 'text-gray-300'} hover:text-white transition duration-300`}>
+              <Link href="/dashboard" onClick={handleLinkClick('/dashboard')} className={`${pathname === '/dashboard' ? 'text-cyan-400 font-semibold' : 'text-gray-300'} hover:text-white transition duration-300`}>
                 Home
               </Link>
             </li>
             <li>
-              <Link href="/myBookings" onClick={handleLinkClick('/myBookings')} className={`${pathname === '/myBookings' ? 'text-cyan-400 font-semibold' : 'text-gray-300'} hover:text-white transition duration-300`}>
+              <Link href="/bookings" onClick={handleLinkClick('/bookings')} className={`${pathname === '/bookings' ? 'text-cyan-400 font-semibold' : 'text-gray-300'} hover:text-white transition duration-300`}>
                 Bookings
               </Link>
             </li>
@@ -125,7 +125,7 @@ const Navbar = () => {
               </Link>
             </li>
             <li>
-              <Link href="/FavouritesPage" onClick={handleLinkClick('/FavouritesPage')} className={`${pathname === '/FavouritesPage' ? 'text-cyan-400 font-semibold' : 'text-gray-300'} hover:text-white transition duration-300`}>
+              <Link href="/favourites" onClick={handleLinkClick('/favourites')} className={`${pathname === '/favourites' ? 'text-cyan-400 font-semibold' : 'text-gray-300'} hover:text-white transition duration-300`}>
                 Favourites
               </Link>
             </li>

@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation'; // Import usePathname to get the current route
 
 
-const Navbar= () => {
+const adminNav = () => {
   // State to manage dropdown visibility
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State for mobile menu
@@ -23,7 +23,7 @@ const Navbar= () => {
   const handleLogout = () => {
     deleteCookie('username');
     deleteCookie('role');
-    window.location.href = "/Login";
+    window.location.href = "/login";
   };
 
   const toggleMobileMenu = () => {
@@ -61,9 +61,9 @@ const Navbar= () => {
           <li>
             <Link
               className={`${
-                pathname === '/AdminHomepage' ? 'text-cyan-400' : 'text-gray-300'
+                pathname === '/admin' ? 'text-cyan-400' : 'text-gray-300'
               } transition duration-300 ease-in-out hover:text-cyan-400 hover`}
-              href="/AdminHomepage"
+              href="/admin"
             >
               Home
             </Link>
@@ -102,41 +102,11 @@ const Navbar= () => {
             <li>
               <Link
                 className={`block ${
-                  pathname === '/UserHomepage' ? 'text-cyan-400 font-semibold' : 'text-gray-300'
+                  pathname === '/admin' ? 'text-cyan-400 font-semibold' : 'text-gray-300'
                 } hover:text-white transition duration-300`}
                 href="/UserHomepage"
               >
                 Home
-              </Link>
-            </li>
-            <li>
-              <Link
-                className={`block ${
-                  pathname === '/myBookings' ? 'text-cyan-400 font-semibold' : 'text-gray-300'
-                } hover:text-white transition duration-300`}
-                href="/myBookings"
-              >
-                Bookings
-              </Link>
-            </li>
-            <li>
-              <Link
-                className={`block ${
-                  pathname === '/feedback' ? 'text-cyan-400 font-semibold' : 'text-gray-300'
-                } hover:text-white transition duration-300`}
-                href="/feedback"
-              >
-                Feedback
-              </Link>
-            </li>
-            <li>
-              <Link
-                className={`block ${
-                  pathname === '/FavouritesPage' ? 'text-cyan-400 font-semibold' : 'text-gray-300'
-                } hover:text-white transition duration-300`}
-                href="/FavouritesPage"
-              >
-                Favourites
               </Link>
             </li>
             <li>
@@ -162,4 +132,4 @@ const Navbar= () => {
   );
 };
 
-export default Navbar;
+export default adminNav;

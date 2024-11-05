@@ -26,9 +26,9 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
   const router = useRouter();
 
   const homepageRedirect = {
-    Admin: '/AdminHomepage',
-    User: '/UserHomepage',
-    Director: '/UserHomepage',
+    Admin: '/admin',
+    User: '/dashboard',
+    Director: '/dashboard',
   };
 
   const updateUserAccount = async (updatedUser: UserAccount) => {
