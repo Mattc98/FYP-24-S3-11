@@ -1,5 +1,5 @@
 'use client'
-import React, { use, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { setCookie } from "cookies-next";
 import { toast, Toaster } from 'sonner';
@@ -30,7 +30,6 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
 
   useEffect(() => {
     setCurrentUsers(userAccount); // Update users when the prop changes
-    
   }, [userAccount]);
 
 

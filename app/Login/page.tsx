@@ -1,6 +1,7 @@
 import LoginForm from "../components/LoginForm/LoginFormClient";
 import Image from 'next/image';
 import { calluser } from '@/aws_db/db';
+import React, { Suspense } from 'react';
 
 
 
@@ -46,6 +47,8 @@ export default async function Login() {
               className="object-contain max-h-full max-w-full" // Logo styled to fit nicely
             />
           </div>
+          <Suspense fallback={<div>Loading...</div>}>
+          </Suspense>
           <LoginForm userAccount={allUsers}/>
         </div>
       </main>
