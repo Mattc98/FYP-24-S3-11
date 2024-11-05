@@ -30,7 +30,7 @@ interface ClientLoginFormProps {
 }
 
 const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
-  const [currentUsers, setCurrentUsers] = useState<UserAccount[]>(userAccount); // Use currentUsers to manage local state
+  const [currentUsers, setCurrentUsers] = useState<User[]>(userAccount); // Use currentUsers to manage local state
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [selectedRole, setSelectedRole] = useState("User");
