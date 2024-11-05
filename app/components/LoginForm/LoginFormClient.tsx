@@ -4,15 +4,6 @@ import { useRouter } from 'next/navigation';
 import { setCookie } from "cookies-next";
 import { toast, Toaster } from 'sonner';
 
-interface UserAccount {
-  UserID: number;
-  Username: string;
-  Password: string;
-  Role: "User" | "Admin" | "Director";
-  FailLogin: number;
-  IsLocked: boolean;
-}
-
 
 interface User {
   UserID: number;
@@ -46,7 +37,7 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userAccount }) => {
     Director: '/UserHomepage',
   };
 
-  const updateUserAccount = async (updatedUser: UserAccount) => {
+  const updateUserAccount = async (updatedUser: User) => {
     try {
       const response = await fetch('/api/updateUser', {
         method: 'POST',

@@ -2,14 +2,6 @@ import LoginForm from "../components/LoginForm/LoginFormClient";
 import Image from 'next/image';
 import { calluser } from '@/aws_db/db';
 
-interface UserAccount {
-  UserID: number;
-  Username: string;
-  Password: string;
-  Role: "User" | "Admin" | "Director";
-  FailLogin: number;
-  IsLocked: boolean;
-}
 
 
 interface User {
