@@ -11,18 +11,20 @@ interface UserAccount {
   IsLocked: boolean;
 }
 
-async function fetchuser() {
+// Fetch all users from the database
+const fetchUser = async (): Promise<UserAccount[]> => {
   try {
     const response = await calluser("SELECT * FROM userAccount");
-    return JSON.parse(JSON.stringify(response));
+    return JSON.parse(JSON.stringify(response)); // Ensure proper formatting
   } catch (error) {
-    console.error(error);
-    throw new Error('Failed to fetch user data.');
+    console.error('Error fetching users:', error);
+    return [];
   }
-}
+};
 
 export default async function Home() {
-  const userAccounts: UserAccount[] = await fetchuser();
+  const allUsers = await fetchUser();
+  console.log(allUsers);
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-neutral-900 to-neutral-800">
@@ -40,7 +42,7 @@ export default async function Home() {
               className="object-contain max-h-full max-w-full" // Logo styled to fit nicely
             />
           </div>
-          <LoginForm userAccount={userAccounts}/>
+          <LoginForm userAccount={allUsers}/>
         </div>
       </main>
       <footer className="pb-8 text-center text-sm text-gray-500">

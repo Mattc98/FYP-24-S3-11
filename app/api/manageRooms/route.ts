@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { calluser } from '@/aws_db/db';
-import fs from 'fs';
-import path from 'path';
+//import fs from 'fs';
+//import path from 'path';
 
 interface Room {
     RoomID: number;
@@ -26,25 +26,24 @@ export async function GET() {
 }
 
 // Add a new room (POST)
-
 export async function POST(request: Request) {
     try {
-        const { RoomName, Pax, Type, Status, imagename, BGP } = await request.json(); // Extract BGP
+        const { RoomName, Pax, Type, Status, BGP } = await request.json(); // Extract BGP
 
         // Extract the base64 string and the file extension from the imagename
-        const base64Data = imagename.split(',')[1];
-        const extension = imagename.split(';')[0].split('/')[1];
+        //const base64Data = imagename.split(',')[1];
+        //const extension = imagename.split(';')[0].split('/')[1];
 
         // Define the path to save the image
-        const imagePath = path.join(process.cwd(), 'public', 'images', `${RoomName}.${extension}`);
+        //const imagePath = path.join(process.cwd(), 'public', 'images', `${imagename}.${extension}`);
 
         // Write the image file to the specified path
-        fs.writeFileSync(imagePath, base64Data, 'base64');
+        //fs.writeFileSync(imagePath, base64Data, 'base64');
 
         // Use a transaction to ensure data integrity
         const query = `
-            INSERT INTO Room (RoomName, Pax, Type, Status, imagename, BGP) 
-            VALUES ('${RoomName}', ${Pax}, '${Type}', '${Status}', '${RoomName}.${extension}', '${BGP}')
+            INSERT INTO Room (RoomName, Pax, Type, Status, BGP) 
+            VALUES ('${RoomName}', ${Pax}, '${Type}', '${Status}', '${BGP}')
         `; // Store the filename and the BGP
         await calluser(query); // Use parameterized queries to prevent SQL injection
 
@@ -98,21 +97,7 @@ export async function DELETE(request: Request) {
     try {
         const { RoomID } = await request.json();
 
-        // First, fetch the room details to get the imagename
-        const querySelect = `SELECT imagename FROM Room WHERE RoomID = ${RoomID}`;
-        const room = await calluser(querySelect) as Room[];
-
-        if (room.length === 0) {
-            return NextResponse.json({ message: 'Room not found' }, { status: 404 });
-        }
-
-        const imageName = room[0].imagename;
-        const imagePath = path.join(process.cwd(), 'public', 'images', imageName);
-
-        // Delete the image file if it exists
-        if (fs.existsSync(imagePath)) {
-            fs.unlinkSync(imagePath); // Remove the image file
-        }
+        
 
         // Now, delete the room from the database
         const query = `DELETE FROM Room WHERE RoomID = ${RoomID}`;
