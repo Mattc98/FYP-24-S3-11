@@ -57,7 +57,7 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userList }) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(lowercaseUsername);
+
     if(userList == null ){return;}
 
     const user = userList.find(user => user.Username.toLowerCase() === lowercaseUsername);
