@@ -62,35 +62,35 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
     const [newDate, setNewDate] = useState<Date | null>(null);
     const [newTime, setNewTime] = useState(''); // The new time slot
 
+    const getMyBookings = () => {
+        const currentDate = new Date();
+
+        const userBookings = bookings
+            .filter(booking => booking.UserID == userid && new Date(booking.BookingDate) >= currentDate)
+            .map(booking => {
+                const room = rooms.find(room => room.RoomID == booking.RoomID);
+                if (room) {
+                    return {
+                        BookingID: booking.BookingID,
+                        RoomID: room.RoomID,
+                        RoomName: room.RoomName,
+                        Pax: room.Pax,
+                        BookingDate: booking.BookingDate,
+                        BookingTime: booking.BookingTime,
+                        Type: room.Type,
+                        imagename: room.imagename,
+                        BGP: booking.BGP,
+                    };
+                }
+                return null; // Return null instead of "Not this room"
+            })
+            .filter(booking => booking !== null) // Remove any null values from the array
+            .sort((a, b) => new Date(a.BookingDate).getTime() - new Date(b.BookingDate).getTime()); // Sort by BookingDate
+
+        setMyBookings(userBookings as MyBooking[]);
+    };
 
     useEffect(() => {
-        const getMyBookings = () => {
-            const currentDate = new Date();
-
-            const userBookings = bookings
-                .filter(booking => booking.UserID == userid && new Date(booking.BookingDate) >= currentDate)
-                .map(booking => {
-                    const room = rooms.find(room => room.RoomID == booking.RoomID);
-                    if (room) {
-                        return {
-                            BookingID: booking.BookingID,
-                            RoomID: room.RoomID,
-                            RoomName: room.RoomName,
-                            Pax: room.Pax,
-                            BookingDate: booking.BookingDate,
-                            BookingTime: booking.BookingTime,
-                            Type: room.Type,
-                            imagename: room.imagename,
-                            BGP: booking.BGP,
-                        };
-                    }
-                    return null; // Return null instead of "Not this room"
-                })
-                .filter(booking => booking !== null) // Remove any null values from the array
-                .sort((a, b) => new Date(a.BookingDate).getTime() - new Date(b.BookingDate).getTime()); // Sort by BookingDate
-
-            setMyBookings(userBookings as MyBooking[]);
-        };
         getMyBookings();
     }, [bookings, rooms, userid]);
     
@@ -318,12 +318,12 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
 
     const formatTime = (time: string) => {
       const [hours] = time.split(':');
-      const formattedHours = Number.parseInt(hours);
+      const formattedHours = parseInt(hours);
   
       const formattedTime = timeSlots.find((slot) => {
           const [startTime] = slot.split(' - ');
           const [startHour] = startTime.split(':');
-          const startHourFormatted = Number.parseInt(startHour);
+          const startHourFormatted = parseInt(startHour);
   
           return startHourFormatted === (formattedHours % 12 || 12);
       });
@@ -359,7 +359,7 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
                         <div key={index} className="flex-1 ml-auto mr-auto lg:w-[65%] bg-gradient-to-r from-neutral-500 via-neutral-700 to-neutral-800 rounded-lg overflow-hidden shadow-lg">
                             <div className="flex items-center p-4">
                                 <Image
-                                    src={booking.imagename}
+                                    src={"/images/" + booking.imagename}
                                     alt={booking.RoomName}
                                     width={300}
                                     height={200}

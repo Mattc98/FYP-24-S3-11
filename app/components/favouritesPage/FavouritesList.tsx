@@ -248,8 +248,8 @@ const handleBooking = async (room: Room) => {
               {room.imagename && (
                 <div className="w-full md:w-1/2 lg:w-1/3 mb-4 md:mb-0 md:mr-6">
                   <img
-                    src={room.imagename}
-                    alt={room.RoomName}
+                    src={"/images/" + room.imagename}
+                    alt={`${room.RoomName} image`}
                     className="w-full h-64 object-cover rounded-md shadow-md"
                   />
                 </div>

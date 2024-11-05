@@ -28,11 +28,22 @@ export async function GET() {
 // Add a new room (POST)
 export async function POST(request: Request) {
     try {
-        const { RoomName, Pax, Type, Status, imagename, BGP } = await request.json(); // Extract BGP
+        const { RoomName, Pax, Type, Status, BGP } = await request.json(); // Extract BGP
 
+        // Extract the base64 string and the file extension from the imagename
+        //const base64Data = imagename.split(',')[1];
+        //const extension = imagename.split(';')[0].split('/')[1];
+
+        // Define the path to save the image
+        //const imagePath = path.join(process.cwd(), 'public', 'images', `${imagename}.${extension}`);
+
+        // Write the image file to the specified path
+        //fs.writeFileSync(imagePath, base64Data, 'base64');
+
+        // Use a transaction to ensure data integrity
         const query = `
-            INSERT INTO Room (RoomName, Pax, Type, Status, imagename, BGP) 
-            VALUES ('${RoomName}', ${Pax}, '${Type}', '${Status}', '${imagename}','${BGP}')
+            INSERT INTO Room (RoomName, Pax, Type, Status, BGP) 
+            VALUES ('${RoomName}', ${Pax}, '${Type}', '${Status}', '${BGP}')
         `; // Store the filename and the BGP
         await calluser(query); // Use parameterized queries to prevent SQL injection
 
