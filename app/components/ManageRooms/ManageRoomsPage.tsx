@@ -54,9 +54,6 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
         fetchUsers();
     }, []);
 
-    
-
-    //utils/generatePin.js
 
     const generateMasterPin = () => {
         const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";

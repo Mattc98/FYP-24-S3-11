@@ -63,35 +63,35 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
     const [newDate, setNewDate] = useState<Date | null>(null);
     const [newTime, setNewTime] = useState(''); // The new time slot
 
-    const getMyBookings = () => {
-        const currentDate = new Date();
-
-        const userBookings = bookings
-            .filter(booking => booking.UserID == userid && new Date(booking.BookingDate) >= currentDate)
-            .map(booking => {
-                const room = rooms.find(room => room.RoomID == booking.RoomID);
-                if (room) {
-                    return {
-                        BookingID: booking.BookingID,
-                        RoomID: room.RoomID,
-                        RoomName: room.RoomName,
-                        Pax: room.Pax,
-                        BookingDate: booking.BookingDate,
-                        BookingTime: booking.BookingTime,
-                        Type: room.Type,
-                        imagename: room.imagename,
-                        BGP: booking.BGP,
-                    };
-                }
-                return null; // Return null instead of "Not this room"
-            })
-            .filter(booking => booking !== null) // Remove any null values from the array
-            .sort((a, b) => new Date(a.BookingDate).getTime() - new Date(b.BookingDate).getTime()); // Sort by BookingDate
-
-        setMyBookings(userBookings as MyBooking[]);
-    };
 
     useEffect(() => {
+        const getMyBookings = () => {
+            const currentDate = new Date();
+
+            const userBookings = bookings
+                .filter(booking => booking.UserID == userid && new Date(booking.BookingDate) >= currentDate)
+                .map(booking => {
+                    const room = rooms.find(room => room.RoomID == booking.RoomID);
+                    if (room) {
+                        return {
+                            BookingID: booking.BookingID,
+                            RoomID: room.RoomID,
+                            RoomName: room.RoomName,
+                            Pax: room.Pax,
+                            BookingDate: booking.BookingDate,
+                            BookingTime: booking.BookingTime,
+                            Type: room.Type,
+                            imagename: room.imagename,
+                            BGP: booking.BGP,
+                        };
+                    }
+                    return null; // Return null instead of "Not this room"
+                })
+                .filter(booking => booking !== null) // Remove any null values from the array
+                .sort((a, b) => new Date(a.BookingDate).getTime() - new Date(b.BookingDate).getTime()); // Sort by BookingDate
+
+            setMyBookings(userBookings as MyBooking[]);
+        };
         getMyBookings();
     }, [bookings, rooms, userid]);
     
