@@ -37,8 +37,8 @@ export default async function Feedback() {
           >
             <Navbar />
             <div className="flex flex-col justify-center items-center h-screen lg:w-[1100px] mx-auto bg-neutral-800">
-              <FeedbackForm userId={userInfo.UserId}>
-                <RoomDropdown UserRole={userInfo.Role}/>
+              <FeedbackForm userId={userInfo[0].UserID}>
+                <RoomDropdown UserRole={userInfo[0].Role}/>
               </FeedbackForm>
             </div>
           </Vortex>

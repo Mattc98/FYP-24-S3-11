@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 import { createFavInDB } from '@/aws_db/favourite'; // Adjust based on your setup
 import { calluser } from '@/aws_db/db';
 

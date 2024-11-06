@@ -2,7 +2,8 @@ import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import { toast, Toaster } from 'sonner';
 
@@ -262,7 +263,7 @@ export const HoverEffect = ({
             }
     
             closeModal();
-            window.location.href = "/UserHomepage";
+            window.location.href = "/dashboard";
             return;
         }
     
@@ -307,6 +308,8 @@ export const HoverEffect = ({
     
     const handleFavorite = async (room: Room) => {
         try {
+            console.log("UserID", userId );
+            console.log("RoomID", room.RoomID,);
             const response = await fetch('/api/updateFavourites', {
                 method: isFavorite ? 'DELETE' : 'POST', // Use DELETE to remove, POST to add
                 headers: {

@@ -187,7 +187,6 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
         const sgNewDate = new Date(newDate).toLocaleDateString('en-CA');
     
 
-        // Step 1: Check if there is a duplicate booking at the new date/time
         const isDuplicate = bookings.filter(
             (booking) =>
                 formatDate(new Date(booking.BookingDate)) === formatDate(new Date(sgNewDate)) &&
@@ -195,10 +194,8 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
                 booking.RoomID === selectedBooking.RoomID
         );
     
-        let overrideOccurred = false;
 
         if (isDuplicate.length != 0) {
-            // Step 2: If there is a conflict and user is a Director, override is allowed
             if (userRole === 'Director') {
                 const directorCode = prompt('A booking already exists at this time. Enter the Director Code to proceed:');
                 if (!directorCode || directorCode !== '123') {
@@ -207,10 +204,7 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
                 }
     
                 toast.success('Director code is valid. Room has been overridden.');
-                overrideOccurred = true;
-                
-    
-                // Step 3: Create a new booking with the updated information
+            
                 const overrideResponse = await fetch('/api/overrideBooking', {
                     method: 'POST',
                     headers: {
@@ -228,6 +222,28 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
                 if (!overrideData.success) {
                     alert('Failed to create new booking.');
                     return;
+                }
+
+                try {
+                    const deleteResponse = await fetch('/api/deleteOldBooking', {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ bookingId: selectedBooking.BookingID }),
+                    });
+        
+                    const deleteData = await deleteResponse.json();
+        
+                    if (deleteData.success) {
+                        setMyBookings((prevBookings) =>
+                            prevBookings.filter((booking) => booking.BookingID !== selectedBooking.BookingID)
+                        );
+                    } else {
+                        console.error('Failed to delete old booking:', deleteData.error);
+                    }
+                } catch (error) {
+                    console.error('Error deleting old booking:', error);
                 }
     
                 // Optional: Notify the original user about the booking override
@@ -282,34 +298,9 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
                 alert('An error occurred. Please try again.');
             }
         }
-    
-        // Step 4: Delete the old booking if an override occurred
-        if (overrideOccurred) {
-            try {
-                const deleteResponse = await fetch('/api/deleteOldBooking', {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ bookingId: selectedBooking.BookingID }),
-                });
-    
-                const deleteData = await deleteResponse.json();
-    
-                if (deleteData.success) {
-                    setMyBookings((prevBookings) =>
-                        prevBookings.filter((booking) => booking.BookingID !== selectedBooking.BookingID)
-                    );
-                } else {
-                    console.error('Failed to delete old booking:', deleteData.error);
-                }
-            } catch (error) {
-                console.error('Error deleting old booking:', error);
-            }
-        }
         
         setShowAmendModal(false); // Close the modal after completion
-        window.location.href = "/myBookings";
+        window.location.href = "/bookings";
     };
       
     const formatDate = (date: Date) => {

@@ -70,7 +70,7 @@ export default async function Dashboard() {
           className="flex items-center flex-col justify-center w-full h-screen"
         >
           <div className="flex-1 ml-auto mr-auto min-h-screen">
-              <UserHome allRooms={allRooms} UserRole={userInfo.Role} userID={userInfo.UserID} FavRooms={userFavoriteRooms} allBookings={allBookings}/>
+              <UserHome allRooms={allRooms} UserRole={userInfo[0].Role} userID={userInfo[0].UserID} FavRooms={userFavoriteRooms} allBookings={allBookings}/>
           </div>
         </Vortex>
       </div>

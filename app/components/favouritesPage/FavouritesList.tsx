@@ -15,7 +15,6 @@ interface Room {
   BGP: string;
 }
 
-
 interface Bookings {
   BookingID: number;
   RoomID: number;
@@ -126,6 +125,8 @@ const handleBooking = async (room: Room) => {
       return;
   }
 
+
+
   // Create Room pin and format the date
   const RoomPin = Math.floor(100 + Math.random() * 90).toString(); 
   const formattedDate = startDate.toLocaleDateString('en-CA');
@@ -137,7 +138,7 @@ const handleBooking = async (room: Room) => {
         booking.RoomID === room.RoomID
   );
 
-
+  console.log(isDuplicate);
   if (isDuplicate.length !== 0) {
       if (userRole === 'Director'){
         
@@ -204,40 +205,38 @@ const handleBooking = async (room: Room) => {
         toast.error("Room has already been booked");
       }
       return; // Exit after handling the override
-    }else{
-      // Proceed to create a new booking if no conflict
-      try {
-        const response = await fetch('/api/createBooking', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-              RoomID: room.RoomID,
-              UserID: userId,
-              BookingDate: formattedDate,
-              BookingTime: formatTime(selectedTimeSlot),
-              RoomPin: RoomPin,
-              BGP: room.BGP,
-          }),
-        });
+    }
+    // Proceed to create a new booking if no conflict
+    try {
+      const response = await fetch('/api/createBooking', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            RoomID: room.RoomID,
+            UserID: userId,
+            BookingDate: formattedDate,
+            BookingTime: formatTime(selectedTimeSlot),
+            RoomPin: RoomPin,
+            BGP: room.BGP,
+        }),
+      });
 
-        if (response.ok) {
-            toast.success(`Room: ${room.RoomName} on ${formattedDate} at ${selectedTimeSlot} has been booked!`);
-        } else {
-            alert('Failed to create booking.');
-            const errorData = await response.json();
-            console.log('Error response data:', errorData);
-        }
-      } catch (error) {
-          console.error('Error creating booking:', error);
-          alert('An error occurred. Please try again.');
+      if (response.ok) {
+          toast.success(`Room: ${room.RoomName} on ${formattedDate} at ${selectedTimeSlot} has been booked!`);
+      } else {
+          alert('Failed to create booking.');
+          const errorData = await response.json();
+          console.log('Error response data:', errorData);
       }
+    } catch (error) {
+        console.error('Error creating booking:', error);
+        alert('An error occurred. Please try again.');
     };
   }
 
   return (
-    
     <div className='bg-neutral-800 flex-1 ml-auto mr-auto w-[70%] h-screen text-white'>
       <h2 className="text-2xl font-bold ">Your Favourite Rooms</h2>
       <ul className="space-y-8">

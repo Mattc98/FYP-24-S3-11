@@ -43,9 +43,9 @@ const myBookings = async () => {
               <Bookings
                   bookings={allBookings}
                   rooms={allRooms}
-                  userid={JSON.stringify(userInfo.UserId)}
+                  userid={JSON.stringify(userInfo[0].UserID)}
                   username={username.value}
-                  userRole={userInfo.Role}
+                  userRole={userInfo[0].Role}
                 />
             </div>
          </Vortex>

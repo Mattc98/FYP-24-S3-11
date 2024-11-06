@@ -27,7 +27,7 @@ const FavouritesPage = async () => {
     // Parse the cookie if it exists
     const username = JSON.parse(JSON.stringify(usernameCookie));
     const userInfo = await getUserInfo(username.value);
-    const userFavList = await getUserFavList(userInfo.UserID);
+    const userFavList = await getUserFavList(userInfo[0].UserID);
     const allBookings = await getBookings();
 
  
@@ -43,7 +43,7 @@ const FavouritesPage = async () => {
             <div  className="overflow-y-scroll no-scrollbar h-screen bg-neutral-800 flex-1 ml-auto mr-auto lg:w-[1100px] shadow-xl shadow-black-500/50 ">
               <Navbar />
               {userFavList.length > 0 ? (
-                <FavouritesList rooms={userFavList} userId={userInfo.UserId} userRole={userInfo.Role} allBookings={allBookings}/>
+                <FavouritesList rooms={userFavList} userId={userInfo[0].UserID} userRole={userInfo[0].Role} allBookings={allBookings}/>
               ) : (
                 <p className="text-gray-400">No rooms found for this user.</p>
               )}
@@ -51,11 +51,10 @@ const FavouritesPage = async () => {
         </Vortex>
       </div>
     );
-
   } catch (error) {
     // Handle any errors (e.g., JSON parsing issues)
     console.error('Error reading cookie:', error);
-    redirect('/'); // Redirect to the home page on erro
+    redirect('/login-page'); // Redirect to the home page on erro
   }
 };
 

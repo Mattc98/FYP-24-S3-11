@@ -1,9 +1,9 @@
 // FeedbackForm.tsx (Client Component)
 'use client';
 
-import { useState, useRef, ReactNode, Suspense } from 'react';
+import { useState, useRef, type ReactNode, Suspense } from 'react';
 import styles from './Feedback.module.css';
-import { submitFeedback, Feedback } from './SubmitFeedback';
+import { submitFeedback, type Feedback } from './SubmitFeedback';
 
 
 interface FeedbackFormProps {
@@ -33,7 +33,7 @@ function FeedbackFormContent({ children, userId }: FeedbackFormProps) {
         const [roomId] = roomValue.split(':');
 
         const feedbackData: Feedback = {
-            RoomID: parseInt(roomId, 10),
+            RoomID: Number.parseInt(roomId, 10),
             UserID: userId,
             Feedback: feedback,
         };
@@ -85,8 +85,8 @@ function FeedbackFormContent({ children, userId }: FeedbackFormProps) {
                 <button type="submit" className={styles.button} disabled={isSubmitting}>
                     {isSubmitting ? 'Submitting...' : 'Submit'}
                 </button>
-                {submitStatus === 'success' && <p className={styles.successMessage}>Feedback submitted successfully!</p>}
-                {submitStatus === 'error' && <p className={styles.errorMessage}>Failed to submit feedback. Please try again.</p>}
+                {submitStatus === 'success' && <p className="text-white m-4">Feedback submitted successfully!</p>}
+                {submitStatus === 'error' && <p className="text-red-600 m-4">Failed to submit feedback. Please try again.</p>}
             </form>
         </div>
     );
