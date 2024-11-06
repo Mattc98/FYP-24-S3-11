@@ -1,7 +1,10 @@
 'use client'; // Marks this component as a Client Component
-import React, { useEffect, useState } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import RoleDropdown from './RoleDropdown'; // Ensure you import RoleDropdown correctly
 import { toast, Toaster } from 'sonner';
+import Image from 'next/image';
+import { addNewUser, deleteUser, editUser, unlockThisUser } from '@/app/data-access/manage-users';
 
 interface UserAccount {
   UserID: number;
@@ -33,23 +36,7 @@ const ManageUsersClient: React.FC<ManageUsersPageProps> = ({ users }) => {
 
   const unlockUser = async (userID: number) => {
     try {
-      const response = await fetch('api/unlockUser', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          UserID: userID,
-          FailLogin: 0,
-          IsLocked: false, // Assuming IsLocked is a boolean
-        }),
-      });
-
-      if (response.ok) {
-        toast.success("User has been unlocked. Do remember to inform them that their account is unlocked.");
-      } else {
-        console.log("Failed to unlock user");
-      }
+      unlockThisUser(userID);
     } catch (error) {
       console.error("Error unlocking user:", error);
     }
@@ -58,13 +45,7 @@ const ManageUsersClient: React.FC<ManageUsersPageProps> = ({ users }) => {
   // Handle edit button click
   const handleEdit = async (userID: number) => {
     try {
-      const response = await fetch('/api/manageUsers', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id: userID, newUsername: editUsername, newRole: editRole }), // Send ID, new username, and new role
-      });
+      const response = await editUser(userID, editUsername, editRole)
 
       if (response.ok) {
         setManageUsers((prevUsers) =>
@@ -93,13 +74,7 @@ const ManageUsersClient: React.FC<ManageUsersPageProps> = ({ users }) => {
   // Function to handle user termination
   const terminateUser = async (userID: number) => {
     try {
-      const response = await fetch('/api/manageUsers', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id: userID }), // Send ID for deletion
-      });
+      const response = await deleteUser(userID)
 
       if (response.ok) {
         setManageUsers((prevUsers) => prevUsers.filter((user) => user.UserID !== userID));
@@ -120,19 +95,7 @@ const ManageUsersClient: React.FC<ManageUsersPageProps> = ({ users }) => {
 
   const addUser = async (userData: { username: string; password: string; email: string; role: string }) => {
     try {
-      const response = await fetch('/api/manageUsers', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          Username: userData.username,
-          Password: userData.password,
-          Email: userData.email,
-          Role: userData.role,
-          ProfilePicture: '/images/profile-icon.png', // Default profile picture
-        }),
-      });
+      const response = await addNewUser(userData.username, userData.password, userData.email, userData.role)
 
       if (response.ok) {
         const newUser = await response.json(); // Assuming the API returns the created user
@@ -176,10 +139,12 @@ const ManageUsersClient: React.FC<ManageUsersPageProps> = ({ users }) => {
                   <li key={user.UserID} className="flex items-center bg-neutral-900 p-4 rounded-md shadow-md">
                     <div className="relative mr-4">
                       <p>UserID: {user.UserID}</p>
-                      <img
-                        src={user.ProfilePicture || '/images/profile-icon.png'}
+                      <Image
+                        src={user.ProfilePicture || '/images/profile-icon.png'} // Ensure this is a valid URL or a path to the image
                         alt={`${user.Username} profile`}
-                        className="w-16 h-16 rounded-full object-cover"
+                        width={600} // specify width
+                        height={256} // specify height to roughly match your original h-64 class
+                        className="w-full h-64 object-cover rounded-md shadow-md"
                       />
                     </div>
                     <div className="flex-1">
@@ -192,13 +157,17 @@ const ManageUsersClient: React.FC<ManageUsersPageProps> = ({ users }) => {
                         readOnly={currentUserId !== user.UserID}
                       />
                       <p className="font-semibold">Role:</p>
-                      <input
-                        type="text"
+                      <select
                         value={currentUserId === user.UserID ? editRole : user.Role}
                         onChange={(e) => setEditRole(e.target.value)} // Update role during edit
                         className="border border-gray-300 p-1 rounded w-48 text-black"
-                        readOnly={currentUserId !== user.UserID}
-                      />
+                        disabled={currentUserId !== user.UserID} // Disable the select when not editing
+                      >
+                        <option value="Admin">Admin</option>
+                        <option value="User">User</option>
+                        <option value="Director">Director</option>
+                      </select>
+
                     </div>
                     <div className="flex space-x-2">
                       {currentUserId === user.UserID ? (

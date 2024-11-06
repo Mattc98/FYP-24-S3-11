@@ -1,29 +1,19 @@
-import { calluser } from '@/aws_db/db';
+import { getRooms } from '@/app/data-access/rooms';
 
 interface Room {
   RoomID: number;
   RoomName: string;
   Pax: number;
   Type: string;
-  Status: string;
+  BGP: string;
 }
 
 interface userRoleProps{
   UserRole: string;
 }
 
-async function fetchRoomData(): Promise<Room[]> {
-  try {
-    const response = await calluser("SELECT * FROM Room");
-    return JSON.parse(JSON.stringify(response));
-  } catch (error) {
-    console.error('Failed to fetch room data:', error);
-    return [];
-  }
-}
-
 const RoomDropdown: React.FC<userRoleProps> = async ({ UserRole }) => {  
-  const rooms = await fetchRoomData();
+  const rooms:Room[] = await getRooms();
 
   return (
     <select name="rooms" id="rooms" style={{ color: 'black' }} required>

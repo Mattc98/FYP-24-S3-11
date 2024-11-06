@@ -1,33 +1,11 @@
 import React, { Suspense } from 'react';
-import { calluser } from '@/aws_db/db';
 import ManageUsersClient from '../components/manageUsers/ManageUsersClient'; // Ensure correct path
 import AdminNavbar from '../components/adminNavbar';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { getUserList } from '../data-access/users';
 
 export const dynamic = 'force-dynamic'; // Ensure dynamic rendering
-
-interface User {
-  UserID: number;
-  Username: string;
-  Password: string;
-  Email: string;
-  Role: string; // Assuming users have roles
-  ProfilePicture: string; // Assuming there's a profile picture URL
-  FailLogin: number;
-  IsLocked: boolean;
-}
-
-// Fetch all users from the database
-const fetchUser = async (): Promise<User[]> => {
-  try {
-    const response = await calluser("SELECT * FROM userAccount");
-    return JSON.parse(JSON.stringify(response)); // Ensure proper formatting
-  } catch (error) {
-    console.error('Error fetching users:', error);
-    return [];
-  }
-};
 
 const ManageUsersPage = async () => {
   const cookieStore = cookies();
@@ -47,7 +25,7 @@ const ManageUsersPage = async () => {
   }
 
   // Fetch all users
-  const allUsers = await fetchUser();
+  const allUsers = await getUserList();
 
   return (
     <div>

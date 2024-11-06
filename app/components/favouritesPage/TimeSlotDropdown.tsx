@@ -1,6 +1,7 @@
 "use client"; // This component will be rendered on the client side
 
-import React, { useState } from 'react';
+import type React from 'react';
+import { useState } from 'react';
 
 interface TimeSlotDropdownProps {
   timeSlots: string[];

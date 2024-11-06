@@ -2,9 +2,11 @@ import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import { toast, Toaster } from 'sonner';
+import { createBooking, favRoom, overrideBooking } from "@/app/data-access/dashboard";
 
 const timeSlots = [
   '09:00 AM - 10:00 AM',
@@ -45,6 +47,7 @@ export const HoverEffect = ({
   startDate,
   selectedTimeSlot,
   allBookings,
+  username,
   className,
 }: {
   items: Room[];
@@ -55,6 +58,7 @@ export const HoverEffect = ({
   startDate: Date | null;
   selectedTimeSlot: string | null;
   allBookings: Bookings[];
+  username: string;
   className?: string;
   
   
@@ -63,7 +67,13 @@ export const HoverEffect = ({
     const [selectedRoom, setSelectedRoom] = useState<Room | null>(null); // Modal control
     const [selectedOverrideRoom, setOverrideSelectedRoom] = useState<Room | null>(null); // Modal control
     const [isFavorite, setIsFavorite] = useState(false);
-    const [userName, setName] = useState('');
+
+    // Update favorite state when selectedRoom changes
+    useEffect(() => {
+        if (selectedRoom) {
+            setIsFavorite(FavRooms.includes(selectedRoom.RoomID)); // Check if the selected room is a favorite
+        }
+    }, [selectedRoom, FavRooms]);
 
     
     const handleOverrideRoomClick = (room: Room) => {
@@ -88,7 +98,6 @@ export const HoverEffect = ({
         }).format(date);
     };
       
-      // Helper function to convert time to 24-hour format
     const convertTo24Hour = (time: string) => {
         const [hours, minutesPart] = time.split(':');
         const minutes = minutesPart.slice(0, 2);
@@ -140,29 +149,8 @@ export const HoverEffect = ({
         console.log('Time not available in slots');
         return 'Time not available in slots'; // Return an appropriate message
     };
-
-    useEffect(() => {
-        // Fetch director name from the server-side API route
-        const fetchName = async () => {
-            try {
-                const response = await fetch('/api/getName');
-                const data = await response.json();
-                setName(data.username || '');
-            } catch (error) {
-                console.error('Error fetching name:', error);
-            }
-        };
-
-        fetchName();
-    }, []);
-    
     
     const handleBooking = async () => {
-        if (!userName) {
-            console.error('Username is missing in cookies');
-            return;
-        }
-    
         if (!startDate || !selectedTimeSlot) {
             toast.error("Please select a date and time.");
             return;
@@ -172,23 +160,6 @@ export const HoverEffect = ({
     
         if (!thisRoom) {
             toast.error("Please select a room.");
-            return;
-        }
-    
-        let userId;
-        try {
-            const userResponse = await fetch('/api/getUserId');
-            const userData = await userResponse.json();
-            if (userData.success) {
-                userId = userData.userId;
-            } else {
-                console.error('Failed to retrieve user ID');
-                alert('Unable to proceed: User ID not found.');
-                return;
-            }
-        } catch (error) {
-            console.error('Error fetching user ID:', error);
-            alert('Unable to proceed: Error retrieving user ID.');
             return;
         }
     
@@ -207,133 +178,41 @@ export const HoverEffect = ({
                 toast.error('Invalid Director Code. Booking not overridden.');
                 return;
             }
-    
-            toast.success('Director code is valid. Room has been overridden.');
-    
-            // Update only the UserID for the conflicting booking
-            try {
-                const updateResponse = await fetch('/api/updateUserID', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        bookingId: isDuplicate[0].BookingID,
-                        newUserId: userId,
-                    }),
-                });
-    
-                const updateData = await updateResponse.json();
-                if (!updateResponse.ok || !updateData.success) {
-                    console.error('Failed to update UserID:', updateData.error);
-                    alert('Failed to override booking.');
-                    return;
-                }
-    
-                // Notify the original user of the overridden booking
-                try {
-                    const userResponse = await fetch(`/api/getEmailById?userId=${isDuplicate[0].UserID}`);
-                    const userData = await userResponse.json();
-    
-                    if (userResponse.ok && userData.email) {
-                        await fetch('/api/sendNotificationEmail', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                email: userData.email,
-                                roomName: thisRoom.RoomName,
-                                bookingDate: formatDate(new Date(startDate)),
-                                bookingTime: selectedTimeSlot,
-                                directorName: userName,
-                            }),
-                        });
-                    } else {
-                        console.error('Failed to retrieve user email');
-                    }
-                } catch (error) {
-                    console.error('Error retrieving user email or sending notification email:', error);
-                }
-            } catch (error) {
+
+            try{
+                overrideBooking(isDuplicate[0].BookingID, userId, isDuplicate[0].UserID, thisRoom.RoomName, formatDate(new Date(startDate)), selectedTimeSlot, username);
+                toast.success('Director code is valid. Room has been overridden.');
+            }catch(error){
                 console.error('Error updating UserID for override:', error);
                 alert('An error occurred while overriding the booking.');
                 return;
-            }
-    
-            closeModal();
-            window.location.href = "/UserHomepage";
-            return;
-        }
-    
-        // Create room pin and format date and time
-        const RoomPin = Math.floor(100 + Math.random() * 90).toString();
-        const formattedDate = startDate.toLocaleDateString('en-CA');
-        const timeIn24HourFormat = formatTime(selectedTimeSlot);
-    
-        // Create a new booking if no duplicate was found
-        try {
-            const response = await fetch('/api/createBooking', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    RoomID: thisRoom.RoomID,
-                    UserID: userId,
-                    BookingDate: formattedDate,
-                    BookingTime: timeIn24HourFormat,
-                    RoomPin: RoomPin,
-                    BGP: thisRoom.BGP,
-                }),
-            });
-    
-            if (response.ok) {
-                toast.success(`Room: ${thisRoom.RoomName} on ${formatDate(new Date(startDate))} at ${selectedTimeSlot} has been booked!`);
+            };
+        }else{
+             // Create room pin and format date and time
+            const RoomPin = Math.floor(100 + Math.random() * 90).toString();
+            const formattedDate = startDate.toLocaleDateString('en-CA');
+            const timeIn24HourFormat = formatTime(selectedTimeSlot);
+        
+            // Create a new booking if no duplicate was found
+            try {
+                createBooking(thisRoom.RoomID , userId, formattedDate, timeIn24HourFormat, RoomPin, thisRoom.BGP, thisRoom.RoomName, selectedTimeSlot);
                 closeModal();
-            } else {
-                alert('Failed to create booking.');
-                const errorData = await response.json();
-                console.log('Error response data:', errorData);
+            } catch (error) {
+                console.error('Error creating booking:', error);
+                alert('An error occurred. Please try again.');
             }
-        } catch (error) {
-            console.error('Error creating booking:', error);
-            alert('An error occurred. Please try again.');
         }
-
 
     };
         
     
     const handleFavorite = async (room: Room) => {
         try {
-            const response = await fetch('/api/updateFavourites', {
-                method: isFavorite ? 'DELETE' : 'POST', // Use DELETE to remove, POST to add
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    UserID: userId,
-                    RoomID: room.RoomID,
-                }),
-            });
-
-            if (response.ok) {
-                setIsFavorite(!isFavorite); // Toggle favorite state
-            } else {
-                alert('Failed to update favorites.');
-            }
+            setIsFavorite(await favRoom(isFavorite, userId, room.RoomID));
         } catch (error) {
             console.error('Error updating favorites:', error);
         }
     };
-
-    // Update favorite state when selectedRoom changes
-    useEffect(() => {
-        if (selectedRoom) {
-            setIsFavorite(FavRooms.includes(selectedRoom.RoomID)); // Check if the selected room is a favorite
-        }
-    }, [selectedRoom, FavRooms]);
 
   return (
     <div
@@ -485,71 +364,71 @@ export const HoverEffect = ({
                         </div>
                     </div>
                 </div>
-            )}
+        )}
 
-            {selectedOverrideRoom && (
-                <div className="fixed inset-0 bg-neutral-800 bg-opacity-10 flex items-center justify-center z-50">
-                    <div 
-                        className="bg-black p-6 rounded-lg shadow-lg text-white"
-                        style={{ width: '350px', height: '300px' }} // Fixed width and height
-                    >
-                        <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-2xl font-semibold">{selectedOverrideRoom.RoomName}</h2>
-                            <button
-                                className={`flex items-center justify-center w-8 h-8 transition duration-300 ${isFavorite ? 'text-yellow-500' : 'text-gray-400'}`}
-                                onClick={() => {
-                                    handleFavorite(selectedOverrideRoom); // Update favorites when clicked
-                                }}
-                            >
-                                {isFavorite ? (
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="h-6 w-6"
-                                        fill="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                                    </svg>
-                                ) : (
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="h-6 w-6"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                    >
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                                    </svg>
-                                )}
-                            </button>
-                        </div>
-                        <Image
-                            src={selectedOverrideRoom.imagename}
-                            alt={selectedOverrideRoom.RoomName}
-                            width={300}
-                            height={200}
-                            className="mb-4 rounded-md"
-                        />
+        {selectedOverrideRoom && (
+            <div className="fixed inset-0 bg-neutral-800 bg-opacity-10 flex items-center justify-center z-50">
+                <div 
+                    className="bg-black p-6 rounded-lg shadow-lg text-white"
+                    style={{ width: '350px', height: '300px' }} // Fixed width and height
+                >
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-2xl font-semibold">{selectedOverrideRoom.RoomName}</h2>
+                        <button
+                            className={`flex items-center justify-center w-8 h-8 transition duration-300 ${isFavorite ? 'text-yellow-500' : 'text-gray-400'}`}
+                            onClick={() => {
+                                handleFavorite(selectedOverrideRoom); // Update favorites when clicked
+                            }}
+                        >
+                            {isFavorite ? (
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-6 w-6"
+                                    fill="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                            ) : (
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-6 w-6"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                            )}
+                        </button>
+                    </div>
+                    <Image
+                        src={selectedOverrideRoom.imagename}
+                        alt={selectedOverrideRoom.RoomName}
+                        width={300}
+                        height={200}
+                        className="mb-4 rounded-md"
+                    />
 
-                        {/* Buttons */}
-                        <div className="flex justify-between">
-                            <button
-                                className="border hover:bg-white hover:text-black bg-red-700 text-black px-4 py-2 rounded-md transition duration-300"
-                                onClick={handleBooking}
-                            >
-                                Override
-                            </button>
-                            <button
-                                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md transition duration-300"
-                                onClick={closeModal}
-                            >
-                                Cancel
-                            </button>
-                        </div>
+                    {/* Buttons */}
+                    <div className="flex justify-between">
+                        <button
+                            className="border hover:bg-white hover:text-black bg-red-700 text-black px-4 py-2 rounded-md transition duration-300"
+                            onClick={handleBooking}
+                        >
+                            Override
+                        </button>
+                        <button
+                            className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md transition duration-300"
+                            onClick={closeModal}
+                        >
+                            Cancel
+                        </button>
                     </div>
                 </div>
-            )}
-            <Toaster richColors/>
+            </div>
+        )}
+        <Toaster richColors/>
     </div>
   );
 };

@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from 'react';
+import type React from 'react';
+import { useState } from 'react';
 import { FaCalendarAlt } from 'react-icons/fa';
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -13,6 +14,7 @@ interface UserHomeProps {
     userID: number;
     FavRooms: number[];
     allBookings: Bookings[];
+    username: string;
 }
 
 interface Room {
@@ -72,10 +74,9 @@ export const projects = [
     },
 ];
 
-const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, FavRooms, allBookings }) => {
+const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, FavRooms, allBookings, username }) => {
     const [startDate, setStartDate] = useState<Date | null>(null);       // For Date Picker
     const [selectedTimeSlot, setSelectedTimeSlot] = useState('');        // Time slot selection
-    const userId = userID;
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [unAvaRooms, setUnAvaRooms] = useState<number[]>([]); // To store unavailable room IDs
 
@@ -91,12 +92,12 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
 
     const formatTime = (time: string) => {
         const [hours] = time.split(':');
-        const formattedHours = parseInt(hours);
+        const formattedHours = Number.parseInt(hours);
     
         const formattedTime = timeSlots.find((slot) => {
             const [startTime] = slot.split(' - ');
             const [startHour] = startTime.split(':');
-            const startHourFormatted = parseInt(startHour);
+            const startHourFormatted = Number.parseInt(startHour);
     
             return startHourFormatted === (formattedHours % 12 || 12);
         });
@@ -211,10 +212,11 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
                 unAvailableRooms={unAvailableRooms}
                 UserRole={UserRole} 
                 FavRooms={FavRooms} 
-                userId={userId} 
+                userId={userID} 
                 startDate={startDate}
                 selectedTimeSlot={selectedTimeSlot}
                 allBookings={allBookings}
+                username={username}
               />
             </div>
           </div>

@@ -9,13 +9,12 @@ interface UpdateResult {
 
 export async function POST(request: Request) {
     try {
-        const { bookingId, sgNewDate, new24Time, newUserId } = await request.json();
-
+        const { bookingID, sgNewDate, new24Time, newUserId } = await request.json();
         // Update the booking in the database with plain query
         const result = await calluser(`
             UPDATE Booking
             SET BookingDate = '${sgNewDate}', BookingTime = '${new24Time}', UserID = '${newUserId}'
-            WHERE BookingID = ${bookingId}
+            WHERE BookingID = ${bookingID}
         `) as UpdateResult; // Assert the type of result
 
         // Check if any row was actually updated

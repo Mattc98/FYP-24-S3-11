@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { toast, Toaster } from 'sonner';
 import { UploadButton } from '@/utils/uploadthing';
 import Image from 'next/image';
+import { addNewRoom, deleteRoom, editThisRoom, getFeedback } from '@/app/data-access/manage-rooms';
 
 interface Room {
     RoomID: number;
@@ -84,21 +85,8 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
         }
     
         const pin = generateMasterPin();
+        const response = await addNewRoom(newRoomName, Number(newPax), newType, newStatus, imageUrl, pin);
 
-        const response = await fetch('/api/manageRooms', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                RoomName: newRoomName,
-                Pax: Number(newPax),
-                Type: newType,
-                Status: newStatus,
-                imagename: imageUrl,
-                BGP: pin,
-            }),
-        });
 
         if (response.ok) {
             const addedRoom = await response.json();
@@ -115,20 +103,9 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
 
     const handleEditRoom = async (roomId: number) => {
         if (editRoom) {
-            console.log('Editing room with ID:', roomId, 'Values:', editRoom); // Log current values
 
-            const response = await fetch('/api/manageRooms', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ 
-                    ...editRoom, 
-                    RoomID: roomId 
-                }),
-            });
+            const response = await editThisRoom(editRoom, roomId);
             
-
             if (response.ok) {
                 // Update rooms list state
                 setRooms(rooms.map(room => 
@@ -145,13 +122,7 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
     };
 
     const handleDeleteRoom = async (roomId: number) => {
-        const response = await fetch('/api/manageRooms', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ RoomID: roomId }),
-        });
+        const response = await deleteRoom(roomId);
 
         if (response.ok) {
             setRooms((prevRooms) => prevRooms.filter((room) => room.RoomID !== roomId));
@@ -160,7 +131,7 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
     };
 
     const handleViewFeedback = async (roomId: number) => {
-        const response = await fetch(`/api/viewFeedback?roomId=${roomId}`);
+        const response = await getFeedback(roomId);
         if (response.ok) {
             const feedbackData = await response.json();
             setFeedback(feedbackData);
@@ -287,13 +258,13 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
                             <Image src={imageUrl} alt='myimage' width={500} height={500} />
                         </div>) : null}
                         <button
-                            className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600"
+                            className="bg-green-500 text-white py-2 px-4 my-4 rounded-lg hover:bg-green-600"
                             onClick={handleAddRoom}
                         >
                             Add Room
                         </button>
                         <button
-                            className="bg-red-500 text-white py-2 px-4 rounded-lg ml-2 hover:bg-red-600"
+                            className="bg-red-500 text-white py-2 px-4 my-4 rounded-lg ml-2 hover:bg-red-600"
                             onClick={() => setIsAddModalOpen(false)}
                         >
                             Cancel

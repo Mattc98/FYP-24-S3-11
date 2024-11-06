@@ -1,5 +1,5 @@
 // /app/api/createBooking/route.ts
-import { NextRequest, NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 import { createBookingInDB } from '@/aws_db/bookings'; // Adjust based on your setup
 
 // Named export for the POST method
