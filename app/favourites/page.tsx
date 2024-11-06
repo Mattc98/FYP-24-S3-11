@@ -43,7 +43,7 @@ const FavouritesPage = async () => {
             <div  className="overflow-y-scroll no-scrollbar h-screen bg-neutral-800 flex-1 ml-auto mr-auto lg:w-[1100px] shadow-xl shadow-black-500/50 ">
               <Navbar />
               {userFavList.length > 0 ? (
-                <FavouritesList rooms={userFavList} userId={userInfo[0].UserID} userRole={userInfo[0].Role} allBookings={allBookings}/>
+                <FavouritesList rooms={userFavList} userId={userInfo[0].UserID} userRole={userInfo[0].Role} allBookings={allBookings} username={userInfo[0].Username}/>
               ) : (
                 <p className="text-gray-400">No rooms found for this user.</p>
               )}

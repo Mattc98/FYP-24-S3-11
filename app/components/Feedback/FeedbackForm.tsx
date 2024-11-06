@@ -3,7 +3,7 @@
 
 import { useState, useRef, type ReactNode, Suspense } from 'react';
 import styles from './Feedback.module.css';
-import { submitFeedback, type Feedback } from './SubmitFeedback';
+import { submitFeedback, type Feedback } from '../../data-access/feedback';
 
 
 interface FeedbackFormProps {

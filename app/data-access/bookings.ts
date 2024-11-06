@@ -55,7 +55,6 @@ export async function deleteBooking(bookingId: number){
     return response.json();
 }
 
-
 export async function amendBooking(bookingID: number, sgNewDate: string, new24Time:string, roomName: string){
     const response = await fetch('/api/amendBooking', {
         method: 'POST',

@@ -1,11 +1,12 @@
 'use client';
 import type React from 'react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css'; 
 import TimeSlotDropdown from './TimeSlotDropdown'; // Ensure this path is correct
 import { toast, Toaster } from 'sonner';
 import Image from 'next/image';
+import { createBooking, overrideBooking } from '@/app/data-access/dashboard';
 
 interface Room {
   RoomID: number;
@@ -30,13 +31,13 @@ interface FavouritesListProps {
   userId: number;
   userRole:string;
   allBookings: Bookings[];
+  username:string;
 }
 
-const FavouritesList: React.FC<FavouritesListProps> = ({ rooms, userId, userRole, allBookings }) => {
+const FavouritesList: React.FC<FavouritesListProps> = ({ rooms, userId, userRole, allBookings, username }) => {
   
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>(''); 
-  const [userName, setName] = useState('');
 
   const timeSlots = [
     '09:00 AM - 10:00 AM',
@@ -47,20 +48,6 @@ const FavouritesList: React.FC<FavouritesListProps> = ({ rooms, userId, userRole
     '03:00 PM - 04:00 PM',
   ];
 
-  useEffect(() => {
-    // Fetch director name from the server-side API route
-    const fetchName = async () => {
-        try {
-            const response = await fetch('/api/getName');
-            const data = await response.json();
-            setName(data.username || '');
-        } catch (error) {
-            console.error('Error fetching name:', error);
-        }
-    };
-
-    fetchName();
-  }, []);
 
   const convertTo24Hour = (time: string) => {
     const [hours, minutesPart] = time.split(':');
@@ -125,8 +112,6 @@ const handleBooking = async (room: Room) => {
       return;
   }
 
-
-
   // Create Room pin and format the date
   const RoomPin = Math.floor(100 + Math.random() * 90).toString(); 
   const formattedDate = startDate.toLocaleDateString('en-CA');
@@ -138,7 +123,6 @@ const handleBooking = async (room: Room) => {
         booking.RoomID === room.RoomID
   );
 
-  console.log(isDuplicate);
   if (isDuplicate.length !== 0) {
       if (userRole === 'Director'){
         
@@ -149,53 +133,9 @@ const handleBooking = async (room: Room) => {
             return;
         }
 
-        toast.success('Director code is valid. Room has been overridden.');
-
         // Update only the UserID for the conflicting booking
         try {
-            const updateResponse = await fetch('/api/updateUserID', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    bookingId: isDuplicate[0].BookingID,
-                    newUserId: userId,
-                }),
-            });
-
-            const updateData = await updateResponse.json();
-            if (!updateResponse.ok || !updateData.success) {
-                console.error('Failed to update UserID:', updateData.error);
-                alert('Failed to override booking.');
-                return;
-            }
-
-            // Send notification to the original user
-            try {
-                const userResponse = await fetch(`/api/getEmailById?userId=${isDuplicate[0].UserID}`);
-                const userData = await userResponse.json();
-
-                if (userResponse.ok && userData.email) {
-                    await fetch('/api/sendNotificationEmail', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            email: userData.email,
-                            roomName: room.RoomName,
-                            bookingDate: formattedDate,
-                            bookingTime: selectedTimeSlot,
-                            directorName: userName,
-                        }),
-                    });
-                } else {
-                    console.error('Failed to retrieve user email');
-                }
-            } catch (error) {
-                console.error('Error retrieving user email or sending notification email:', error);
-            }
+            overrideBooking(isDuplicate[0].BookingID, userId, isDuplicate[0].UserID, room.RoomName, formatDate(new Date(startDate)), selectedTimeSlot, username);
         } catch (error) {
             console.error('Error updating UserID for override:', error);
             alert('An error occurred while overriding the booking.');
@@ -208,28 +148,7 @@ const handleBooking = async (room: Room) => {
     }
     // Proceed to create a new booking if no conflict
     try {
-      const response = await fetch('/api/createBooking', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            RoomID: room.RoomID,
-            UserID: userId,
-            BookingDate: formattedDate,
-            BookingTime: formatTime(selectedTimeSlot),
-            RoomPin: RoomPin,
-            BGP: room.BGP,
-        }),
-      });
-
-      if (response.ok) {
-          toast.success(`Room: ${room.RoomName} on ${formattedDate} at ${selectedTimeSlot} has been booked!`);
-      } else {
-          alert('Failed to create booking.');
-          const errorData = await response.json();
-          console.log('Error response data:', errorData);
-      }
+      createBooking(room.RoomID , userId, formattedDate, formatTime(selectedTimeSlot), RoomPin, room.BGP, room.RoomName, selectedTimeSlot);
     } catch (error) {
         console.error('Error creating booking:', error);
         alert('An error occurred. Please try again.');
