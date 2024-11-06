@@ -1,10 +1,11 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css'; 
 import TimeSlotDropdown from './TimeSlotDropdown'; // Ensure this path is correct
 import { toast, Toaster } from 'sonner';
-
+import Image from 'next/image';
 
 interface Room {
   RoomID: number;
@@ -67,7 +68,7 @@ const FavouritesList: React.FC<FavouritesListProps> = ({ rooms, userId, userRole
     const minutes = minutesPart.slice(0, 2);
     const period = minutesPart.slice(3); // Extract AM or PM
     
-    let hoursIn24 = parseInt(hours);
+    let hoursIn24 = Number.parseInt(hours);
     
     if (period === 'PM' && hoursIn24 !== 12) {
         hoursIn24 += 12;
@@ -235,7 +236,6 @@ const handleBooking = async (room: Room) => {
     };
   }
 
-
   return (
     
     <div className='bg-neutral-800 flex-1 ml-auto mr-auto w-[70%] h-screen text-white'>
@@ -247,9 +247,11 @@ const handleBooking = async (room: Room) => {
             <div className="flex flex-col md:flex-row items-start md:items-center">
               {room.imagename && (
                 <div className="w-full md:w-1/2 lg:w-1/3 mb-4 md:mb-0 md:mr-6">
-                  <img
-                    src={room.imagename}
+                  <Image
+                    src={room.imagename} // Ensure this is a valid URL or a path to the image
                     alt={`${room.RoomName} image`}
+                    width={600} // specify width
+                    height={256} // specify height to roughly match your original h-64 class
                     className="w-full h-64 object-cover rounded-md shadow-md"
                   />
                 </div>

@@ -1,7 +1,9 @@
 'use client'; // Marks this component as a Client Component
-import React, { useEffect, useState } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import RoleDropdown from './RoleDropdown'; // Ensure you import RoleDropdown correctly
 import { toast, Toaster } from 'sonner';
+import Image from 'next/image';
 
 interface UserAccount {
   UserID: number;
@@ -176,10 +178,12 @@ const ManageUsersClient: React.FC<ManageUsersPageProps> = ({ users }) => {
                   <li key={user.UserID} className="flex items-center bg-neutral-900 p-4 rounded-md shadow-md">
                     <div className="relative mr-4">
                       <p>UserID: {user.UserID}</p>
-                      <img
-                        src={user.ProfilePicture || '/images/profile-icon.png'}
+                      <Image
+                        src={user.ProfilePicture || '/images/profile-icon.png'} // Ensure this is a valid URL or a path to the image
                         alt={`${user.Username} profile`}
-                        className="w-16 h-16 rounded-full object-cover"
+                        width={600} // specify width
+                        height={256} // specify height to roughly match your original h-64 class
+                        className="w-full h-64 object-cover rounded-md shadow-md"
                       />
                     </div>
                     <div className="flex-1">

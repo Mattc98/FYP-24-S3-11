@@ -1,31 +1,12 @@
 import React, { Suspense } from 'react';
-import { calluser } from '@/aws_db/db';
 import ManageRoomsPage from '../components/ManageRooms/ManageRoomsPage';
 import AdminNavbar from '../components/adminNavbar';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { getRooms } from '../data-access/rooms';
 
 export const dynamic = 'force-dynamic'; // Ensure dynamic rendering
-interface Room {
-    RoomID: number;
-    RoomName: string;
-    Pax: number;
-    Type: string;
-    Status: string;
-    imagename: string;
-    BGP: string;
-}
 
-// Fetch all rooms
-const fetchRoom = async (): Promise<Room[]> => {
-    try {
-        const response = await calluser("SELECT * FROM Room");
-        return JSON.parse(JSON.stringify(response));
-    } catch (error) {
-        console.error('Error fetching rooms:', error);
-        return [];
-    }
-};
 
 const ManageRooms = async () => {
     const cookieStore = cookies();
@@ -47,7 +28,8 @@ const ManageRooms = async () => {
     if (!username.value) {
       return <p>No username provided.</p>;
     }
-    const allRooms = await fetchRoom();
+
+    const allRooms = await getRooms();
 
     return (
         <div className="bg-gray-100 min-h-screen">

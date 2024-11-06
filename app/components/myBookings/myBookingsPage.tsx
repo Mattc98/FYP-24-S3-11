@@ -1,5 +1,6 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import type React from 'react';
+import { useState, useEffect } from 'react';
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css'; 
 import Image from 'next/image';
@@ -62,35 +63,34 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
     const [newDate, setNewDate] = useState<Date | null>(null);
     const [newTime, setNewTime] = useState(''); // The new time slot
 
-    const getMyBookings = () => {
-        const currentDate = new Date();
-
-        const userBookings = bookings
-            .filter(booking => booking.UserID == userid && new Date(booking.BookingDate) >= currentDate)
-            .map(booking => {
-                const room = rooms.find(room => room.RoomID == booking.RoomID);
-                if (room) {
-                    return {
-                        BookingID: booking.BookingID,
-                        RoomID: room.RoomID,
-                        RoomName: room.RoomName,
-                        Pax: room.Pax,
-                        BookingDate: booking.BookingDate,
-                        BookingTime: booking.BookingTime,
-                        Type: room.Type,
-                        imagename: room.imagename,
-                        BGP: booking.BGP,
-                    };
-                }
-                return null; // Return null instead of "Not this room"
-            })
-            .filter(booking => booking !== null) // Remove any null values from the array
-            .sort((a, b) => new Date(a.BookingDate).getTime() - new Date(b.BookingDate).getTime()); // Sort by BookingDate
-
-        setMyBookings(userBookings as MyBooking[]);
-    };
-
     useEffect(() => {
+        const getMyBookings = () => {
+            const currentDate = new Date();
+    
+            const userBookings = bookings
+                .filter(booking => booking.UserID == userid && new Date(booking.BookingDate) >= currentDate)
+                .map(booking => {
+                    const room = rooms.find(room => room.RoomID == booking.RoomID);
+                    if (room) {
+                        return {
+                            BookingID: booking.BookingID,
+                            RoomID: room.RoomID,
+                            RoomName: room.RoomName,
+                            Pax: room.Pax,
+                            BookingDate: booking.BookingDate,
+                            BookingTime: booking.BookingTime,
+                            Type: room.Type,
+                            imagename: room.imagename,
+                            BGP: booking.BGP,
+                        };
+                    }
+                    return null; // Return null instead of "Not this room"
+                })
+                .filter(booking => booking !== null) // Remove any null values from the array
+                .sort((a, b) => new Date(a.BookingDate).getTime() - new Date(b.BookingDate).getTime()); // Sort by BookingDate
+    
+            setMyBookings(userBookings as MyBooking[]);
+        };
         getMyBookings();
     }, [bookings, rooms, userid]);
     
@@ -348,7 +348,6 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
     return (
         <div className=" text-white pb-6 overflow-hidden no-scrollbar col-span-1 overflow-y-scroll bg-neutral-800 flex-1 ml-auto mr-auto lg:w-[1100px] h-screen">
             <Navbar />
-
             <h2 className="text-center text-2xl font-semibold pb-6">Here are your upcoming bookings</h2>
             <div className="grid grid-cols-1 gap-6">
                 {myBookings.length === 0 ? (

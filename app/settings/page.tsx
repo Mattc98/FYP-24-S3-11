@@ -1,10 +1,12 @@
 import React, { Suspense } from 'react';
 import Navbar from '../components/Navbar';
-import { calluser } from '@/aws_db/db';
 import ChangePassword from '@/app/components/AccountSettings/changePassword';
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'; // Use for server-side redirection
 import AdminNavbar from '../components/adminNavbar';
+
+// DAL
+import { getUserInfo } from '../data-access/users';
 
 export const dynamic = 'force-dynamic'; // Ensure dynamic rendering
 
@@ -14,16 +16,6 @@ interface UserAccount {
     Email: string;
 }
 
-// Fetch user ID by username
-const fetchUserIdByUsername = async (username: string): Promise<number | undefined> => {
-    const response = await calluser(`SELECT UserID FROM userAccount WHERE Username = '${username}'`);
-    return (response as UserAccount[])[0]?.UserID;
-};
-
-const fetchUserInfo = async (userId: number): Promise<UserAccount | null> => {
-    const response = await calluser(`SELECT UserID, Username, Email FROM userAccount WHERE UserID = ${userId}`);
-    return (response as UserAccount[])[0] || null;
-};
 
 const SettingsPage = async () => {
     try {
@@ -51,12 +43,7 @@ const SettingsPage = async () => {
     
         if (username.value) {
             try {
-                const userId = await fetchUserIdByUsername(username.value);
-                if (userId) {
-                    userInfo = await fetchUserInfo(userId);
-                } else {
-                    error = "User not found";
-                }
+                userInfo = await getUserInfo(username.value);
             } catch (err) {
                 console.error("Error fetching user info:", err);
                 error = "An error occurred while fetching user information";
