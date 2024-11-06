@@ -14,6 +14,7 @@ interface UserHomeProps {
     userID: number;
     FavRooms: number[];
     allBookings: Bookings[];
+    username: string;
 }
 
 interface Room {
@@ -73,13 +74,11 @@ export const projects = [
     },
 ];
 
-const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, FavRooms, allBookings }) => {
+const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, FavRooms, allBookings, username }) => {
     const [startDate, setStartDate] = useState<Date | null>(null);       // For Date Picker
     const [selectedTimeSlot, setSelectedTimeSlot] = useState('');        // Time slot selection
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [unAvaRooms, setUnAvaRooms] = useState<number[]>([]); // To store unavailable room IDs
-
-    console.log("UserID", userID );
 
     const handleDateIconClick = () => {
         closeModal();
@@ -217,6 +216,7 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
                 startDate={startDate}
                 selectedTimeSlot={selectedTimeSlot}
                 allBookings={allBookings}
+                username={username}
               />
             </div>
           </div>

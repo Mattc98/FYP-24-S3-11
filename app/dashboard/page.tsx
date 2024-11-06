@@ -56,9 +56,10 @@ export default async function Dashboard() {
     const userInfo = await getUserInfo(username.value);
  
     const userFavoriteRooms = userFavs
-    .filter((fav) => fav.UserID === userInfo.UserID) // Filter based on userID
+    .filter((fav) => fav.UserID === userInfo[0].UserID) // Filter based on userID
     .map((fav) => fav.RoomID); // Extract RoomID from filtered results
-    
+
+
     return (
 
       <div className="w-[100%] h-screen overflow-hidden">
@@ -70,7 +71,7 @@ export default async function Dashboard() {
           className="flex items-center flex-col justify-center w-full h-screen"
         >
           <div className="flex-1 ml-auto mr-auto min-h-screen">
-              <UserHome allRooms={allRooms} UserRole={userInfo[0].Role} userID={userInfo[0].UserID} FavRooms={userFavoriteRooms} allBookings={allBookings}/>
+              <UserHome allRooms={allRooms} UserRole={userInfo[0].Role} userID={userInfo[0].UserID} FavRooms={userFavoriteRooms} allBookings={allBookings} username={userInfo[0].Username}/>
           </div>
         </Vortex>
       </div>
