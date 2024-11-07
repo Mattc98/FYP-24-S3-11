@@ -202,7 +202,7 @@ export const HoverEffect = ({
                 alert('An error occurred. Please try again.');
             }
         }
-
+        window.location.href = "/dashboard";
     };
         
     

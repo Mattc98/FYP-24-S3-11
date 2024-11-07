@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server';
-import { createFavInDB } from '@/aws_db/favourite'; // Adjust based on your setup
-import { calluser } from '@/aws_db/db';
+import { db } from '@/lib/drizzle';
+import { Favourite } from '@/aws_db/schema';
+import { eq } from 'drizzle-orm';
 
 
 // Named export for the POST method
@@ -12,8 +13,10 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 
-        // Call your function to create the booking in the database
-        await createFavInDB(UserID, RoomID);
+        await db.insert(Favourite).values({
+            UserID: UserID,
+            RoomID: RoomID,
+        })
 
         return NextResponse.json({ message: 'Marked as favourite' }, { status: 200 });
     } catch (error) {
@@ -31,9 +34,9 @@ export async function DELETE(req: NextRequest) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 
-        // Call your function to create the booking in the database
-        const result = await calluser(`DELETE FROM Favourite WHERE UserID = ${UserID} AND RoomID = ${RoomID}`);
-        return NextResponse.json({ success: true, result });
+        const deletedRoom = await db.delete(Favourite).where(eq(Favourite.UserID, UserID) && eq(Favourite.RoomID, RoomID));
+
+        return NextResponse.json({ success: true, deletedRoom });
     } catch (error) {
         console.error('Error marking as favourite:', error);
         return NextResponse.json({ error: 'Failed to mark as favourite' }, { status: 500 });
