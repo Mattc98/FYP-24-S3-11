@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
-import { calluser } from '@/aws_db/db'; // Adjust this import based on your project structure
+import { eq } from 'drizzle-orm';
+import { db } from '@/lib/drizzle';
+import { userAccount } from '@/aws_db/schema';
 
 interface DatabaseUser {
   Password: string;
@@ -13,7 +15,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: 'Username, current password, and new password are required' }, { status: 400 });
     }
 
-    const result = await calluser(`SELECT Password FROM userAccount WHERE Username = '${username}'`);
+    const result = await db
+        .select({ Password: userAccount.Password })
+        .from(userAccount)
+        .where(eq(userAccount.Username, username))
+        .execute();
     
     if (!Array.isArray(result) || result.length === 0) {
       return NextResponse.json({ message: 'User not found' }, { status: 404 });
@@ -29,9 +35,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: 'Current password is incorrect' }, { status: 401 });
     }
 
-    // Update password
-    // In a real application, you would hash the new password before storing it
-    await calluser(`UPDATE userAccount SET Password = '${newPassword}' WHERE Username = '${username}'`);
+    await db
+        .update(userAccount)
+        .set({ Password: newPassword })
+        .where(eq(userAccount.Username, username))
+        .execute();
     
     return NextResponse.json({ message: 'Password updated successfully' }, { status: 200 });
   } catch (error) {

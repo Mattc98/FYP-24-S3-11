@@ -1,5 +1,8 @@
+import { Review } from '@/aws_db/schema';
+import { db } from '@/lib/drizzle';
 import { NextResponse } from 'next/server';
-import { calluser } from '@/aws_db/db'; // Adjust the import path as necessary
+import { eq } from 'drizzle-orm';
+
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
@@ -10,15 +13,15 @@ export async function GET(request: Request) {
     }
 
     try {
-        const query = `
-          SELECT Feedback, UserID FROM Review WHERE RoomID = ${roomId}
-        `;
-        const feedbackData = await calluser(query);
+        const feedbackData = await db
+        .select({
+            Feedback: Review.Feedback,
+            UserID: Review.UserID
+        })
+        .from(Review)
+        .where(eq(Review.RoomID, Number(roomId)))
+        .execute();
         
-        if (feedbackData instanceof Error) {
-          throw feedbackData;
-        }
-    
         return NextResponse.json(feedbackData, { status: 200 });
       } catch (error) {
         console.error('Failed to fetch feedback:', error);
