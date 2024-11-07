@@ -11,8 +11,8 @@ interface UserAccount {
   Username: string;
   Password: string;
   Email: string;
-  Role: string; // Assuming users have roles
-  ProfilePicture: string; // Assuming there's a profile picture URL
+  Role: string;
+  Status: null;
   FailLogin: number;
   IsLocked: boolean;
 }
@@ -140,10 +140,10 @@ const ManageUsersClient: React.FC<ManageUsersPageProps> = ({ users }) => {
                     <div className="relative mr-4">
                       <p>UserID: {user.UserID}</p>
                       <Image
-                        src={user.ProfilePicture || '/images/profile-icon.png'} // Ensure this is a valid URL or a path to the image
+                        src={'/images/profile-icon.png'}
                         alt={`${user.Username} profile`}
-                        width={600} // specify width
-                        height={256} // specify height to roughly match your original h-64 class
+                        width={600}
+                        height={256}
                         className="w-full h-64 object-cover rounded-md shadow-md"
                       />
                     </div>

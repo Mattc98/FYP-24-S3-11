@@ -1,6 +1,6 @@
-// /app/api/createBooking/route.ts
 import { type NextRequest, NextResponse } from 'next/server';
-import { createBookingInDB } from '@/aws_db/bookings'; // Adjust based on your setup
+import { db } from '@/lib/drizzle';
+import { Booking } from '@/aws_db/schema';
 
 // Named export for the POST method
 export async function POST(req: NextRequest) {
@@ -11,8 +11,14 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 
-        // Call your function to create the booking in the database
-        await createBookingInDB(RoomID, UserID, BookingDate, BookingTime, RoomPin, BGP);
+        await db.insert(Booking).values({
+            RoomID: RoomID,
+            UserID: UserID,
+            BookingDate: BookingDate,
+            BookingTime: BookingTime,
+            RoomPin: RoomPin,
+            BGP: BGP,
+        })
 
         return NextResponse.json({ message: 'Booking created successfully' }, { status: 200 });
     } catch (error) {

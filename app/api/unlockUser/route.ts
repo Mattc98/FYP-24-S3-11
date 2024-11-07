@@ -1,13 +1,16 @@
 import { NextResponse } from 'next/server';
-import { calluser } from '@/aws_db/db';
+import { userAccount } from '@/aws_db/schema';
+import { db } from '@/lib/drizzle';
+import { eq } from 'drizzle-orm';
 
 export async function PUT(req: Request) {
     try {
         const { UserID, FailLogin, IsLocked } = await req.json();
 
-        const query=`Update userAccount Set FailLogin =${FailLogin}, IsLocked = ${IsLocked} WHERE UserID = ${UserID}`;
-
-        await calluser(query);
+        await db.update(userAccount).set({
+            FailLogin: FailLogin,
+            IsLocked: IsLocked,
+        }).where(eq(userAccount.UserID, UserID)).execute();
 
         return NextResponse.json({ message: 'User unlocked successfully' }, { status: 200 });
     } catch (error) {

@@ -1,23 +1,12 @@
 import { NextResponse } from 'next/server';
-import { calluser } from '@/aws_db/db';
-//import fs from 'fs';
-//import path from 'path';
-
-interface Room {
-    RoomID: number;
-    RoomName: string;
-    Pax: number;
-    Type: string;
-    Status: string;
-    imagename: string;
-
-}
-    
+import { db } from '@/lib/drizzle';
+import { Room } from '@/aws_db/schema';
+import { eq } from 'drizzle-orm';  
 
 // Fetch all rooms (GET)
 export async function GET() {
     try {
-        const rooms = await calluser("SELECT * FROM Room");
+        const rooms = await db.select().from(Room);
         return NextResponse.json(rooms);
     } catch (error) {
         console.error('Error fetching rooms:', error);
@@ -30,21 +19,19 @@ export async function POST(request: Request) {
     try {
         const { RoomName, Pax, Type, Status, imagename, BGP } = await request.json(); // Extract BGP
 
-        const query = `
-            INSERT INTO Room (RoomName, Pax, Type, Status, imagename, BGP) 
-            VALUES ('${RoomName}', ${Pax}, '${Type}', '${Status}', '${imagename}','${BGP}')
-        `; // Store the filename and the BGP
-        await calluser(query); // Use parameterized queries to prevent SQL injection
+        await db.insert(Room).values({
+            RoomName: RoomName,
+            Pax: Pax,
+            Type: Type,
+            Status: Status,
+            imagename: imagename,
+            BGP: BGP,
+        }).execute();
 
-        // Get the last inserted RoomID
-        const querySelect = `
-            SELECT RoomID, RoomName, Pax, Type, Status, imagename, BGP 
-            FROM Room 
-            WHERE RoomName = '${RoomName}'
-        `;
-        const newRoom = await calluser(querySelect) as Room[]; // Get the new room details
 
-        return NextResponse.json(newRoom[0]); // Return the newly created room object
+        const newRoom = await db.select().from(Room).where(eq(Room.RoomName, RoomName));
+
+        return NextResponse.json(newRoom); // Return the newly created room object
     } catch (error) {
         console.error('Error adding room:', error);
         return NextResponse.json({ message: 'Error adding room',  details: (error as Error).message }, { status: 500 });
@@ -56,18 +43,19 @@ export async function PUT(request: Request) {
     try {
         const { RoomID, RoomName, Pax, Type, Status,BGP, imagename } = await request.json();
 
-        const query = `
-            UPDATE Room 
-            SET RoomName = '${RoomName}', 
-                Pax = ${Pax}, 
-                Type = '${Type}', 
-                Status = '${Status}', 
-                BGP = '${BGP}', 
-                imagename = '${imagename}' 
-            WHERE RoomID = ${RoomID}
-        `;
+        await db
+        .update(Room)
+        .set({
+            RoomName,
+            Pax,
+            Type,
+            Status,
+            imagename,
+            BGP
+        })
+        .where(eq(Room.RoomID, RoomID))
+        .execute();
 
-        await calluser(query); // Make sure this function is correct and executes the query
         return NextResponse.json({ message: 'Room updated successfully' });
     } catch (error) {
         console.error('Error updating room:', error);
@@ -75,17 +63,12 @@ export async function PUT(request: Request) {
     }
 }
 
-
 // Delete a room (DELETE)
 export async function DELETE(request: Request) {
     try {
         const { RoomID } = await request.json();
 
-        
-
-        // Now, delete the room from the database
-        const query = `DELETE FROM Room WHERE RoomID = ${RoomID}`;
-        await calluser(query);
+        await db.delete(Room).where(eq(Room.RoomID, RoomID))
         
         return NextResponse.json({ message: 'Room deleted successfully' });
     } catch (error) {

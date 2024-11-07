@@ -7,6 +7,17 @@ import { getUserList } from '../data-access/users';
 
 export const dynamic = 'force-dynamic'; // Ensure dynamic rendering
 
+interface UserAccount {
+  UserID: number;
+  Username: string;
+  Password: string;
+  Email: string;
+  Role: string;
+  Status: null;
+  FailLogin: number;
+  IsLocked: boolean;
+}
+
 const ManageUsersPage = async () => {
   const cookieStore = cookies();
   const usernameCookie = cookieStore.get('username');
@@ -25,7 +36,7 @@ const ManageUsersPage = async () => {
   }
 
   // Fetch all users
-  const allUsers = await getUserList();
+  const allUsers:UserAccount[] = await getUserList();
 
   return (
     <div>

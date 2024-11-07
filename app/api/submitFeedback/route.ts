@@ -1,23 +1,17 @@
 import { NextResponse } from 'next/server';
-import { calluser } from '@/aws_db/db';
+import { db } from '@/lib/drizzle';
+import { Review } from '@/aws_db/schema';
 
 export async function POST(request: Request) {
   try {
     const { RoomID, UserID, Feedback } = await request.json();
 
-    // IMPORTANT: This query is vulnerable to SQL injection.
-    // Replace with a parameterized query as soon as possible.
-    const query = `
-      INSERT INTO Review (RoomID, UserID, Feedback)
-      VALUES (${RoomID}, ${UserID}, '${Feedback}')
-    `;
-    
-    const result = await calluser(query);
-    
-    if (result instanceof Error) {
-      throw result;
-    }
-    
+    await db.insert(Review).values({
+      RoomID: RoomID,
+      UserID: UserID,
+      Feedback: Feedback,
+    });
+
     return NextResponse.json({ success: true, message: 'Feedback submitted successfully' }, { status: 200 });
   } catch (error) {
     console.error('Failed to submit feedback:', error);

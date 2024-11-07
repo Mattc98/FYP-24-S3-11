@@ -8,10 +8,13 @@ interface UserAccount {
   UserID: number;
   Username: string;
   Password: string;
-  Role: "User" | "Admin" | "Director";
+  Email: string;
+  Role: string;
+  Status: null;
   FailLogin: number;
   IsLocked: boolean;
 }
+
 
 const Login = async () => {
   const userList:UserAccount[] = await getUserList();

@@ -99,6 +99,7 @@ const ManageRoomsPage = ({ rooms: initialRooms }: { rooms: Room[] }) => {
             setIsAddModalOpen(false);
             toast.success('Successfully added new room');
         }
+        window.location.href = "/manage-rooms";
     };
 
     const handleEditRoom = async (roomId: number) => {
