@@ -10,7 +10,7 @@ export async function createBookingInDB(RoomID: number, UserID: number, BookingD
             password: process.env.MYSQL_PASSWORD,
         });
 
-        const query = `INSERT INTO Booking (RoomID, UserID, BookingDate, BookingTime, RoomPin, BGP) VALUES (?, ?, ?, ?, ?, ?)`;
+        const query = "INSERT INTO Booking (RoomID, UserID, BookingDate, BookingTime, RoomPin, BGP) VALUES (?, ?, ?, ?, ?, ?)";
         const [result] = await db.execute(query, [RoomID, UserID, BookingDate, BookingTime, RoomPin, BGP]);
 
         await db.end();

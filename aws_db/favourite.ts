@@ -11,7 +11,7 @@ export async function createFavInDB(UserID: number, RoomID: number) {
             password: process.env.MYSQL_PASSWORD,
         });
 
-        const query = `INSERT INTO Favourite (UserID, RoomID) VALUES (?, ?)`;
+        const query = "INSERT INTO Favourite (UserID, RoomID) VALUES (?, ?)";
         const [result] = await db.execute(query, [UserID, RoomID]);
 
         await db.end();

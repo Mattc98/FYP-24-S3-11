@@ -9,11 +9,12 @@ interface UserAccount {
   UserID: number;
   Username: string;
   Password: string;
-  Role: "User" | "Admin" | "Director";
+  Email: string;
+  Role: string;
+  Status: null;
   FailLogin: number;
   IsLocked: boolean;
 }
-
 interface ClientLoginFormProps {
   userList: UserAccount[];
 }
@@ -106,9 +107,9 @@ const LoginFormClient: React.FC<ClientLoginFormProps> = ({ userList }) => {
           toast.error('Account locked due to multiple failed attempts. Please contact administrator.');
           setIsLocked(true);
           return;
-        } else {
-          toast.error(`Invalid username or password. Attempts remaining: ${3 - newFailLogin}`);
         }
+        
+        toast.error(`Invalid username or password. Attempts remaining: ${3 - newFailLogin}`);
       }
     } else {
       toast.error('Invalid username or password');
