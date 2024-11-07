@@ -12,6 +12,14 @@ import { getUserInfo } from '../data-access/users';
 
 export const dynamic = 'force-dynamic'; // Ensure dynamic rendering
 
+interface RoomDetails {
+  RoomID: number;
+  RoomName: string;
+  Pax: number;
+  imagename: string; // Image filename or URL
+  BGP: string;
+} 
+
 // Main Favourites page component
 const FavouritesPage = async () => { 
 
@@ -27,7 +35,7 @@ const FavouritesPage = async () => {
     // Parse the cookie if it exists
     const username = JSON.parse(JSON.stringify(usernameCookie));
     const userInfo = await getUserInfo(username.value);
-    const userFavList = await getUserFavList(userInfo[0].UserID);
+    const userFavList:RoomDetails[] = await getUserFavList(userInfo[0].UserID);
     const allBookings = await getBookings();
 
  

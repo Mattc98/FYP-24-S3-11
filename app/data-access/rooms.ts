@@ -1,6 +1,9 @@
-import { calluser } from '@/aws_db/db';
+import { eq } from 'drizzle-orm';
+import { db } from '@/lib/drizzle';
+import { Booking, Favourite, Room} from '@/aws_db/schema';
 
-interface Room {
+
+interface RoomDetails {
     RoomID: number;
     RoomName: string;
     Pax: number;
@@ -10,8 +13,8 @@ interface Room {
 
 export async function getRooms(){
     try {
-      const response = await calluser("SELECT * FROM Room");
-      return JSON.parse(JSON.stringify(response));
+      const rooms = await db.select().from(Room);
+      return JSON.parse(JSON.stringify(rooms));
     } catch (error) {
         console.error('Error fetching rooms:', error);
         return [];
@@ -20,8 +23,8 @@ export async function getRooms(){
 
 export async function getFavRooms(){
     try {
-        const response = await calluser("SELECT * FROM Favourite");
-        return JSON.parse(JSON.stringify(response));
+        const favRooms = await db.select().from(Favourite);
+        return JSON.parse(JSON.stringify(favRooms));
     } catch (error) {
         console.error(error);
         throw new Error('Failed to fetch room data.');
@@ -29,19 +32,21 @@ export async function getFavRooms(){
 }
 
 export async function getUserFavList(userID: number){
-    const response = await calluser(`
-        SELECT r.RoomID, r.RoomName, r.Pax, r.imagename, r.BGP
-        FROM Favourite f 
-        JOIN Room r ON f.RoomID = r.RoomID 
-        WHERE f.UserID = ${userID}
-      `);
-      return (response as Room[]);
+      const userFavList = await db.select({
+        RoomID: Room.RoomID,
+        RoomName: Room.RoomName,
+        Pax: Room.Pax,
+        imagename: Room.imagename,
+        BGP: Room.BGP,
+      }).from(Favourite).rightJoin(Room, eq(Favourite.RoomID, Room.RoomID))
+      .where(eq(Favourite.UserID, userID));
+      return (userFavList as RoomDetails[]);
 }
 
 export async function getBookings(){
     try {
-        const response = await calluser("SELECT * FROM Booking");
-        return JSON.parse(JSON.stringify(response));
+        const bookings = await db.select().from(Booking);
+        return JSON.parse(JSON.stringify(bookings));
     } catch (error) {
         console.error(error);
         throw new Error('Failed to fetch room data.');

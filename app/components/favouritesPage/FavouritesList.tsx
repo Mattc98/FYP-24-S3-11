@@ -8,13 +8,13 @@ import { toast, Toaster } from 'sonner';
 import Image from 'next/image';
 import { createBooking, overrideBooking } from '@/app/data-access/dashboard';
 
-interface Room {
+interface RoomDetails {
   RoomID: number;
   RoomName: string;
   Pax: number;
   imagename: string; // Image filename or URL
   BGP: string;
-}
+} 
 
 interface Bookings {
   BookingID: number;
@@ -27,7 +27,7 @@ interface Bookings {
 }
 
 interface FavouritesListProps {
-  rooms: Room[];
+  rooms: RoomDetails[];
   userId: number;
   userRole:string;
   allBookings: Bookings[];
@@ -106,7 +106,7 @@ const FavouritesList: React.FC<FavouritesListProps> = ({ rooms, userId, userRole
 };
 
 // Function to handle booking
-const handleBooking = async (room: Room) => {
+const handleBooking = async (room: RoomDetails) => {
   if (!startDate || !selectedTimeSlot) {
       alert("Please select a date and time slot.");
       return;
