@@ -49,12 +49,12 @@ interface MyBooking {
 
 // Time slots for the dropdown
 const timeSlots = [
-  '09:00 AM - 10:00 AM',
-  '10:00 AM - 11:00 AM',
-  '11:00 AM - 12:00 PM',
-  '01:00 PM - 02:00 PM',
-  '02:00 PM - 03:00 PM',
-  '03:00 PM - 04:00 PM',
+    '9:00AM  - 10:00AM',
+    '10:00 AM - 11:00 AM',
+    '11:00 AM - 12:00 PM',
+    '01:00 PM - 02:00 PM',
+    '02:00 PM - 03:00 PM',
+    '03:00 PM - 04:00 PM',
 ];
 
 const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, username, userid, userRole }) => {
@@ -94,6 +94,18 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
         };
         getMyBookings();
     }, [bookings, rooms, userid]);
+
+    // Step 2: Handle change event
+    const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedTime = event.target.value; // This should be the exact string selected
+        console.log(`New time selected: ${selectedTime}`);
+        setNewTime(selectedTime);
+    };
+
+    // Step 3: Optional useEffect to react to changes in newTime
+    useEffect(() => {
+        console.log(`newTime state updated: ${newTime}`);
+    }, [newTime]);
     
     // Function to handle booking cancellation
     const handleCancelBooking = async (bookingId: number) => {
@@ -205,20 +217,24 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
     };
 
     const handleSubmitAmend = async () => {
+
         if (!selectedBooking) return;
         if (!newDate) return;
-    
+        if (newTime === "null") return;
+        
         // Extract new booking details
         const new24Time = format24Time(newTime);
+        console.log(new24Time);
+        console.log(newTime);
         const sgNewDate = new Date(newDate).toLocaleDateString('en-CA');
     
-
         const isDuplicate = bookings.filter(
             (booking) =>
                 formatDate(new Date(booking.BookingDate)) === formatDate(new Date(sgNewDate)) &&
-                formatTime(booking.BookingTime) === formatTime(new24Time) &&
+                format24Time(booking.BookingTime) === new24Time &&
                 booking.RoomID === selectedBooking.RoomID
         );
+        console.log(isDuplicate);
 
         if (isDuplicate.length !== 0) {
             if (userRole === 'Director') {
@@ -318,15 +334,16 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
                     <div className="mb-4">
                         <label className="block font-semibold mb-2">Select New Time Slot</label>
                         <select
-                            value={newTime}
-                            onChange={(e) => setNewTime(e.target.value)}
-                            className="bg-gradient-to-r from-neutral-900 via-neutral-800 to-neutral-900 w-full p-2 border border-neutral-300 rounded"
+                            name="newTime"
+                            className="text-white bg-gradient-to-r from-neutral-900 via-neutral-800 to-neutral-900 w-full p-2 border border-neutral-300 rounded"
+                            onChange={handleChange} // attach the change handler
                         >
-                            {timeSlots.map((slot, index) => (
-                                <option key={index} value={slot} style={{ color: 'black' }}>
-                                    {slot}
-                                </option>
-                            ))}
+                            <option className = "text-black" value={"null"}>Select a TimeSlot</option>
+                            <option  className = "text-black" value={'9:00 AM - 10:00 AM'}>9:00 AM - 10:00 AM</option >
+                            <option  className = "text-black" value={'10:00 AM - 11:00 AM'}>10:00 AM - 11:00 AM</option >
+                            <option  className = "text-black" value={'1:00 PM - 2:00 PM'}>1:00 PM - 2:00 PM</option >
+                            <option  className = "text-black" value={'2:00 PM - 3:00 PM'}>2:00 PM - 3:00 PM</option >
+                            <option  className = "text-black" value={'3:00 PM - 4:00 PM'}>3:00 PM - 4:00 Pm</option>
                         </select>
                     </div>
                     <div className="flex justify-end space-x-2">

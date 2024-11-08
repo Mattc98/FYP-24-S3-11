@@ -56,7 +56,7 @@ const myBookings = async () => {
   } catch (error) {
     // Handle any errors (e.g., JSON parsing issues)
     console.error('Error reading cookie:', error);
-    redirect('/login'); // Redirect to the home page on error
+    redirect('/login-page'); // Redirect to the home page on error
   }
 }
 

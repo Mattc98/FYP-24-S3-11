@@ -13,7 +13,9 @@ export async function POST(request: Request) {
             return NextResponse.json({ success: false, error: 'Booking ID and new User ID are required' });
         }
 
-        await db.update(Booking).set({BookingID: bookingId}).where(eq(Booking.BookingID, newUserId))
+        await db.update(Booking).set({
+            UserID: newUserId
+        }).where(eq(Booking.BookingID, bookingId))
 
         return NextResponse.json({ success: true, message: 'UserID updated successfully'});
     } catch (error) {
