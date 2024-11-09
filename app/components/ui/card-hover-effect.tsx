@@ -204,7 +204,6 @@ export const HoverEffect = ({
         }
         window.location.href = "/dashboard";
     };
-        
     
     const handleFavorite = async (room: Room) => {
         try {

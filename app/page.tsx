@@ -9,6 +9,7 @@ import {
   CardTitle,
 } from "@/app/components/ui/card"
 import { HoverEffect } from "./components/ui/card-hover-effect2";
+import Particles from './components/particles';
 
 const LandingPage = () => {
   const websiteFeatures = [
@@ -53,8 +54,12 @@ const LandingPage = () => {
           <a href="/login-page" className="bg-white text-black px-5 py-2 font-medium rounded hover:bg-gray-200">Login</a>
         </nav>
       </header>
-
       <main className="flex flex-col items-center justify-center text-center flex-grow min-h-screen">
+        <Particles
+          className="absolute inset-0 z-10 pointer-events-none w-full h-full"
+          quantity={100}
+        />
+
         <div className="text-sm font-semibold bg-gray-800 text-gray-300 px-3 py-1 rounded-full inline-block mb-4">
           100% Secure & Easy access
         </div>
@@ -73,14 +78,15 @@ const LandingPage = () => {
           </a>
         </div>
       </main>
-
-      <div id="features" className=" text-center pb-16 text-white lg:w-[1000px]">
+      <div id="features" className=" text-center pt-10 pb-16 text-white lg:w-[1000px]">
+        
         <h1 className="text-4xl font-bold mb-4">Features</h1>
         <div className="flex flex-col sm:flex-row justify-center items-center gap-8">
           <HoverEffect items={websiteFeatures} />
         </div>
       </div>
       <div id="pricing" className=" text-center pb-16 text-white">
+        
         <h1 className="text-4xl font-bold mb-4">Pricing</h1>
         <p className="text-gray-400 mb-8">Flexible plans for every team.</p>
         <div className="flex flex-col sm:flex-row justify-center items-center gap-8">
