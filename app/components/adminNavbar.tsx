@@ -108,7 +108,7 @@ const AdminNav = () => {
 										? "text-cyan-400 font-semibold"
 										: "text-gray-300"
 								} hover:text-white transition duration-300`}
-								href="/UserHomepage"
+								href="/admin"
 							>
 								Home
 							</Link>
@@ -124,7 +124,7 @@ const AdminNav = () => {
 						<li>
 							<Link
 								className="block text-gray-300 hover:text-white transition duration-300"
-								href="/"
+								href="/login-page"
 							>
 								Logout
 							</Link>
