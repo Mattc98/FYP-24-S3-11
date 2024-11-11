@@ -306,7 +306,6 @@ export const HoverEffect = ({
                 <div className="fixed inset-0 bg-neutral-800 bg-opacity-10 flex items-center justify-center z-50">
                     <div 
                         className="bg-black p-6 rounded-lg shadow-lg text-white"
-                        style={{ width: '350px', height: '340px' }} // Fixed width and height
                     >
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-2xl font-semibold">{selectedRoom.RoomName}</h2>
@@ -345,7 +344,6 @@ export const HoverEffect = ({
                             height={200}
                             className="mb-4 rounded-md"
                         />
-
                         {/* Buttons */}
                         <div className="flex justify-between">
                             <button
