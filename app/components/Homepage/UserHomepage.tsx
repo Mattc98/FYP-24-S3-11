@@ -139,10 +139,7 @@ const UserHomepage: React.FC<UserHomeProps> = ({ allRooms, UserRole, userID, Fav
         setShowDatePicker(false);
     };
 
-    let unAvailableRooms:Room[] = [];
-    if(UserRole === "Director"){
-      unAvailableRooms = allRooms.filter((room) => unAvaRooms.includes(room.RoomID));
-    }
+    const unAvailableRooms:Room[] = allRooms.filter((room) => unAvaRooms.includes(room.RoomID));
 
     const availableRooms = allRooms.filter((room) => !unAvaRooms.includes(room.RoomID));
 

@@ -83,3 +83,26 @@ export async function favRoom(isFavorite: boolean, UserID: number, RoomID: numbe
     }
     return isFavorite;
 }
+
+
+export async function getUserEmail(userID: number) {
+    try {
+        const response = await fetch('/api/getEmail', {
+            method: 'POST', // Changed to POST
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ UserID: userID }), // Correctly pass the body
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch user email: ${response.statusText}`);
+        }
+
+        const data = await response.json(); // Parse the JSON response
+        return data; // Return the parsed data
+    } catch (error) {
+        console.error('Error fetching user email:', error);
+        return null; // Return null on error
+    }
+}
