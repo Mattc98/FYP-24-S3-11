@@ -26,4 +26,3 @@ export async function getUserInfo(username: string){
       return [];
   }
 }
-

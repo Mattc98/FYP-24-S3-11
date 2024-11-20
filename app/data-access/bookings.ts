@@ -23,25 +23,25 @@ export async function overrideBooking(roomName: string, bookingID: number, newUs
     }
 
     const userResponse = await fetch(`/api/getEmailById?userId=${oldUserID}`);
-        const userData = await userResponse.json();
+    const userData = await userResponse.json();
 
-        if (userResponse.ok && userData.email) {
-            await fetch('/api/sendNotificationEmail', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email: userData.email,
-                    roomName: roomName,
-                    bookingDate: sgNewDate,
-                    bookingTime: new24Time,
-                    directorName: username,
-                }),
-            });
-        } else {
-            console.error('Failed to retrieve user email');
-        }
+    if (userResponse.ok && userData.email) {
+        await fetch('/api/sendNotificationEmail', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: userData.email,
+                roomName: roomName,
+                bookingDate: sgNewDate,
+                bookingTime: new24Time,
+                directorName: username,
+            }),
+        });
+    } else {
+        console.error('Failed to retrieve user email');
+    }
 }
 
 export async function deleteBooking(bookingId: number){

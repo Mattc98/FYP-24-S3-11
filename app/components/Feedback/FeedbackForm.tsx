@@ -3,7 +3,7 @@
 
 import { useState, useRef, type ReactNode, Suspense } from 'react';
 import styles from './Feedback.module.css';
-import { submitFeedback, type Feedback } from '../../data-access/feedback';
+import { notifyAdmin, submitFeedback, type Feedback } from '../../data-access/feedback';
 
 
 interface FeedbackFormProps {
@@ -40,8 +40,8 @@ function FeedbackFormContent({ children, userId }: FeedbackFormProps) {
 
         try {
             const result = await submitFeedback(feedbackData);
+            await notifyAdmin(feedbackData);
             if (result) {
-                console.log('Feedback submitted successfully');
                 setSubmitStatus('success');
                 setFeedback('');
             } else {
@@ -54,6 +54,8 @@ function FeedbackFormContent({ children, userId }: FeedbackFormProps) {
         } finally {
             setIsSubmitting(false);
         }
+
+
     };
  
     // Display loading state while user ID is null
