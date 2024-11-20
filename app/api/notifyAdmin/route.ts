@@ -15,7 +15,7 @@ export async function POST(request: Request) {
   const mailOptions = {
     from: process.env.EMAIL,
     to: "ryzlanitegow3@gmail.com",
-    subject: 'Booking Override Notification',
+    subject: 'New Feedback!',
     text: `Dear Admin, there is a feedback given by UserID: ${UserID}, ${Feedback}, for RoomID: ${RoomID}`,
   };
 
