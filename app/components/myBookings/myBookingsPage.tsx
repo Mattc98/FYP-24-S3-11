@@ -343,7 +343,7 @@ const MyBookingsPage: React.FC<ClientBookingsProps> = ({ bookings, rooms, userna
                             <option  className = "text-black" value={'10:00 AM - 11:00 AM'}>10:00 AM - 11:00 AM</option >
                             <option  className = "text-black" value={'1:00 PM - 2:00 PM'}>1:00 PM - 2:00 PM</option >
                             <option  className = "text-black" value={'2:00 PM - 3:00 PM'}>2:00 PM - 3:00 PM</option >
-                            <option  className = "text-black" value={'3:00 PM - 4:00 PM'}>3:00 PM - 4:00 Pm</option>
+                            <option  className = "text-black" value={'3:00 PM - 4:00 PM'}>3:00 PM - 4:00 PM</option>
                         </select>
                     </div>
                     <div className="flex justify-end space-x-2">
